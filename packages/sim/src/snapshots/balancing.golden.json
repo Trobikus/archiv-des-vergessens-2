@@ -1,0 +1,152 @@
+{
+  "version": 1,
+  "config": {
+    "GATHER": {
+      "BASE_AMOUNT": 1,
+      "UPGRADE_BASE_COST": 50,
+      "UPGRADE_COST_MULT": 1.5,
+      "POWER_MULT": 2,
+      "COOLDOWN_MS": 40
+    },
+    "RELIC_HUNT": {
+      "COST": 25,
+      "COOLDOWN_MS": 5000,
+      "BASE_CHANCE": 0.4,
+      "LEVEL_BONUS": 0.02,
+      "POWER_BONUS": 0.001,
+      "MIN_CHANCE": 0.05,
+      "MAX_CHANCE": 0.95
+    },
+    "HERO": {
+      "BASE_EXP_TO_NEXT": 50,
+      "EXP_MULTIPLIER": 1.2,
+      "STAT_POINTS_PER_LEVEL": 3,
+      "PRESTIGE_PARTICLE_BONUS": 10,
+      "PRESTIGE_JOB_RATE_BONUS": 2,
+      "PRESTIGE_RELIC_CHANCE_BONUS": 1,
+      "MAX_LEVEL": 9999
+    },
+    "STORY": {
+      "AUTO_BOSS_INTERVAL_MS": 4000,
+      "BATTLE_DURATION_MS": 2500,
+      "BASE_EXP_REWARD": 20,
+      "MAX_CHAPTERS": 10,
+      "FIGHTS_PER_CHAPTER": 10
+    },
+    "CLAN": {
+      "TICK_RATE_MS": 10000,
+      "COLLECTOR_RATE": 2,
+      "WEAVER_RATE": 1.2,
+      "GUARDIAN_RATE": 0.8,
+      "EXP_PER_CYCLE": 1,
+      "EXP_MULTIPLIER": 1.15
+    },
+    "SYSTEM": {
+      "LOGIC_TICK_MS": 100,
+      "SLOW_TICK_MS": 500,
+      "MAX_OFFLINE_MS": 43200000,
+      "AUTOSAVE_INTERVAL_MS": 15000
+    }
+  },
+  "math": {
+    "buildingCost": [
+      10,
+      11,
+      40,
+      329,
+      11743134
+    ],
+    "bulkCost": [
+      10,
+      66,
+      2117
+    ],
+    "maxAffordable": [
+      {
+        "resources": 0,
+        "count": 0,
+        "totalCost": 0
+      },
+      {
+        "resources": 50,
+        "count": 4,
+        "totalCost": 49
+      },
+      {
+        "resources": 1000,
+        "count": 19,
+        "totalCost": 874
+      },
+      {
+        "resources": 1000000,
+        "count": 68,
+        "totalCost": 893952
+      }
+    ],
+    "milestones": [
+      1,
+      1,
+      2,
+      2,
+      4,
+      16
+    ],
+    "yields": [
+      0,
+      0,
+      0,
+      0,
+      1.5,
+      1.6500000000000001,
+      2.25,
+      2.475,
+      75,
+      82.5,
+      112.5,
+      123.75000000000001,
+      300,
+      330,
+      450,
+      495.00000000000006
+    ],
+    "offline": [
+      {
+        "spanMs": 0,
+        "elapsedSeconds": 0,
+        "clampedSeconds": 0,
+        "totalYield": 0
+      },
+      {
+        "spanMs": 60000,
+        "elapsedSeconds": 60,
+        "clampedSeconds": 60,
+        "totalYield": 150
+      },
+      {
+        "spanMs": 46800000,
+        "elapsedSeconds": 46800,
+        "clampedSeconds": 43200,
+        "totalYield": 108000
+      }
+    ],
+    "prestige": [
+      0,
+      0,
+      1,
+      10,
+      31
+    ],
+    "gatherUpgradeCost": [
+      50,
+      75,
+      379,
+      2883
+    ],
+    "gatherPower": [
+      1,
+      2,
+      32,
+      1024
+    ]
+  }
+}

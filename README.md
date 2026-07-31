@@ -13,7 +13,8 @@ Greenfield-Rewrite. v1-Referenz: `F:\Max_Projekte\archiv-des-vergessens-1` (read
 | Phase | Status |
 |---|---|
 | 0 Fundament | ✅ erledigt (`v2-phase0`, [PR #1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1)) |
-| 1–9 | ⬜ offen — Details in [docs/REWRITE_PLAN.md](docs/REWRITE_PLAN.md) |
+| 1 Kernel + Balancing | ✅ erledigt (`v2-phase1`) |
+| 2–9 | ⬜ offen — Details in [docs/REWRITE_PLAN.md](docs/REWRITE_PLAN.md) |
 
 ```bash
 npm install
