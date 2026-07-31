@@ -15,5 +15,6 @@ describe("sanitizeNumber", () => {
     expect(sanitizeNumber(Number.NaN, 9)).toBe(9);
     expect(sanitizeNumber(Number.POSITIVE_INFINITY, 9)).toBe(9);
     expect(sanitizeNumber("x", Number.NaN)).toBe(0);
+    expect(sanitizeNumber(false, Number.POSITIVE_INFINITY)).toBe(0);
   });
 });

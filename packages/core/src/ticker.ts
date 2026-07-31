@@ -17,8 +17,6 @@ export type TickerOptions = {
   readonly onSpeedClamp?: () => void;
 };
 
-type TimerHandle = ReturnType<typeof setTimeout>;
-
 function defaultNow(): number {
   return Date.now();
 }
@@ -31,7 +29,7 @@ function defaultScheduleFrame(cb: (timestamp: number) => void): number {
 }
 
 function defaultCancelFrame(id: number): void {
-  clearTimeout(id as unknown as TimerHandle);
+  clearTimeout(id);
 }
 
 /**
@@ -45,10 +43,10 @@ export class Ticker {
   readonly #now: () => number;
   readonly #scheduleFrame: (cb: (timestamp: number) => void) => number;
   readonly #cancelFrame: (id: number) => void;
-  readonly #onLogicTick?: (payload: TickPayload) => void;
-  readonly #onSlowTick?: (payload: TickPayload) => void;
-  readonly #onFrame?: (payload: TickPayload) => void;
-  readonly #onSpeedClamp?: () => void;
+  readonly #onLogicTick: ((payload: TickPayload) => void) | undefined;
+  readonly #onSlowTick: ((payload: TickPayload) => void) | undefined;
+  readonly #onFrame: ((payload: TickPayload) => void) | undefined;
+  readonly #onSpeedClamp: (() => void) | undefined;
 
   #running = false;
   #frameId: number | null = null;
@@ -114,9 +112,7 @@ export class Ticker {
       return;
     }
     this.#process(timestamp);
-    if (this.#running) {
-      this.#frameId = this.#scheduleFrame(this.#boundTick);
-    }
+    this.#frameId = this.#scheduleFrame(this.#boundTick);
   }
 
   #process(timestamp: number): void {

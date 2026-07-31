@@ -56,8 +56,8 @@ deepFreeze(CONFIG);
 
 function deepFreeze<T extends object>(value: T): T {
   for (const key of Reflect.ownKeys(value)) {
-    const child = Reflect.get(value, key);
-    if (child && typeof child === "object") {
+    const child: unknown = Reflect.get(value, key);
+    if (typeof child === "object" && child !== null) {
       deepFreeze(child);
     }
   }

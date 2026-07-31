@@ -23,7 +23,9 @@ export class EventBus {
   }> = [];
   readonly #subscriptionMap = new Map<SubscriptionId, string | null>();
   readonly #queue: Array<{ event: string; data: unknown }> = [];
-  readonly #onError: EventBusOptions["onError"];
+  readonly #onError:
+    | ((error: unknown, event: string, subscriptionId: SubscriptionId) => void)
+    | undefined;
   #idCounter = 0;
   #destroyed = false;
   #publishing = false;
@@ -44,7 +46,7 @@ export class EventBus {
     const list = this.#listeners.get(event) ?? [];
     list.push({
       id,
-      callback: callback as EventHandler<unknown>,
+      callback: callback as EventHandler,
       priority,
     });
     list.sort((a, b) => b.priority - a.priority);

@@ -72,7 +72,7 @@ export function calculateMaxAffordableLevel(
   let count = 0;
   let totalCost = 0;
 
-  while (true) {
+  while (count < 10000) {
     const nextCost = calculateBuildingCost(
       baseCost,
       costMultiplier,
@@ -83,9 +83,6 @@ export function calculateMaxAffordableLevel(
     }
     totalCost += nextCost;
     count += 1;
-    if (count >= 10000) {
-      break;
-    }
   }
 
   return { count, totalCost };

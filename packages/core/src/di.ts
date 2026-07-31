@@ -1,7 +1,7 @@
 export type ServiceToken<T> = symbol & { readonly __brand?: T };
 
 export function createToken<T>(description: string): ServiceToken<T> {
-  return Symbol(description) as ServiceToken<T>;
+  return Symbol(description);
 }
 
 export type Factory<T> = (container: Container) => T;
@@ -14,7 +14,7 @@ export class Container {
   readonly #instances = new Map<symbol, unknown>();
 
   register<T>(token: ServiceToken<T>, factory: Factory<T>): this {
-    this.#factories.set(token, factory as Factory<unknown>);
+    this.#factories.set(token, factory);
     this.#instances.delete(token);
     return this;
   }

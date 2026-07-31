@@ -12,7 +12,8 @@ describe("Rng", () => {
 
   it("shuffles and picks elements", () => {
     const rng = createRng(7);
-    expect(rng.randomElement([])).toBeUndefined();
+    const empty = rng.randomElement<string>([]);
+    expect(empty).toBeUndefined();
     expect(rng.randomElement(["x"])).toBe("x");
     const shuffled = rng.shuffle([1, 2, 3, 4]);
     expect(shuffled).toHaveLength(4);
