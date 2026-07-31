@@ -7,7 +7,7 @@ todos:
     status: completed
   - id: phase-1
     content: "Phase 1: @adv/core + @adv/sim + Balancing-Snapshot-Gate vs. v1"
-    status: pending
+    status: completed
   - id: phase-2
     content: "Phase 2: Vertical Slice Klick/Ressource/Save/Offline spielbar"
     status: pending
@@ -41,7 +41,7 @@ todos:
 | Phase | Status | Nachweis |
 |---|---|---|
 | **0 Fundament** | ✅ erledigt | Tag `v2-phase0`, PR [#1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1), `npm run gate` grün |
-| 1 Kernel + Balancing | ⬜ offen | — |
+| **1 Kernel + Balancing** | ✅ erledigt | Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2), `npm run gate` grün |
 | 2 Vertical Slice | ⬜ offen | — |
 | 3 Content + Kampf/Story | ⬜ offen | — |
 | 4 Server + Auth + Cloud | ⬜ offen (Freigabe) | — |
@@ -51,7 +51,7 @@ todos:
 | 8 Release 2.0.0 | ⬜ offen | — |
 | 9 v1-Save-Importer | ⬜ optional | — |
 
-**Als Nächstes:** Phase 1 — `@adv/core` + `@adv/sim` ausbauen, Balancing-Snapshot-Gate vs. v1.
+**Als Nächstes:** Phase 2 — Vertical Slice (Klick/Tick → Ressourcen → Save/Load → Offline).
 
 ## Rahmen
 
@@ -151,8 +151,14 @@ Erledigt:
 - [x] `docs/parity-checklist.md` aus v1-Services/UI
 - [x] `docs/protocol.md`, `docs/save-format.md`
 
-### Phase 1 — Kernel + Balancing einfrieren (4–6 Tage) ⬜
-`@adv/core` (DI, EventBus, Store, Ticker, Logger, Result, BigNum, RNG) + `@adv/sim` (pure Formeln). Golden-Snapshot gegen v1 `js/core/game/math.js` + `js/data/config.js`.
+### Phase 1 — Kernel + Balancing einfrieren ✅
+**Status:** erledigt (Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2))
+
+Erledigt:
+- [x] `@adv/core`: DI, EventBus, Store, Ticker, Logger, Result, BigNum, RNG
+- [x] `@adv/sim`: CONFIG + pure Math-Formeln (v1-Parität)
+- [x] Golden-Snapshot `packages/sim/src/snapshots/balancing.golden.json`
+- [x] Gate-Schritt `tools/gates/balancing-snapshot.mjs` in `npm run gate`
 
 ### Phase 2 — Erste Vertical Slice (5–7 Tage) ⬜
 Klick/Tick → Ressourcen → Save/Load (IndexedDB) → Offline-Progress. Spielbar im Browser.
@@ -189,7 +195,7 @@ Nach Release: Adapter v1-JSON → v2-Envelope.
 
 ```mermaid
 graph LR
-  P0["P0 Fundament ✅"] --> P1["P1 Kernel + sim ⬜"]
+  P0["P0 Fundament ✅"] --> P1["P1 Kernel + sim ✅"]
   P1 --> P2["P2 Klick Save Offline ⬜"]
   P2 --> P3["P3 Content Kampf ⬜"]
   P3 --> P4["P4 Server Auth Cloud ⬜"]
@@ -217,4 +223,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 0 erledigt. Als Nächstes Phase 1: `@adv/core` + `@adv/sim` ausbauen und Balancing-Snapshot-Gate vs. v1.
+Phase 1 erledigt. Als Nächstes Phase 2: Vertical Slice (Klick/Ressource/Save/Offline).

@@ -8,12 +8,12 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 
 | Item | v1 source | Phase | Status |
 |---|---|---|---|
-| DI container | `js/core/di/*` | 1 | [ ] |
-| Event bus | `js/core/events/*` | 1 | [ ] |
-| State manager | `js/core/state/*` | 1–2 | [ ] |
-| Logger | `js/core/logger.js` | 0 | [x] stub |
-| Game loop / ticker | `js/core/game/loop.js` | 1–2 | [ ] |
-| Math / balancing | `js/core/game/math.js` | 1 | [ ] |
+| DI container | `js/core/di/*` | 1 | [x] |
+| Event bus | `js/core/events/*` | 1 | [x] |
+| State manager | `js/core/state/*` | 1–2 | [x] Store (Phase-1 Kernel); game-state Slice in Phase 2 |
+| Logger | `js/core/logger.js` | 0 | [x] |
+| Game loop / ticker | `js/core/game/loop.js` | 1–2 | [x] Ticker Kernel; voller Loop in Phase 2 |
+| Math / balancing | `js/core/game/math.js` | 1 | [x] + golden snapshot gate |
 | Save manager | `js/core/persistence/save-manager.js` | 2 | [ ] |
 | Cloud manager | `js/core/persistence/cloud-manager.js` | 4 | [ ] |
 | Settings | `js/core/settings.js` | 6F | [ ] |

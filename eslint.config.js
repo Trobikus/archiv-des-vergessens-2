@@ -85,6 +85,7 @@ export default tsConfig(
   {
     files: [
       "tools/**/*.{js,mjs}",
+      "packages/*/scripts/**/*.{js,mjs}",
       "eslint.config.js",
       "**/vite.config.ts",
       "vitest.config.ts",

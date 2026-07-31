@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 
 const steps = [
+  ["balancing-snapshot", "node tools/gates/balancing-snapshot.mjs"],
   ["typecheck", "npm run typecheck"],
   ["lint", "npm run lint"],
   ["test:coverage", "npm run test:coverage"],
