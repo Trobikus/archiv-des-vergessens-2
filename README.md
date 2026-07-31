@@ -8,9 +8,12 @@ Greenfield-Rewrite. v1-Referenz: `F:\Max_Projekte\archiv-des-vergessens-1` (read
 - [docs/parity-checklist.md](docs/parity-checklist.md) — Feature-Parität vs. v1
 - [docs/adr/](docs/adr/) — Architekturentscheidungen
 
-## Phase 0 status
+## Fortschritt
 
-Monorepo bootet: Workspaces, TypeScript strict, Vite/Preact-Shell („Boot OK“), ESLint, Vitest, CI, ADRs, Parity-Checkliste.
+| Phase | Status |
+|---|---|
+| 0 Fundament | ✅ erledigt (`v2-phase0`, [PR #1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1)) |
+| 1–9 | ⬜ offen — Details in [docs/REWRITE_PLAN.md](docs/REWRITE_PLAN.md) |
 
 ```bash
 npm install

@@ -36,6 +36,23 @@ todos:
 
 # Greenfield-Rewrite: Archiv des Vergessens v2
 
+## Fortschritt (Stand)
+
+| Phase | Status | Nachweis |
+|---|---|---|
+| **0 Fundament** | ✅ erledigt | Tag `v2-phase0`, PR [#1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1), `npm run gate` grün |
+| 1 Kernel + Balancing | ⬜ offen | — |
+| 2 Vertical Slice | ⬜ offen | — |
+| 3 Content + Kampf/Story | ⬜ offen | — |
+| 4 Server + Auth + Cloud | ⬜ offen (Freigabe) | — |
+| 5 Tauri + E2E | ⬜ offen | — |
+| 6 Parität A–F | ⬜ offen | — |
+| 7 Social/Live | ⬜ offen | — |
+| 8 Release 2.0.0 | ⬜ offen | — |
+| 9 v1-Save-Importer | ⬜ optional | — |
+
+**Als Nächstes:** Phase 1 — `@adv/core` + `@adv/sim` ausbauen, Balancing-Snapshot-Gate vs. v1.
+
 ## Rahmen
 
 - **Neu:** `F:\Max_Projekte\archiv-des-vergessens-2` (dieses Repo)
@@ -119,25 +136,37 @@ archiv-des-vergessens-2/
 
 ## Phasen
 
-### Phase 0 — Fundament bootet (2–3 Tage)
-Leeres Monorepo: Workspaces, strict tsconfig, Vite-Preact-Shell („Boot OK“), ESLint, Vitest, CI, ADRs, `parity-checklist.md` aus v1-Services/UI generieren.
+### Phase 0 — Fundament bootet ✅
+**Status:** erledigt (Tag `v2-phase0`, PR [#1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1))
 
-### Phase 1 — Kernel + Balancing einfrieren (4–6 Tage)
+Erledigt:
+- [x] npm Workspaces (`packages/*`, `apps/*`, `tools/*`)
+- [x] TypeScript strict (`noUncheckedIndexedAccess`, kein `any`)
+- [x] Vite + Preact-TSX Shell („Boot OK“)
+- [x] Package-Stubs: `@adv/protocol`, `@adv/core`, `@adv/sim`, `@adv/content`
+- [x] Server-Stub `@adv/server`, Desktop-Platzhalter (Phase 5)
+- [x] ESLint (`--max-warnings=0`, Import-Zyklen), Vitest + Coverage-Gates
+- [x] CI (`.github/workflows/ci.yml`), `npm run gate`
+- [x] ADRs (`docs/adr/0001-stack.md`, `0002-persistence.md`)
+- [x] `docs/parity-checklist.md` aus v1-Services/UI
+- [x] `docs/protocol.md`, `docs/save-format.md`
+
+### Phase 1 — Kernel + Balancing einfrieren (4–6 Tage) ⬜
 `@adv/core` (DI, EventBus, Store, Ticker, Logger, Result, BigNum, RNG) + `@adv/sim` (pure Formeln). Golden-Snapshot gegen v1 `js/core/game/math.js` + `js/data/config.js`.
 
-### Phase 2 — Erste Vertical Slice (5–7 Tage)
+### Phase 2 — Erste Vertical Slice (5–7 Tage) ⬜
 Klick/Tick → Ressourcen → Save/Load (IndexedDB) → Offline-Progress. Spielbar im Browser.
 
-### Phase 3 — Content + Kampf/Story (6–8 Tage)
+### Phase 3 — Content + Kampf/Story (6–8 Tage) ⬜
 `@adv/content` mit typisierten Records aus `js/data/`, i18n DE/EN mit Key-Gate, Combat/Loot in `@adv/sim`, Combat- + Hero-UI.
 
-### Phase 4 — Modularer Server + Auth + Cloud (Freigabe nötig) (7–9 Tage)
+### Phase 4 — Modularer Server + Auth + Cloud (Freigabe nötig) (7–9 Tage) ⬜
 Modularer WS-Server, Events in `@adv/protocol`, Auth (Guest/Register/Login/Token/convertGuest), Cloud-Save, User-Migration aus v1-Kopie (Dry-Run zuerst).
 
-### Phase 5 — Tauri-Shell + E2E (3–4 Tage)
+### Phase 5 — Tauri-Shell + E2E (3–4 Tage) ⬜
 Desktop-Shell ohne lokale Save-DB; Identifier + Updater-Key aus v1; Playwright-Smoke; Version `2.0.0`.
 
-### Phase 6 — Feature-Parität Wellen A–F (12–18 Tage)
+### Phase 6 — Feature-Parität Wellen A–F (12–18 Tage) ⬜
 - A Quests / Achievements / Daily
 - B Forge / Crafting / Gather
 - C Talente / Challenges / Library
@@ -145,13 +174,13 @@ Desktop-Shell ohne lokale Save-DB; Identifier + Updater-Key aus v1; Playwright-S
 - E Relic Hunt / Account-Vault / Combat-Analytics
 - F Tutorial / Intro / Settings
 
-### Phase 7 — Social/Live (5–7 Tage)
+### Phase 7 — Social/Live (5–7 Tage) ⬜
 Chat, Freunde, Clan, Leaderboard — Client + Servermodule, serverseitige Validierung.
 
-### Phase 8 — Härtung → Release 2.0.0 (4–6 Tage)
+### Phase 8 — Härtung → Release 2.0.0 (4–6 Tage) ⬜
 Perf-Budgets, Leak-Tests, a11y-Basis, Patch Notes, Updater-Rollout, v1-Cutover.
 
-### Phase 9 (optional) — v1-Save-Importer
+### Phase 9 (optional) — v1-Save-Importer ⬜
 Nach Release: Adapter v1-JSON → v2-Envelope.
 
 ---
@@ -160,15 +189,15 @@ Nach Release: Adapter v1-JSON → v2-Envelope.
 
 ```mermaid
 graph LR
-  P0["P0 Fundament"] --> P1["P1 Kernel + sim"]
-  P1 --> P2["P2 Klick Save Offline"]
-  P2 --> P3["P3 Content Kampf"]
-  P3 --> P4["P4 Server Auth Cloud"]
-  P4 --> P5["P5 Tauri E2E"]
-  P5 --> P6["P6 Paritaet A-F"]
-  P6 --> P7["P7 Social"]
-  P7 --> P8["P8 Release 2.0.0"]
-  P8 -.optional.-> P9["P9 v1 Importer"]
+  P0["P0 Fundament ✅"] --> P1["P1 Kernel + sim ⬜"]
+  P1 --> P2["P2 Klick Save Offline ⬜"]
+  P2 --> P3["P3 Content Kampf ⬜"]
+  P3 --> P4["P4 Server Auth Cloud ⬜"]
+  P4 --> P5["P5 Tauri E2E ⬜"]
+  P5 --> P6["P6 Paritaet A-F ⬜"]
+  P6 --> P7["P7 Social ⬜"]
+  P7 --> P8["P8 Release 2.0.0 ⬜"]
+  P8 -.optional.-> P9["P9 v1 Importer ⬜"]
 ```
 
 ## Portiert vs. neu
