@@ -10,10 +10,12 @@ Greenfield-Rewrite. v1-Referenz: `F:\Max_Projekte\archiv-des-vergessens-1` (read
 
 ## Fortschritt
 
+**Fertig:** Phase 0 + 1 · **Als Nächstes:** Phase 2 (Vertical Slice)
+
 | Phase | Status |
 |---|---|
-| 0 Fundament | ✅ erledigt (`v2-phase0`, [PR #1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1)) |
-| 1 Kernel + Balancing | ✅ erledigt (`v2-phase1`, [PR #2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2)) |
+| 0 Fundament | ✅ fertig (`v2-phase0`, [PR #1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1) merged) |
+| 1 Kernel + Balancing | ✅ fertig (`v2-phase1`, [PR #2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2) merged) |
 | 2–9 | ⬜ offen — Details in [docs/REWRITE_PLAN.md](docs/REWRITE_PLAN.md) |
 
 ```bash
