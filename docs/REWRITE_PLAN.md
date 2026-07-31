@@ -36,22 +36,29 @@ todos:
 
 # Greenfield-Rewrite: Archiv des Vergessens v2
 
-## Fortschritt (Stand)
+## Fortschritt (Stand 2026-08-01)
+
+**Fertig:** Phase 0 + Phase 1 (gemerged).  
+**Als Nächstes:** Phase 2 — Vertical Slice (Klick/Tick → Ressourcen → Save/Load → Offline).
 
 | Phase | Status | Nachweis |
 |---|---|---|
-| **0 Fundament** | ✅ erledigt | Tag `v2-phase0`, PR [#1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1), `npm run gate` grün |
-| **1 Kernel + Balancing** | ✅ erledigt | Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2), `npm run gate` grün |
+| **0 Fundament** | ✅ fertig | Tag `v2-phase0`, PR [#1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1) merged |
+| **1 Kernel + Balancing** | ✅ fertig | Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2) merged, Balancing-Snapshot-Gate |
 | 2 Vertical Slice | ⬜ offen | — |
 | 3 Content + Kampf/Story | ⬜ offen | — |
-| 4 Server + Auth + Cloud | ⬜ offen (Freigabe) | — |
+| 4 Server + Auth + Cloud | ⬜ offen (Freigabe nötig) | — |
 | 5 Tauri + E2E | ⬜ offen | — |
 | 6 Parität A–F | ⬜ offen | — |
 | 7 Social/Live | ⬜ offen | — |
 | 8 Release 2.0.0 | ⬜ offen | — |
 | 9 v1-Save-Importer | ⬜ optional | — |
 
-**Als Nächstes:** Phase 2 — Vertical Slice (Klick/Tick → Ressourcen → Save/Load → Offline).
+### Was in Phase 0–1 geliefert wurde
+
+- Monorepo (TS strict, Vite/Preact, CI, `npm run gate`, ADRs, Parity-Checkliste)
+- `@adv/core`: DI, EventBus, Store, Ticker, Logger, Result, BigNum, RNG
+- `@adv/sim`: CONFIG + Math (v1-Parität) + Golden Snapshot `balancing.golden.json`
 
 ## Rahmen
 
@@ -152,7 +159,7 @@ Erledigt:
 - [x] `docs/protocol.md`, `docs/save-format.md`
 
 ### Phase 1 — Kernel + Balancing einfrieren ✅
-**Status:** erledigt (Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2))
+**Status:** fertig / gemerged (Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2))
 
 Erledigt:
 - [x] `@adv/core`: DI, EventBus, Store, Ticker, Logger, Result, BigNum, RNG
