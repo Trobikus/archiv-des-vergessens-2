@@ -41,7 +41,7 @@ todos:
 | Phase | Status | Nachweis |
 |---|---|---|
 | **0 Fundament** | ✅ erledigt | Tag `v2-phase0`, PR [#1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1), `npm run gate` grün |
-| **1 Kernel + Balancing** | ✅ erledigt | Tag `v2-phase1`, `npm run gate` grün (Balancing-Snapshot-Gate) |
+| **1 Kernel + Balancing** | ✅ erledigt | Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2), `npm run gate` grün |
 | 2 Vertical Slice | ⬜ offen | — |
 | 3 Content + Kampf/Story | ⬜ offen | — |
 | 4 Server + Auth + Cloud | ⬜ offen (Freigabe) | — |
@@ -152,7 +152,7 @@ Erledigt:
 - [x] `docs/protocol.md`, `docs/save-format.md`
 
 ### Phase 1 — Kernel + Balancing einfrieren ✅
-**Status:** erledigt (Tag `v2-phase1`)
+**Status:** erledigt (Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2))
 
 Erledigt:
 - [x] `@adv/core`: DI, EventBus, Store, Ticker, Logger, Result, BigNum, RNG
