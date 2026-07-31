@@ -5,6 +5,9 @@
   --ink: #e7eef8;
   --muted: #9db0c7;
   --accent: #6fa8ff;
+  --accent-2: #8fd0b0;
+  --panel: color-mix(in srgb, #101a2a 82%, transparent);
+  --line: color-mix(in srgb, var(--ink) 14%, transparent);
   font-family: "Segoe UI", "Helvetica Neue", sans-serif;
 }
 
@@ -37,7 +40,8 @@ body {
   padding: 2rem;
 }
 
-.boot__brand {
+.boot__brand,
+.game__brand {
   margin: 0;
   font-size: clamp(1.8rem, 4vw, 2.8rem);
   letter-spacing: 0.04em;
@@ -63,6 +67,115 @@ body {
   vertical-align: 0.05rem;
 }
 
+.game {
+  width: min(720px, 100%);
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.game__hero {
+  text-align: center;
+  animation: rise 0.7s ease-out both;
+}
+
+.game__tagline {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+}
+
+.game__offline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--accent-2) 12%, var(--panel));
+  animation: rise 0.55s ease-out both;
+}
+
+.game__offline p {
+  margin: 0;
+}
+
+.game__panel {
+  padding: 1.25rem 1.2rem;
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+  backdrop-filter: blur(6px);
+  animation: rise 0.8s ease-out both;
+}
+
+.game__heading {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.game__stat {
+  margin: 0;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+.game__unit {
+  font-size: 0.55em;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.game__meta,
+.game__save {
+  margin: 0.45rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.game__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.game__btn {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg-0) 55%, transparent);
+  color: var(--ink);
+  padding: 0.65rem 1rem;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    border-color 0.12s ease,
+    background 0.12s ease;
+}
+
+.game__btn:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+}
+
+.game__btn:active {
+  transform: translateY(1px);
+}
+
+.game__btn--primary {
+  background: color-mix(in srgb, var(--accent) 28%, var(--bg-0));
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+}
+
+.game__btn--ghost {
+  background: transparent;
+}
+
 @keyframes pulse {
   0% {
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent);
@@ -72,5 +185,26 @@ body {
   }
   100% {
     box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.4rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 520px) {
+  .game__actions {
+    flex-direction: column;
+  }
+
+  .game__btn {
+    width: 100%;
   }
 }

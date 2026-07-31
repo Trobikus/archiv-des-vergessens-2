@@ -12,6 +12,8 @@
   "dependencies": {
     "@adv/content": "*",
     "@adv/core": "*",
+    "@adv/protocol": "*",
+    "@adv/sim": "*",
     "preact": "^10.26.9"
   },
   "devDependencies": {

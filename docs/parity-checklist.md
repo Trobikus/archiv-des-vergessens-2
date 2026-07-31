@@ -10,11 +10,11 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 |---|---|---|---|
 | DI container | `js/core/di/*` | 1 | [x] |
 | Event bus | `js/core/events/*` | 1 | [x] |
-| State manager | `js/core/state/*` | 1–2 | [x] Store (Phase-1 Kernel); game-state Slice in Phase 2 |
+| State manager | `js/core/state/*` | 1–2 | [x] Store + Phase-2 GameState |
 | Logger | `js/core/logger.js` | 0 | [x] |
-| Game loop / ticker | `js/core/game/loop.js` | 1–2 | [x] Ticker Kernel; voller Loop in Phase 2 |
+| Game loop / ticker | `js/core/game/loop.js` | 1–2 | [x] Ticker + GameSession Loop |
 | Math / balancing | `js/core/game/math.js` | 1 | [x] + golden snapshot gate |
-| Save manager | `js/core/persistence/save-manager.js` | 2 | [ ] |
+| Save manager | `js/core/persistence/save-manager.js` | 2 | [x] SaveStore (IndexedDB cache) |
 | Cloud manager | `js/core/persistence/cloud-manager.js` | 4 | [ ] |
 | Settings | `js/core/settings.js` | 6F | [ ] |
 | Security helpers | `js/core/security.js` | 4 | [ ] |
@@ -24,9 +24,9 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 
 | Service | Phase | Status |
 |---|---|---|
-| resource-service | 2 | [ ] |
-| idle-service | 2 | [ ] |
-| offline-progress-service | 2 | [ ] |
+| resource-service | 2 | [x] |
+| idle-service | 2 | [x] GedankenArchiv Slice |
+| offline-progress-service | 2 | [x] Idle-Offline (Clan später) |
 | hero-service | 3 | [ ] |
 | i18n-service | 3 | [ ] |
 | story-service | 3 | [ ] |
@@ -60,9 +60,9 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | views/LoginView | 4 | [ ] |
 | views/CharacterSelectView | 3 | [ ] |
 | views/IntroView | 6F | [ ] |
-| views/GameView | 2–3 | [ ] |
+| views/GameView | 2–3 | [x] Phase-2 Vertical Slice |
 | views/HubView + hub/* | 6 | [ ] |
-| views/MainApp | 2 | [ ] |
+| views/MainApp | 2 | [x] App boot + GameView |
 | views/OptionsView | 6F | [ ] |
 | hero/* | 3 | [ ] |
 | combat/* | 3 / 6E | [ ] |
@@ -82,7 +82,7 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | friends/FriendsUI | 7 | [ ] |
 | clan/ClanUI | 7 | [ ] |
 | leaderboard/LeaderboardUI | 7 | [ ] |
-| shared/* (modals, toasts, offline) | 2+ | [ ] |
+| shared/* (modals, toasts, offline) | 2+ | [x] Offline-Report Banner (Phase 2) |
 
 ## Explicitly dropped vs v1
 

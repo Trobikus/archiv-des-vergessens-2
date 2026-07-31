@@ -10,13 +10,14 @@ Greenfield-Rewrite. v1-Referenz: `F:\Max_Projekte\archiv-des-vergessens-1` (read
 
 ## Fortschritt
 
-**Fertig:** Phase 0 + 1 · **Als Nächstes:** Phase 2 (Vertical Slice)
+**Fertig:** Phase 0–2 · **Als Nächstes:** Phase 3 (Content + Kampf/Story)
 
 | Phase | Status |
 |---|---|
 | 0 Fundament | ✅ fertig (`v2-phase0`, [PR #1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1) merged) |
-| 1 Kernel + Balancing | ✅ fertig (`v2-phase1`, [PR #2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2) merged) |
-| 2–9 | ⬜ offen — Details in [docs/REWRITE_PLAN.md](docs/REWRITE_PLAN.md) |
+| 1 Kernel + Balancing | ✅ fertig (`v2-phase1`) |
+| 2 Vertical Slice | ✅ fertig (`v2-phase2`) — Klick/Tick/Save/Offline |
+| 3–9 | ⬜ offen — Details in [docs/REWRITE_PLAN.md](docs/REWRITE_PLAN.md) |
 
 ```bash
 npm install

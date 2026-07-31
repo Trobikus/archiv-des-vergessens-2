@@ -10,7 +10,7 @@ todos:
     status: completed
   - id: phase-2
     content: "Phase 2: Vertical Slice Klick/Ressource/Save/Offline spielbar"
-    status: pending
+    status: completed
   - id: phase-3
     content: "Phase 3: Content-Pipeline + Combat/Story-Slice + i18n-Gates"
     status: pending
@@ -38,14 +38,14 @@ todos:
 
 ## Fortschritt (Stand 2026-08-01)
 
-**Fertig:** Phase 0 + Phase 1 (gemerged).  
-**Als Nächstes:** Phase 2 — Vertical Slice (Klick/Tick → Ressourcen → Save/Load → Offline).
+**Fertig:** Phase 0 + Phase 1 + Phase 2.  
+**Als Nächstes:** Phase 3 — Content-Pipeline + Combat/Story-Slice + i18n-Gates.
 
 | Phase | Status | Nachweis |
 |---|---|---|
 | **0 Fundament** | ✅ fertig | Tag `v2-phase0`, PR [#1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1) merged |
-| **1 Kernel + Balancing** | ✅ fertig | Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2) merged, Balancing-Snapshot-Gate |
-| 2 Vertical Slice | ⬜ offen | — |
+| **1 Kernel + Balancing** | ✅ fertig | Tag `v2-phase1`, Balancing-Snapshot-Gate |
+| **2 Vertical Slice** | ✅ fertig | Tag `v2-phase2`, Klick/Tick/Save/Offline spielbar |
 | 3 Content + Kampf/Story | ⬜ offen | — |
 | 4 Server + Auth + Cloud | ⬜ offen (Freigabe nötig) | — |
 | 5 Tauri + E2E | ⬜ offen | — |
@@ -167,8 +167,16 @@ Erledigt:
 - [x] Golden-Snapshot `packages/sim/src/snapshots/balancing.golden.json`
 - [x] Gate-Schritt `tools/gates/balancing-snapshot.mjs` in `npm run gate`
 
-### Phase 2 — Erste Vertical Slice (5–7 Tage) ⬜
-Klick/Tick → Ressourcen → Save/Load (IndexedDB) → Offline-Progress. Spielbar im Browser.
+### Phase 2 — Erste Vertical Slice ✅
+**Status:** fertig (Tag `v2-phase2`)
+
+Erledigt:
+- [x] Game-State Slice (Partikel, Mneme, GedankenArchiv, Gather)
+- [x] Resource- / Idle- / Gather- / Offline-Services
+- [x] SaveStore (IndexedDB + Memory-Adapter) mit Envelope/Migration/Payload-Validator
+- [x] Ticker-Loop + Autosave
+- [x] Spielbare Client-UI (`GameView`)
+- [x] Vitest Vertical-Slice-Tests + `npm run gate`
 
 ### Phase 3 — Content + Kampf/Story (6–8 Tage) ⬜
 `@adv/content` mit typisierten Records aus `js/data/`, i18n DE/EN mit Key-Gate, Combat/Loot in `@adv/sim`, Combat- + Hero-UI.
@@ -203,7 +211,7 @@ Nach Release: Adapter v1-JSON → v2-Envelope.
 ```mermaid
 graph LR
   P0["P0 Fundament ✅"] --> P1["P1 Kernel + sim ✅"]
-  P1 --> P2["P2 Klick Save Offline ⬜"]
+  P1 --> P2["P2 Klick Save Offline ✅"]
   P2 --> P3["P3 Content Kampf ⬜"]
   P3 --> P4["P4 Server Auth Cloud ⬜"]
   P4 --> P5["P5 Tauri E2E ⬜"]
@@ -230,4 +238,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 1 erledigt. Als Nächstes Phase 2: Vertical Slice (Klick/Ressource/Save/Offline).
+Phase 2 erledigt. Als Nächstes Phase 3: Content + Kampf/Story + i18n-Gates.

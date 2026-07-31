@@ -13,6 +13,8 @@
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "references": [
     { "path": "../../packages/core" },
-    { "path": "../../packages/content" }
+    { "path": "../../packages/content" },
+    { "path": "../../packages/protocol" },
+    { "path": "../../packages/sim" }
   ]
 }
