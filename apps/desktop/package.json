@@ -1,0 +1,9 @@
+{
+  "name": "@adv/desktop",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Tauri 2 shell — scaffolded in Phase 5",
+  "scripts": {
+    "placeholder": "node -e \"console.log('Desktop shell lands in Phase 5')\""
+  }
+}
