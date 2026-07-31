@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist-types",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "types": ["vite/client"],
+    "noEmit": false,
+    "emitDeclarationOnly": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "references": [
+    { "path": "../../packages/core" },
+    { "path": "../../packages/content" }
+  ]
+}

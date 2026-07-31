@@ -1,0 +1,14 @@
+node_modules/
+dist/
+dist-types/
+coverage/
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example
+apps/client/dist/
+apps/desktop/src-tauri/target/
+*.log
+.vite/

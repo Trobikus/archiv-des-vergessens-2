@@ -4,7 +4,7 @@ overview: "Kompletter Greenfield-Rewrite als neues Repo archiv-des-vergessens-2:
 todos:
   - id: phase-0
     content: "Phase 0: Monorepo-Scaffold archiv-des-vergessens-2 (TS strict, Vite/Preact-TSX, CI, ADRs, Parity-Checkliste)"
-    status: pending
+    status: completed
   - id: phase-1
     content: "Phase 1: @adv/core + @adv/sim + Balancing-Snapshot-Gate vs. v1"
     status: pending
@@ -188,4 +188,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 0 starten: Workspaces + strict TS + Vite-Preact-Shell, `npm run gate` grün.
+Phase 0 erledigt. Als Nächstes Phase 1: `@adv/core` + `@adv/sim` ausbauen und Balancing-Snapshot-Gate vs. v1.
