@@ -220,12 +220,68 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 | **Workflow** | [`.github/workflows/release.yml`](.github/workflows/release.yml) |
 | **CI** | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — Gate + Desktop-Job |
 
-> **Cutover-Hinweis:** Cloud-Spielstände aus v1 werden **nicht** übernommen.  
+> **Cutover-Hinweis:** Cloud-Spielstände aus v1 werden serverseitig **nicht** automatisch übernommen.  
 > Accounts (Benutzername + PBKDF2-Passwort) können migriert werden — Spieler melden sich neu an.  
-> v1-Clients bleiben auf dem v1-Updater-Feed, bis der v2-Build manuell installiert wird.
+> v1-Clients bleiben auf dem v1-Updater-Feed, bis der v2-Build manuell installiert wird.  
+> Lokale v1-Spielstände kannst du über den Phase-9-Importer weiternutzen (siehe unten).
 
-Account-Migration: [`tools/migrate-v1-users/`](tools/migrate-v1-users/)  
-Spielstand-Import (Phase 9): Options-UI oder [`tools/migrate-v1-saves/`](tools/migrate-v1-saves/) · API `importV1Save` in `@adv/protocol`
+Account-Migration: [`tools/migrate-v1-users/`](tools/migrate-v1-users/)
+
+---
+
+## 💾 v1-Spielstände in v2 weiternutzen
+
+v2 speichert in einem anderen Format (`SaveEnvelope`, `schemaVersion: 1`). Fortschritt aus v1 wird **nicht** still im Hintergrund übernommen — du importierst einen JSON-Dump einmalig.
+
+### Was übernommen wird
+
+Held, Ressourcen, Idle/Gather, Quests, Achievements, Crafting, Bibliothek, Talente, Challenges, Codex/Lore, Story-Branches, Reliktjagd, Freunde, Clan, Leaderboard-Rekorde, Tutorial/Settings, optional Account-Tresor.
+
+### Was entfällt
+
+- Chat-Verläufe (in v2 ephemer / serverseitig)
+- Laufender Kampfzustand (`story.battleState`)
+- Serverseitige v1-Cloud-Blobs (kein Auto-Cutover) — lokal exportieren und importieren
+
+### Weg A — Im Spiel (empfohlen)
+
+1. **v1-Save als JSON sichern** (einmal in v1 bzw. aus dem Browser/Desktop-WebView):
+   - **IndexedDB:** DevTools → Application → IndexedDB → `ArchivDB` → Store `saves` → Eintrag des Slots (z. B. `slot_u…_1` oder `slot_guest_1`) als JSON exportieren/kopieren.  
+     Akzeptiert wird das volle Envelope (`{ key, timestamp, state, … }`) oder nur `state`.
+   - **Cloud-Cache (localStorage):** Key `archiv_cloud_save` → JSON kopieren (`{ userId, timestamp, saveData, … }`).
+   - Optional Tresor: separater IDB-Key `vault_u…` / `account_vault` als `vaultData` / eigene Datei.
+2. **v2 starten**, einloggen (oder Gast), **Einstellungen / Options** öffnen.
+3. **„v1-Spielstand importieren“** → JSON-Datei wählen → Bestätigen.  
+   Der aktuelle v2-Slot wird ersetzt; bei registriertem Account wird danach in die v2-Cloud gepusht.
+
+### Weg B — CLI (Operator / Bulk)
+
+```bash
+# Dry-run: validieren + Kurzinfo
+npm run migrate:v1-saves -- --source path/to/v1-save.json --out path/to/v2-envelope.json
+
+# Schreiben
+npm run migrate:v1-saves -- --source path/to/v1-save.json --out path/to/v2-envelope.json --apply
+
+# Mit separatem Account-Tresor
+npm run migrate:v1-saves -- \
+  --source path/to/v1-save.json \
+  --vault path/to/vault.json \
+  --out path/to/v2-envelope.json \
+  --apply
+```
+
+Akzeptierte Quellformen: innerer State, IDB-Envelope, Cloud-`saveData`, Bundle mit `vaultData`.  
+Details: [`tools/migrate-v1-saves/`](tools/migrate-v1-saves/) · Format: [`docs/save-format.md`](docs/save-format.md) · API: `importV1Save` in `@adv/protocol`.
+
+### Accounts vs. Spielstand
+
+| Migration | Tool / Ort | Inhalt |
+|---|---|---|
+| **Login** | [`tools/migrate-v1-users/`](tools/migrate-v1-users/) | Benutzername + Passwort-Hash |
+| **Fortschritt** | Options-UI oder `migrate:v1-saves` | v1-JSON → v2-Envelope |
+
+Cutover-Runbook: [`docs/cutover-v1.md`](docs/cutover-v1.md)
 
 ---
 
@@ -237,8 +293,9 @@ Spielstand-Import (Phase 9): Options-UI oder [`tools/migrate-v1-saves/`](tools/m
 | [`docs/patch-notes-2.0.0.md`](docs/patch-notes-2.0.0.md) | Spieler-Patch Notes 2.0.0 |
 | [`CHANGELOG.md`](CHANGELOG.md) | Keep a Changelog |
 | [`docs/protocol.md`](docs/protocol.md) | WebSocket-Vertrag |
-| [`docs/save-format.md`](docs/save-format.md) | Save-Envelope |
+| [`docs/save-format.md`](docs/save-format.md) | Save-Envelope + v1-Import |
 | [`docs/cutover-v1.md`](docs/cutover-v1.md) | v1 → v2 Produktions-Cutover |
+| [`tools/migrate-v1-saves/`](tools/migrate-v1-saves/) | CLI v1-JSON → v2-Envelope |
 | [`docs/parity-checklist.md`](docs/parity-checklist.md) | Feature-Parität zu v1 |
 | [`docs/playtest-checklist.md`](docs/playtest-checklist.md) | Manueller Playtest |
 | [`docs/a11y-checklist.md`](docs/a11y-checklist.md) | Accessibility-Basis |
