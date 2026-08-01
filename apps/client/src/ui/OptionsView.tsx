@@ -62,9 +62,9 @@ export function OptionsView({
           <h3 class="options-header">{t("auth.title")}</h3>
           <div class="option-row flex-between">
             <span class="option-label text-muted">
-              {user?.isGuest
-                ? t("auth.guestBadge")
-                : `${t("auth.loggedInAs")}: ${user?.username ?? ""}`}
+              {user !== null && !user.isGuest
+                ? `${t("auth.loggedInAs")}: ${user.username}`
+                : t("auth.login")}
             </span>
             <button
               type="button"
@@ -72,7 +72,9 @@ export function OptionsView({
               data-testid="opt-account"
               onClick={onOpenAccount}
             >
-              {user?.isGuest ? t("auth.login") : t("auth.accountDetails")}
+              {user !== null && !user.isGuest
+                ? t("auth.accountDetails")
+                : t("auth.login")}
             </button>
           </div>
 

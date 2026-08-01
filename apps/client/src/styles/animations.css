@@ -97,4 +97,334 @@
 
 .auth-error-box button:hover {
   opacity: 1 !important;
+}
+
+/* ---- Cinematic screen transitions ---- */
+.screen-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.screen-stage--cover {
+  animation: screenStageSink 0.72s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+}
+
+.screen-stage--reveal {
+  animation: screenStageRise 0.78s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes screenStageSink {
+  0% {
+    opacity: 1;
+    filter: blur(0) brightness(1);
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.15;
+    filter: blur(6px) brightness(0.45);
+    transform: scale(1.03);
+  }
+}
+
+@keyframes screenStageRise {
+  0% {
+    opacity: 0;
+    filter: blur(8px) brightness(1.35);
+    transform: scale(1.04);
+  }
+  55% {
+    opacity: 1;
+    filter: blur(1px) brightness(1.05);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0) brightness(1);
+    transform: scale(1);
+  }
+}
+
+.screen-transition {
+  position: absolute;
+  inset: 0;
+  z-index: 500;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.screen-transition__veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 50% 48%,
+      rgba(197, 160, 89, 0.18) 0%,
+      rgba(5, 5, 8, 0.72) 42%,
+      #000 78%
+    ),
+    linear-gradient(180deg, #000 0%, #07070a 50%, #000 100%);
+}
+
+.screen-transition__burst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140vmax;
+  height: 140vmax;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    rgba(235, 213, 118, 0.14) 18deg,
+    transparent 40deg,
+    rgba(197, 160, 89, 0.1) 90deg,
+    transparent 120deg,
+    rgba(235, 213, 118, 0.12) 200deg,
+    transparent 240deg,
+    rgba(197, 160, 89, 0.1) 300deg,
+    transparent 340deg
+  );
+  mix-blend-mode: screen;
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    #000 8%,
+    rgba(0, 0, 0, 0.55) 40%,
+    transparent 68%
+  );
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    #000 8%,
+    rgba(0, 0, 0, 0.55) 40%,
+    transparent 68%
+  );
+}
+
+.screen-transition__rings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(70vmin, 520px);
+  height: min(70vmin, 520px);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow:
+    0 0 0 1px rgba(197, 160, 89, 0.35),
+    0 0 0 14px rgba(197, 160, 89, 0.08),
+    0 0 0 36px rgba(197, 160, 89, 0.04),
+    0 0 80px rgba(197, 160, 89, 0.2);
+}
+
+.screen-transition__rings::before,
+.screen-transition__rings::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  border: 1px dashed rgba(197, 160, 89, 0.28);
+}
+
+.screen-transition__rings::after {
+  inset: 28%;
+  border-style: solid;
+  border-color: rgba(197, 160, 89, 0.18);
+}
+
+.screen-transition__scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 28%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(235, 213, 118, 0.08) 45%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+}
+
+.screen-transition__label {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  font-size: clamp(0.95rem, 2vw, 1.35rem);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 18px rgba(197, 160, 89, 0.55),
+    0 4px 20px rgba(0, 0, 0, 0.9);
+  white-space: nowrap;
+}
+
+.screen-transition--cover .screen-transition__veil {
+  animation: transitionVeilIn 0.72s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.screen-transition--cover .screen-transition__burst {
+  animation: transitionBurstIn 0.72s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.screen-transition--cover .screen-transition__rings {
+  animation: transitionRingsIn 0.72s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.screen-transition--cover .screen-transition__scan {
+  animation: transitionScanDown 0.72s linear forwards;
+}
+
+.screen-transition--cover .screen-transition__label {
+  animation: transitionLabelIn 0.55s ease 0.12s both;
+}
+
+.screen-transition--reveal .screen-transition__veil {
+  animation: transitionVeilOut 0.78s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.screen-transition--reveal .screen-transition__burst {
+  animation: transitionBurstOut 0.78s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.screen-transition--reveal .screen-transition__rings {
+  animation: transitionRingsOut 0.78s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.screen-transition--reveal .screen-transition__scan {
+  animation: transitionScanUp 0.78s linear forwards;
+}
+
+.screen-transition--reveal .screen-transition__label {
+  animation: transitionLabelOut 0.4s ease forwards;
+}
+
+@keyframes transitionVeilIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes transitionVeilOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes transitionBurstIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(28deg) scale(1);
+  }
+}
+
+@keyframes transitionBurstOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(28deg) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(55deg) scale(1.2);
+  }
+}
+
+@keyframes transitionRingsIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.55);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes transitionRingsOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.35);
+  }
+}
+
+@keyframes transitionScanDown {
+  from {
+    top: -30%;
+    opacity: 0.2;
+  }
+  to {
+    top: 100%;
+    opacity: 0.85;
+  }
+}
+
+@keyframes transitionScanUp {
+  from {
+    top: 40%;
+    opacity: 0.7;
+  }
+  to {
+    top: -35%;
+    opacity: 0;
+  }
+}
+
+@keyframes transitionLabelIn {
+  from {
+    opacity: 0;
+    letter-spacing: 0.5em;
+    transform: translate(-50%, -40%);
+  }
+  to {
+    opacity: 1;
+    letter-spacing: 0.28em;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes transitionLabelOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen-stage--cover,
+  .screen-stage--reveal,
+  .screen-transition__veil,
+  .screen-transition__burst,
+  .screen-transition__rings,
+  .screen-transition__scan,
+  .screen-transition__label,
+  .login-screen__realm,
+  .login-realm-row__signal {
+    animation: none !important;
+  }
+
+  .screen-stage--cover {
+    opacity: 0.35;
+    filter: brightness(0.6);
+  }
+
+  .screen-transition__veil {
+    opacity: 1;
+  }
 }

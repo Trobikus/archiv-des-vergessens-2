@@ -8,7 +8,6 @@ type Props = {
   readonly onContinue: () => void;
   readonly onOptions: () => void;
   readonly onQuit: () => void;
-  readonly onConvertGuest: () => void;
   readonly onOpenLogin: () => void;
 };
 
@@ -18,7 +17,6 @@ export function MenuView({
   onContinue,
   onOptions,
   onQuit,
-  onConvertGuest,
   onOpenLogin,
 }: Props) {
   const state = useStore(session.store);
@@ -39,7 +37,6 @@ export function MenuView({
           i18n={session.i18n}
           ws={session.ws}
           cloud={session.cloud}
-          onConvertGuest={onConvertGuest}
         />
         <button
           type="button"
