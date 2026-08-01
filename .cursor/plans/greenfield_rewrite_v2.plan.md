@@ -44,7 +44,7 @@ todos:
 | Phase | Status | Nachweis |
 |---|---|---|
 | **0 Fundament** | ✅ fertig | Tag `v2-phase0`, PR [#1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1) merged |
-| **1 Kernel + Balancing** | ✅ fertig | Tag `v2-phase1`, Balancing-Snapshot-Gate |
+| **1 Kernel + Balancing** | ✅ fertig | Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2) merged, Balancing-Snapshot-Gate |
 | **2 Vertical Slice** | ✅ fertig | Tag `v2-phase2` (Direct-Merge auf `main`), Klick/Tick/Save/Offline spielbar |
 | 3 Content + Kampf/Story | 🔄 in Arbeit | Content/i18n-Gate, Combat-Sim, Hero/Story-UI |
 | 4 Server + Auth + Cloud | ⬜ offen (Freigabe nötig) | — |
