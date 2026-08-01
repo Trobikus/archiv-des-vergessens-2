@@ -46,7 +46,7 @@ function RuneTicks({
         const inner = index % 3 === 0 ? majorInner : minorInner;
         return (
           <line
-            key={`tick-${index}`}
+            key={`tick-${String(index)}`}
             x1={250 + Math.cos(angle) * outer}
             y1={250 + Math.sin(angle) * outer}
             x2={250 + Math.cos(angle) * inner}
@@ -98,7 +98,7 @@ function MenuRuneRingSvg({
         />
         {glyphs.map((glyph) => (
           <text
-            key={`r1-${glyph.char}-${glyph.x}`}
+            key={`r1-${glyph.char}-${String(glyph.x)}`}
             x={glyph.x}
             y={glyph.y}
             text-anchor="middle"
@@ -145,7 +145,7 @@ function MenuRuneRingSvg({
         />
         {glyphs.map((glyph) => (
           <text
-            key={`r2-${glyph.char}-${glyph.x}`}
+            key={`r2-${glyph.char}-${String(glyph.x)}`}
             x={glyph.x}
             y={glyph.y}
             text-anchor="middle"
@@ -201,7 +201,7 @@ function MenuRuneRingSvg({
         />
         {glyphs.map((glyph) => (
           <text
-            key={`r3-${glyph.char}-${glyph.x}`}
+            key={`r3-${glyph.char}-${String(glyph.x)}`}
             x={glyph.x}
             y={glyph.y}
             text-anchor="middle"
@@ -261,7 +261,7 @@ function MenuRuneRingSvg({
       />
       {glyphs.map((glyph) => (
         <text
-          key={`r4-${glyph.char}-${glyph.x}`}
+          key={`r4-${glyph.char}-${String(glyph.x)}`}
           x={glyph.x}
           y={glyph.y}
           text-anchor="middle"

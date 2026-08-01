@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 
 import type { BootProgress } from "../services/boot-progress";
+import { initDesktopShell } from "../services/desktop-shell";
 import { createGameSession, type GameSession } from "../services/game-session";
 import { AccountBadge } from "./auth/AccountBadge";
 import { LoginView } from "./auth/LoginView";
@@ -384,23 +385,31 @@ export function App() {
   useEffect(() => {
     const next = createGameSession({ useIndexedDb: true });
     const lifecycle = { cancelled: false };
+    const desktop = { dispose: null as (() => void) | null };
+    const isCancelled = (): boolean => lifecycle.cancelled;
 
     void (async () => {
       try {
         await next.boot((progress) => {
-          if (!lifecycle.cancelled) {
+          if (!isCancelled()) {
             setBootProgress(progress);
           }
         });
-        if (lifecycle.cancelled) {
+        if (isCancelled()) {
           next.destroy();
           return;
         }
         setSession(next);
         setBootReady(true);
+        const dispose = await initDesktopShell(next);
+        if (isCancelled()) {
+          dispose();
+          return;
+        }
+        desktop.dispose = dispose;
       } catch (cause) {
         next.destroy();
-        if (!lifecycle.cancelled) {
+        if (!isCancelled()) {
           setError(cause instanceof Error ? cause.message : "Boot failed");
         }
       }
@@ -408,6 +417,7 @@ export function App() {
 
     return () => {
       lifecycle.cancelled = true;
+      desktop.dispose?.();
       next.destroy();
     };
   }, []);

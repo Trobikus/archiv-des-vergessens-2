@@ -169,13 +169,13 @@ describe("phase-2 vertical slice", () => {
     const frames: Array<() => void> = [];
     const previousRaf = globalThis.requestAnimationFrame;
     const previousCaf = globalThis.cancelAnimationFrame;
-    globalThis.requestAnimationFrame = ((cb: FrameRequestCallback) => {
+    globalThis.requestAnimationFrame = (cb: FrameRequestCallback) => {
       frames.push(() => {
         cb(now);
       });
       return frames.length;
-    }) as typeof requestAnimationFrame;
-    globalThis.cancelAnimationFrame = (() => undefined) as typeof cancelAnimationFrame;
+    };
+    globalThis.cancelAnimationFrame = () => undefined;
 
     try {
       const session = createGameSession({
@@ -221,16 +221,8 @@ describe("phase-2 vertical slice", () => {
       session.destroy();
       sessions.length = 0;
     } finally {
-      if (previousRaf !== undefined) {
-        globalThis.requestAnimationFrame = previousRaf;
-      } else {
-        Reflect.deleteProperty(globalThis, "requestAnimationFrame");
-      }
-      if (previousCaf !== undefined) {
-        globalThis.cancelAnimationFrame = previousCaf;
-      } else {
-        Reflect.deleteProperty(globalThis, "cancelAnimationFrame");
-      }
+      globalThis.requestAnimationFrame = previousRaf;
+      globalThis.cancelAnimationFrame = previousCaf;
     }
   });
 });

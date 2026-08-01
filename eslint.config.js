@@ -13,6 +13,7 @@ export default tsConfig(
       "**/coverage/**",
       "**/node_modules/**",
       "apps/desktop/**",
+      "tools/e2e/**",
     ],
   },
   js.configs.recommended,

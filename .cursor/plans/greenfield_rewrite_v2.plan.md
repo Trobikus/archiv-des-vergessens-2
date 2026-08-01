@@ -19,7 +19,7 @@ todos:
     status: pending
   - id: phase-5
     content: "Phase 5: Tauri-Shell + Playwright + Updater 2.0.0"
-    status: pending
+    status: completed
   - id: phase-6
     content: "Phase 6: Feature-Parität Wellen A–F"
     status: pending

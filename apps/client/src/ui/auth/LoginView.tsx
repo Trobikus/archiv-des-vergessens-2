@@ -27,7 +27,7 @@ function LoginRuneMarks() {
     const y2 = 250 + Math.sin(angle) * inner;
     return (
       <line
-        key={`tick-${index}`}
+        key={`tick-${String(index)}`}
         x1={x1}
         y1={y1}
         x2={x2}
@@ -201,8 +201,8 @@ function LoginPortalBackdrop() {
       <div class="login-embers">
         {Array.from({ length: 18 }, (_, index) => (
           <span
-            key={`ember-${index}`}
-            class={`login-ember login-ember--${(index % 6) + 1}`}
+            key={`ember-${String(index)}`}
+            class={`login-ember login-ember--${String((index % 6) + 1)}`}
           />
         ))}
       </div>
@@ -377,7 +377,9 @@ export function LoginView({
             isLoggedIn ? "login-card login-card--realm" : "login-card"
           }
         >
-          {isLoggedIn && currentUser !== null ? (
+          {currentUser !== null &&
+          !currentUser.isGuest &&
+          authState.token !== null ? (
             <div class="login-screen__realm" data-testid="server-select">
               <p class="login-screen__form-heading cinzel text-gold">
                 {t("serverSelect.title")}

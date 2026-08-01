@@ -11,7 +11,7 @@ Greenfield-Rewrite. v1-Referenz: `F:\Max_Projekte\archiv-des-vergessens-1` (read
 
 ## Fortschritt
 
-**Fertig:** Phase 0–3 · **In Arbeit:** Phase 4 (Server + Auth + Cloud)
+**Fertig:** Phase 0–5 · **Als Nächstes:** Phase 6 (Feature-Parität)
 
 | Phase | Status |
 |---|---|
@@ -19,20 +19,23 @@ Greenfield-Rewrite. v1-Referenz: `F:\Max_Projekte\archiv-des-vergessens-1` (read
 | 1 Kernel + Balancing | ✅ fertig (`v2-phase1`, [PR #2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2) merged) |
 | 2 Vertical Slice | ✅ fertig (`v2-phase2`, Direct-Merge) — Klick/Tick/Save/Offline |
 | 3 Content + Kampf/Story | ✅ fertig — Content/i18n-Gate, Combat, Hero/Story-UI |
-| 4 Server + Auth + Cloud | 🔄 in Arbeit |
-| 5–9 | ⬜ offen — Details in [docs/REWRITE_PLAN.md](docs/REWRITE_PLAN.md) |
+| 4 Server + Auth + Cloud | ✅ Code fertig — Playtest/Tag offen |
+| 5 Tauri + E2E | ✅ fertig — Shell, Updater-Config, Playwright-Smoke |
+| 6–9 | ⬜ offen — Details in [docs/REWRITE_PLAN.md](docs/REWRITE_PLAN.md) |
 
 ```bash
 npm install
 npm run gate
 npm run dev:client
+npm run tauri:dev   # Desktop-Shell
+npm run e2e         # Playwright smoke (nach client build + playwright install)
 ```
 
 ## Layout
 
 ```text
 packages/   @adv/protocol @adv/core @adv/sim @adv/content
-apps/       client  server  desktop(Phase 5)
-tools/      gates
+apps/       client  server  desktop
+tools/      gates  e2e
 docs/       adr, parity, playtest, protocol, save-format
 ```
