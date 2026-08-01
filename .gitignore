@@ -20,3 +20,4 @@ tools/e2e/blob-report/
 *.db
 *.db-shm
 *.db-wal
+.secrets/
