@@ -125,6 +125,7 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
     useState<TransitionPhase>("idle");
   const [transitionLabel, setTransitionLabel] = useState("");
   const transitionTimers = useRef<number[]>([]);
+  const transitionTargetRef = useRef<Screen | null>(null);
   const screenRef = useRef(screen);
   const transitionPhaseRef = useRef(transitionPhase);
   screenRef.current = screen;
@@ -143,36 +144,75 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
     clearTransitionTimers();
   }, [clearTransitionTimers]);
 
-  const navigateTo = useCallback(
-    (next: Screen, options?: { readonly instant?: boolean }) => {
-      if (next === screenRef.current) {
-        return;
-      }
-      if (options?.instant === true) {
-        clearTransitionTimers();
-        setTransitionPhase("idle");
-        setScreen(next);
-        return;
-      }
-      if (transitionPhaseRef.current !== "idle") {
-        return;
-      }
-
+  const startAnimatedTransition = useCallback(
+    (next: Screen) => {
       clearTransitionTimers();
+      transitionTargetRef.current = next;
       setTransitionLabel(t(transitionLabelFor(screenRef.current, next)));
       setTransitionPhase("cover");
+      transitionPhaseRef.current = "cover";
 
       const swapId = window.setTimeout(() => {
-        setScreen(next);
+        const target = transitionTargetRef.current ?? next;
+        setScreen(target);
+        screenRef.current = target;
         setTransitionPhase("reveal");
+        transitionPhaseRef.current = "reveal";
         const idleId = window.setTimeout(() => {
           setTransitionPhase("idle");
+          transitionPhaseRef.current = "idle";
+          transitionTargetRef.current = null;
         }, TRANSITION_REVEAL_MS);
         transitionTimers.current.push(idleId);
       }, TRANSITION_COVER_MS);
       transitionTimers.current.push(swapId);
     },
     [clearTransitionTimers, t],
+  );
+
+  const navigateTo = useCallback(
+    (next: Screen, options?: { readonly instant?: boolean }) => {
+      if (options?.instant === true) {
+        clearTransitionTimers();
+        transitionTargetRef.current = null;
+        setTransitionPhase("idle");
+        transitionPhaseRef.current = "idle";
+        setScreen(next);
+        screenRef.current = next;
+        return;
+      }
+
+      const phase = transitionPhaseRef.current;
+
+      if (phase === "idle") {
+        if (next === screenRef.current) {
+          return;
+        }
+        startAnimatedTransition(next);
+        return;
+      }
+
+      if (phase === "cover") {
+        // Veil is up — retarget the pending swap instead of dropping the nav.
+        if (next === screenRef.current) {
+          clearTransitionTimers();
+          transitionTargetRef.current = null;
+          setTransitionPhase("idle");
+          transitionPhaseRef.current = "idle";
+          return;
+        }
+        transitionTargetRef.current = next;
+        setTransitionLabel(t(transitionLabelFor(screenRef.current, next)));
+        return;
+      }
+
+      // Reveal: screen already swapped — restart toward the new destination.
+      if (next === screenRef.current) {
+        return;
+      }
+      startAnimatedTransition(next);
+    },
+    [clearTransitionTimers, startAnimatedTransition, t],
   );
 
   const askConfirm = useCallback(
