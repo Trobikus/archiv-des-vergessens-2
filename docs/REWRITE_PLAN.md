@@ -16,7 +16,7 @@ todos:
     status: completed
   - id: phase-4
     content: "Phase 4: Modularer Server + Auth + Cloud-Sync (Freigabe erteilt)"
-    status: in_progress
+    status: completed
   - id: phase-5
     content: "Phase 5: Tauri-Shell + Playwright + Updater 2.0.0"
     status: completed
@@ -28,7 +28,7 @@ todos:
     status: completed
   - id: phase-8
     content: "Phase 8: Härtung und Release 2.0.0"
-    status: pending
+    status: completed
   - id: phase-9
     content: "Phase 9 (optional): v1-Save-Importer"
     status: pending
@@ -38,8 +38,8 @@ todos:
 
 ## Fortschritt (Stand 2026-08-01)
 
-**Fertig:** Phase 0–7.
-**Als Nächstes:** Phase 8 — Härtung → Release 2.0.0.
+**Fertig:** Phase 0–8 (Release 2.0.0 Härtung).
+**Als Nächstes:** optional Phase 9 — v1-Save-Importer; Tag `v2.0.0` / Playtest.
 
 | Phase | Status | Nachweis |
 |---|---|---|
@@ -51,7 +51,7 @@ todos:
 | **5 Tauri + E2E + Updater** | ✅ fertig | Desktop-Shell, Playwright, Updater-Pfad |
 | **6 Feature-Parität A–F** | ✅ fertig | Quests…Tutorial; Hub-Tabs |
 | **7 Social/Live** | ✅ Code fertig | Chat/LB Servermodule + Freunde/Clan lokal; Playtest/Tag offen |
-| **8 Härtung → 2.0.0** | ⬜ | Perf, a11y, Patch Notes, Cutover |
+| **8 Härtung → 2.0.0** | ✅ Code fertig | Perf-Budgets, DomPool, a11y-Gate, CHANGELOG, Updater-Rollout, Cutover-Docs |
 | **9 v1-Importer** | ⬜ optional | |
 
 ### Was in Phase 0–1 geliefert wurde
@@ -213,7 +213,7 @@ Erledigt:
 - [x] Client `desktop-shell.ts` + `withGlobalTauri`
 - [x] Playwright-Smoke in `tools/e2e/` (intro → login, offline)
 - [x] Gate: konditionales `cargo clippy -D warnings` + e2e; CI-Jobs `desktop` + `e2e`
-- [x] Version: App `2.0.0`, Root/Cloud `2.0.0-phase5`
+- [x] Version: App/Root/Cloud `2.0.0` (Phase-8 Cutover)
 - [ ] Manueller `tauri:dev` Playtest + Tag `v2-phase5`
 
 ### Phase 6 — Feature-Parität Wellen A–F ✅
@@ -235,8 +235,17 @@ Erledigt:
 - [x] Save-Slices `friends` / `clan` / `leaderboard` (optional mit Defaults)
 - [x] Clan-Offline-Produktion; Freunde/Clan lokal wie v1
 
-### Phase 8 — Härtung → Release 2.0.0 (4–6 Tage) ⬜
+### Phase 8 — Härtung → Release 2.0.0 (4–6 Tage) ✅
 Perf-Budgets, Leak-Tests, a11y-Basis, Patch Notes, Updater-Rollout, v1-Cutover.
+
+Erledigt:
+- [x] `PERFORMANCE_BUDGETS` + `FrameBudgetMonitor` (Degradation bei >32 ms × 5)
+- [x] `ObjectPool` / `DomPool` + FloatingDamage-Overlay; Leak-Tests
+- [x] a11y-Basis-Checkliste + Gate `a11y-basis` + Playwright `a11y.spec.ts`
+- [x] `CHANGELOG.md` + `docs/patch-notes-2.0.0.md`
+- [x] Updater: `createUpdaterArtifacts`, v2-Endpoint, `release.yml`, Client-Check
+- [x] Cutover-Runbook `docs/cutover-v1.md`; Versionen → `2.0.0`
+- [ ] Manueller Playtest + Tag `v2.0.0` / `v2-phase8`
 
 ### Phase 9 (optional) — v1-Save-Importer ⬜
 Nach Release: Adapter v1-JSON → v2-Envelope.
@@ -254,7 +263,7 @@ graph LR
   P4 --> P5["P5 Tauri E2E DONE"]
   P5 --> P6["P6 Paritaet A-F DONE"]
   P6 --> P7["P7 Social DONE"]
-  P7 --> P8["P8 Release 2.0.0 ⬜"]
+  P7 --> P8["P8 Release 2.0.0 DONE"]
   P8 -.optional.-> P9["P9 v1 Importer ⬜"]
 ```
 
@@ -275,4 +284,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 8 — Härtung → Release 2.0.0.
+Release-Tag `v2.0.0` nach Playtest; optional Phase 9 (v1-Save-Importer).

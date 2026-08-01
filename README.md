@@ -2,7 +2,7 @@
 
 **Der Mneme-Bund** — Idle-/Progression-RPG als TypeScript-Monorepo (Client, Server, Desktop).
 
-Version `2.0.0` (Greenfield-Rewrite). Aktueller Stand: **Phase 0–7 abgeschlossen**. Als Nächstes: Release-Härtung (Phase 8).
+Version `2.0.0` (Greenfield-Rewrite). Aktueller Stand: **Phase 0–8 abgeschlossen** (Härtung / Release-Pfad). Optional danach: v1-Save-Importer (Phase 9).
 
 ---
 
@@ -102,11 +102,11 @@ Details: [docs/REWRITE_PLAN.md](docs/REWRITE_PLAN.md) · [docs/adr/](docs/adr/)
 | 4 Server + Auth + Cloud | ✅ | WS-Auth, Cloud-Sync, Migrationstool |
 | 5 Tauri + E2E | ✅ | Desktop-Shell, Updater-Config, Playwright |
 | 6 Feature-Parität A–F | ✅ | Hub, Quests, Forge, Talente, Story, Tutorial |
-| 7 Social/Live | ⬜ | Chat, Freunde, Clan, Leaderboard |
-| 8 Release 2.0.0 | ⬜ | Härtung, Updater-Rollout |
+| 7 Social/Live | ✅ | Chat, Freunde, Clan, Leaderboard |
+| 8 Release 2.0.0 | ✅ | Perf, a11y, Patch Notes, Updater-Rollout |
 | 9 v1-Save-Importer | ⬜ | Optional nach Release |
 
-Checklisten: [parity](docs/parity-checklist.md) · [playtest](docs/playtest-checklist.md)
+Checklisten: [parity](docs/parity-checklist.md) · [playtest](docs/playtest-checklist.md) · [a11y](docs/a11y-checklist.md) · [cutover](docs/cutover-v1.md)
 
 ---
 

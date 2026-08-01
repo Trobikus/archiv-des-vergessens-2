@@ -1,0 +1,61 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build signed desktop + updater feed
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop/src-tauri -> target
+
+      - run: npm ci
+
+      - name: Quality gate (no clippy/e2e — covered by ci.yml)
+        run: npm run gate
+        env:
+          SKIP_CLIPPY: "1"
+          SKIP_E2E: "1"
+
+      - name: Build Tauri app + updater artifacts
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+        with:
+          projectPath: apps/desktop
+          tagName: ${{ github.ref_name }}
+          releaseName: "Archiv des Vergessens ${{ github.ref_name }}"
+          releaseBody: |
+            ## Archiv des Vergessens ${{ github.ref_name }}
+
+            Desktop-Build mit signiertem Updater-Feed (`latest.json`).
+
+            Siehe [CHANGELOG.md](../blob/main/CHANGELOG.md) und
+            [docs/patch-notes-2.0.0.md](../blob/main/docs/patch-notes-2.0.0.md).
+          releaseDraft: true
+          prerelease: false
+          includeUpdaterJson: true

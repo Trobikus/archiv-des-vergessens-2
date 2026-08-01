@@ -142,7 +142,12 @@ export function StoryPanel({ session }: Props) {
 
       {battle !== null ? (
         <div class="battle" data-testid="battle-hud">
-          <FloatingDamageOverlay texts={battle.floatingTexts} />
+          <FloatingDamageOverlay
+            texts={battle.floatingTexts}
+            disabled={
+              !state.settings.floatingTextEnabled || state.meta.visualDegraded
+            }
+          />
           <p class="game__meta">
             Held {String(battle.heroHp)}/{String(battle.heroMaxHp)} ·{" "}
             {battle.boss.name} {String(battle.bossHp)}/

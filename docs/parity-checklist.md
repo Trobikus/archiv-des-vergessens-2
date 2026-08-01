@@ -18,7 +18,7 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | Cloud manager | `js/core/persistence/cloud-manager.js` | 4 | [x] CloudSyncService |
 | Settings | `js/core/settings.js` | 6F | [x] OptionsView (locale/audio/particles/floatingText/autosave/account/reset) |
 | Security helpers | `js/core/security.js` | 4 | [x] PBKDF2 + sanitize server-side |
-| Object pool | `js/core/pool.js` | 8 | [ ] |
+| Object pool | `js/core/pool.js` | 8 | [x] `ObjectPool` + client `DomPool` / FloatingDamage |
 
 ## Services
 

@@ -1,5 +1,10 @@
 import { STORY_BOSSES, type StoryBoss } from "@adv/content";
-import { createRng, type EventBus, type Store } from "@adv/core";
+import {
+  PERFORMANCE_BUDGETS,
+  createRng,
+  type EventBus,
+  type Store,
+} from "@adv/core";
 import {
   absorbDamage,
   calculateHealAmount,
@@ -68,7 +73,8 @@ function pushLog(
   entry: CombatLogEntry,
 ): CombatLogEntry[] {
   const next = [...log, entry];
-  return next.length > 25 ? next.slice(next.length - 25) : next;
+  const max = PERFORMANCE_BUDGETS.maxCombatLog;
+  return next.length > max ? next.slice(next.length - max) : next;
 }
 
 function pushFloat(
@@ -81,7 +87,8 @@ function pushFloat(
     ...texts,
     { id: `ft_${String(floatingSeq)}`, text, kind },
   ];
-  return next.length > 12 ? next.slice(next.length - 12) : next;
+  const max = PERFORMANCE_BUDGETS.maxFloatingTexts;
+  return next.length > max ? next.slice(next.length - max) : next;
 }
 
 export function createStoryService(
