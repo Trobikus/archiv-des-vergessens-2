@@ -13,6 +13,7 @@ export default tsConfig(
       "**/coverage/**",
       "**/node_modules/**",
       "apps/desktop/**",
+      "apps/launcher/**",
       "tools/e2e/**",
     ],
   },

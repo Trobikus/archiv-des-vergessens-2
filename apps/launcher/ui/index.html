@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https:"
+  />
+  <title>Archiv des Vergessens — Siegel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="launcher.css" />
+</head>
+<body>
+  <div class="seal-frame">
+    <div class="drag-zone" data-tauri-drag-region></div>
+    <button id="close-btn" class="close-btn" type="button" title="Schließen" aria-label="Schließen">
+      ×
+    </button>
+
+    <div class="abyss" aria-hidden="true">
+      <div class="fog fog-a"></div>
+      <div class="fog fog-b"></div>
+      <div class="vignette"></div>
+      <svg class="rune-ring" viewBox="0 0 200 200" aria-hidden="true">
+        <circle cx="100" cy="100" r="88" />
+        <circle cx="100" cy="100" r="72" />
+        <circle cx="100" cy="100" r="48" class="inner" />
+        <g class="marks">
+          <path d="M100 12 L104 28 L96 28 Z" />
+          <path d="M188 100 L172 104 L172 96 Z" />
+          <path d="M100 188 L96 172 L104 172 Z" />
+          <path d="M12 100 L28 96 L28 104 Z" />
+          <path d="M158 42 L148 52 L142 44 Z" />
+          <path d="M42 158 L52 148 L58 156 Z" />
+          <path d="M158 158 L148 148 L156 142 Z" />
+          <path d="M42 42 L52 52 L44 58 Z" />
+        </g>
+      </svg>
+      <div id="dust-container" class="dust-container"></div>
+    </div>
+
+    <main class="portal">
+      <p class="studio">Grimoire Interactive</p>
+      <h1 class="brand">Archiv des Vergessens</h1>
+      <p class="tagline">Der Mneme-Bund · Siegel-Portal</p>
+
+      <button id="action-btn" class="seal-btn" type="button">Prüfe das Siegel…</button>
+
+      <div id="progress-container" class="progress-container" hidden>
+        <div id="progress-label" class="progress-label">Hole das Archiv…</div>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <div id="error-container" class="error-container" hidden>
+        <p id="error-message" class="error-message">Das Siegel ließ sich nicht prüfen.</p>
+        <div class="error-actions">
+          <button id="retry-btn" class="seal-btn" type="button">Erneut versuchen</button>
+          <button id="offline-btn" class="seal-btn seal-btn-muted" type="button">Offline eintreten</button>
+        </div>
+      </div>
+
+      <p id="status-toast" class="status-toast" role="status" aria-live="polite"></p>
+      <p id="version-indicator" class="version-indicator"></p>
+    </main>
+  </div>
+
+  <script src="launcher.js"></script>
+</body>
+</html>

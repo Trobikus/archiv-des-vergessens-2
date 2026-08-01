@@ -8,7 +8,9 @@ Procedure for switching production from `archiv-des-vergessens` (v1) to
 1. `npm run gate` green on the release commit
 2. Desktop updater endpoint points at
    `https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest/download/latest.json`
-3. Signing secrets (`TAURI_PRIVATE_KEY`, `TAURI_KEY_PASSWORD`) available in GitHub Actions
+3. Signing secrets available in GitHub Actions:
+   - `TAURI_PRIVATE_KEY`, `TAURI_KEY_PASSWORD` (NSIS / `latest.json`)
+   - `ED25519_PRIVATE_KEY` (portable ZIP hex key — same as v1 launcher)
 4. Fresh backup of the live v1 `database.db`
 
 ## Account migration
@@ -34,9 +36,13 @@ Users must re-login (`sessionToken` cleared).
 ## Desktop updater cutover
 
 1. Tag `v2.0.0` (or next SemVer) → `release.yml` builds NSIS + `latest.json`
+   **and** portable `archiv-des-vergessens.zip` / `.sig` / `ArchivDesVergessens-Launcher.exe`
 2. Publish the GitHub Release (draft → public)
-3. Existing v2 clients poll the v2 feed; v1 clients keep using the v1 feed until
-   players install the v2 build manually / via launcher messaging
+3. Point players at the **v2 Siegel-Portal launcher** (`ArchivDesVergessens-Launcher.exe`)
+   from the v2 release (or announce the new download URL). v1 clients keep using the
+   v1 feed until they install via the new launcher / NSIS setup.
+4. Portable installs land in `%APPDATA%\ArchivDesVergessens\app\` (same folder as v1
+   portable) and are updated by the launcher, not by the in-app NSIS updater.
 
 ## Server cutover
 

@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   release:
-    name: Build signed desktop + updater feed
+    name: Build signed desktop + portable launcher
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,7 +29,9 @@ jobs:
       - name: Rust Cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: apps/desktop/src-tauri -> target
+          workspaces: |
+            apps/desktop/src-tauri -> target
+            apps/launcher/src-tauri -> target
 
       - run: npm ci
 
@@ -52,10 +54,63 @@ jobs:
           releaseBody: |
             ## Archiv des Vergessens ${{ github.ref_name }}
 
-            Desktop-Build mit signiertem Updater-Feed (`latest.json`).
+            ### Installation (empfohlen)
+            1. Lade **`ArchivDesVergessens-Launcher.exe`** herunter und starte sie.
+            2. Der Launcher holt das signierte Portable-Paket, entsiegelt es und startet das Spiel.
+
+            ### Alternativen
+            - Portable: `archiv-des-vergessens.zip` (+ `.sig`)
+            - Installer / In-App-Updater: NSIS-Setup + `latest.json`
 
             Siehe [CHANGELOG.md](../blob/main/CHANGELOG.md) und
             [docs/patch-notes-2.0.0.md](../blob/main/docs/patch-notes-2.0.0.md).
           releaseDraft: true
           prerelease: false
           includeUpdaterJson: true
+
+      - name: Create portable game ZIP
+        shell: pwsh
+        run: |
+          $exe = "apps/desktop/src-tauri/target/release/adv-desktop.exe"
+          if (-not (Test-Path $exe)) { throw "Portable EXE fehlt: $exe" }
+          $stage = "apps/desktop/src-tauri/target/release/portable-stage"
+          New-Item -ItemType Directory -Force -Path $stage | Out-Null
+          Copy-Item $exe (Join-Path $stage "ArchivDesVergessens.exe") -Force
+          $zip = "apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip"
+          if (Test-Path $zip) { Remove-Item $zip -Force }
+          Compress-Archive -Path (Join-Path $stage "ArchivDesVergessens.exe") -DestinationPath $zip -Force
+
+      - name: Sign portable ZIP
+        shell: pwsh
+        env:
+          ED25519_PRIVATE_KEY: ${{ secrets.ED25519_PRIVATE_KEY }}
+        run: |
+          if (-not $env:ED25519_PRIVATE_KEY) {
+            throw "Secret ED25519_PRIVATE_KEY fehlt (Hex-Key für portable ZIP-Signatur)."
+          }
+          [IO.File]::WriteAllText("private.key", $env:ED25519_PRIVATE_KEY.Trim())
+          node tools/sign_release.cjs apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip
+          Remove-Item private.key -Force
+
+      - name: Build Siegel-Portal launcher
+        run: npm run launcher:build
+
+      - name: Prepare launcher EXE name
+        shell: pwsh
+        run: |
+          $src = "apps/launcher/src-tauri/target/release/archiv-launcher.exe"
+          $dst = "apps/launcher/src-tauri/target/release/ArchivDesVergessens-Launcher.exe"
+          if (-not (Test-Path $src)) { throw "Launcher EXE fehlt: $src" }
+          Copy-Item $src $dst -Force
+
+      - name: Upload portable + launcher assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          draft: true
+          files: |
+            apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip
+            apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip.sig
+            apps/launcher/src-tauri/target/release/ArchivDesVergessens-Launcher.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

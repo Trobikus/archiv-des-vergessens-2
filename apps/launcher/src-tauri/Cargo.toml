@@ -1,0 +1,21 @@
+[package]
+name = "archiv-launcher"
+version = "2.0.0"
+description = "Archiv des Vergessens — Siegel-Portal Launcher"
+authors = ["Grimoire Interactive"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "stream", "rustls-tls"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+futures-util = "0.3"
+zip = "2.2"
+dirs = "5.0"
+ed25519-dalek = "2.1"
+hex = "0.4.3"

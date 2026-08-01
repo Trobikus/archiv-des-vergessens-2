@@ -1,0 +1,10 @@
+[[permission]]
+identifier = "allow-launcher"
+description = "Allows Siegel-Portal launcher IPC commands"
+commands.allow = [
+  "get_installed_game_version",
+  "check_github_release",
+  "download_and_extract_game",
+  "launch_installed_game",
+  "close_launcher"
+]

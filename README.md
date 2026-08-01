@@ -44,6 +44,7 @@ Eine Persistenzstrategie. Eine Protokollschicht. Klare Grenzen.
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
+│  apps/launcher (Tauri 2) — Siegel-Portal · portable ZIP     │
 │  apps/desktop  (Tauri 2)  — Fenster · Updater · quit_app    │
 │         └─ webview ──────────────────────────────────────┐  │
 │  apps/client   (Preact + Vite)  — UI · Session · Offline │  │
@@ -79,6 +80,7 @@ Details: [`docs/REWRITE_PLAN.md`](docs/REWRITE_PLAN.md) · [`docs/adr/`](docs/ad
 | 🎮 Spiel-Client | `@adv/client` | Preact-UI, Game-Session, Save / Offline |
 | 🛰️ Live-Server | `@adv/server` | Auth, Cloud-Sync, Chat, Leaderboard |
 | 🪟 Desktop-Shell | `@adv/desktop` | Tauri 2, Updater, Quit |
+| 🔏 Launcher | `@adv/launcher` | Siegel-Portal, portable ZIP, Ed25519 |
 | 🧮 Simulation | `@adv/sim` | Balancing, Combat- / Idle-Mathe |
 | ⚙️ Kernel | `@adv/core` | Store, Events, Ticker, DI, Pools |
 | 📡 Protokoll | `@adv/protocol` | WS-Events, Validierung, Save-Typen |
@@ -93,7 +95,8 @@ archiv-des-vergessens-2/
 ├─ apps/
 │  ├─ client/          Preact-Spielclient (Vite)
 │  ├─ server/          Modularer WebSocket-Server
-│  └─ desktop/         Tauri-2-Shell
+│  ├─ desktop/         Tauri-2-Shell
+│  └─ launcher/        Siegel-Portal (portable)
 ├─ packages/
 │  ├─ core/            Runtime-Kernel
 │  ├─ sim/             Spielsimulation & Balancing
@@ -216,13 +219,14 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 |---|---|
 | **App-ID** | `com.grimoire.archivdesvergessens` (aus v1 portiert) |
 | **Feed** | `…/archiv-des-vergessens-2/releases/latest/download/latest.json` |
-| **Artifacts** | Signierte NSIS-Bundles via `createUpdaterArtifacts` |
+| **Artifacts** | NSIS + `latest.json` (In-App-Updater) · portable ZIP + `.sig` · `ArchivDesVergessens-Launcher.exe` |
 | **Workflow** | [`.github/workflows/release.yml`](.github/workflows/release.yml) |
 | **CI** | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — Gate + Desktop-Job |
+| **Launcher** | [`apps/launcher`](apps/launcher) — lokal: `npm run launcher:dev` / Release: `npm run launcher:build` |
 
 > **Cutover-Hinweis:** Cloud-Spielstände aus v1 werden serverseitig **nicht** automatisch übernommen.  
 > Accounts (Benutzername + PBKDF2-Passwort) können migriert werden — Spieler melden sich neu an.  
-> v1-Clients bleiben auf dem v1-Updater-Feed, bis der v2-Build manuell installiert wird.  
+> Spieler wechseln über den **v2-Launcher** (`ArchivDesVergessens-Launcher.exe`) oder den NSIS-Installer.  
 > Lokale v1-Spielstände kannst du über den Phase-9-Importer weiternutzen (siehe unten).
 
 Account-Migration: [`tools/migrate-v1-users/`](tools/migrate-v1-users/)
