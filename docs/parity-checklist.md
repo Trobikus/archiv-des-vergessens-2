@@ -36,7 +36,7 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | daily-reward-service | 6A | [ ] |
 | forge-service | 6B | [ ] |
 | crafting-service | 6B | [ ] |
-| gather-service | 6B | [ ] |
+| gather-service | 2 / 6B | [x] Click/Upgrade Slice (Zones/Forge später 6B) |
 | talent-service | 6C | [ ] |
 | challenge-service | 6C | [ ] |
 | library-service | 6C | [ ] |

@@ -13,12 +13,15 @@ export function main(): void {
   log.info(bootBanner());
 }
 
-function isExecutedDirectly(): boolean {
-  const entry = process.argv[1];
-  if (entry === undefined) {
+/** True when this module is the process entrypoint (not imported by tests). */
+export function isExecutedDirectly(
+  entryPath: string | undefined = process.argv[1],
+  moduleUrl: string = import.meta.url,
+): boolean {
+  if (entryPath === undefined) {
     return false;
   }
-  return import.meta.url === pathToFileURL(entry).href;
+  return moduleUrl === pathToFileURL(entryPath).href;
 }
 
 if (isExecutedDirectly()) {
