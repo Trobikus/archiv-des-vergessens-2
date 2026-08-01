@@ -96,8 +96,6 @@ export function IntroView({
         window.clearInterval(pollId);
       }
     };
-    // beginExit is stable enough via refs; mount-once timer.
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- full-length intro timer
   }, []);
 
   useEffect(() => {

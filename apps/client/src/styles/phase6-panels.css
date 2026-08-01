@@ -1,0 +1,127 @@
+/* Phase 6 — Wave D/E/F panels (Abyss & Gold) */
+
+.phase6-panel {
+  margin-top: 0.5rem;
+}
+
+.phase6-panel__text {
+  margin: 0.65rem 0 0;
+  color: var(--color-text-main);
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.phase6-panel__message {
+  margin: 0.65rem 0 0;
+  padding: 0.55rem 0.75rem;
+  border-left: 3px solid var(--color-gold);
+  background: rgba(197, 160, 89, 0.08);
+  color: var(--color-gold-hover);
+}
+
+.phase6-dialog {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(197, 160, 89, 0.15);
+}
+
+.phase6-vault-grid {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+}
+
+.phase6-vault-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  gap: 0.45rem;
+  align-items: center;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid rgba(197, 160, 89, 0.12);
+  border-radius: var(--border-radius-md);
+  background: rgba(0, 0, 0, 0.28);
+  font-size: 0.9rem;
+}
+
+.phase6-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  gap: 0.65rem;
+  margin: 0.75rem 0 0;
+}
+
+.phase6-stats div {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid rgba(197, 160, 89, 0.15);
+  border-radius: var(--border-radius-md);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.phase6-stats dt {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.phase6-stats dd {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-header);
+  font-size: 1.15rem;
+  color: var(--color-gold-hover);
+}
+
+.option-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.option-toggle input {
+  accent-color: var(--color-gold);
+}
+
+.tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.tutorial-overlay__highlight {
+  position: fixed;
+  border: 2px solid var(--color-gold);
+  border-radius: var(--border-radius-md);
+  box-shadow:
+    0 0 0 9999px rgba(0, 0, 0, 0.55),
+    0 0 24px var(--color-gold-glow);
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.tutorial-overlay__card {
+  position: fixed;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  width: min(520px, calc(100% - 2rem));
+  padding: 1.25rem 1.35rem;
+  pointer-events: auto;
+  animation: fadeInEffect 0.35s ease both;
+}
+
+.tutorial-overlay__text {
+  margin: 0.65rem 0 0;
+  color: var(--color-text-main);
+  line-height: 1.5;
+}
+
+@media (max-width: 520px) {
+  .phase6-vault-row {
+    grid-template-columns: 1fr;
+  }
+}

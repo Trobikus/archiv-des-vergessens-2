@@ -9,6 +9,7 @@ import { GameView } from "./GameView";
 import { IntroView } from "./IntroView";
 import { OptionsView } from "./OptionsView";
 import { PcFrame } from "./PcFrame";
+import { TutorialUI } from "./tutorial/TutorialUI";
 import { useStore } from "./useStore";
 
 type Screen = "login" | "options" | "characterSelect" | "game" | "convert";
@@ -255,6 +256,9 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
               if (!state.hero.created) {
                 return;
               }
+              if (!state.tutorial.finished) {
+                session.tutorial.maybeAutoStart();
+              }
               setScreen("game");
             }}
             onBack={() => {
@@ -276,7 +280,7 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
       break;
     case "game":
       body = (
-        <>
+        <div class="game-screen" data-testid="game-screen">
           <div class="session-chrome">
             <AccountBadge
               auth={session.auth}
@@ -302,7 +306,8 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
             </button>
           </div>
           <GameView session={session} />
-        </>
+          <TutorialUI session={session} />
+        </div>
       );
       break;
     default:

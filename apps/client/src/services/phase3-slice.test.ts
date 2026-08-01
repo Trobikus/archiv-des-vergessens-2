@@ -146,7 +146,7 @@ describe("phase-3 content combat story slice", () => {
     const { createStoryService } = await import("./story-service");
     const { createHeroService } = await import("./hero-service");
     const hero = createHeroService(defeatSession.store);
-    const forced = createStoryService(defeatSession.store, hero, () => 0.99);
+    const forced = createStoryService(defeatSession.store, hero, {}, () => 0.99);
     expect(forced.startBossFight()).toBe(true);
     defeatSession.store.setState((prev) => {
       const battle = prev.story.battle;

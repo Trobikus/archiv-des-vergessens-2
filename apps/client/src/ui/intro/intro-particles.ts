@@ -253,13 +253,13 @@ export function startIntroParticles(
         p.y += (p.vy + Math.sin(p.wobble) * 0.18) * dt;
         if (p.alpha > 0.004) {
           ctx.globalAlpha = p.alpha;
-          ctx.font = `${p.scale > 0.8 ? 14 : 9}px serif`;
+          ctx.font = `${String(p.scale > 0.8 ? 14 : 9)}px serif`;
           ctx.fillStyle = "#c5a059";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
           ctx.fillText(p.rune, p.x, p.y);
         }
-      } else if (p.type === "spark") {
+      } else {
         p.prevX = p.x;
         p.prevY = p.y;
         p.x += p.vx * dt;

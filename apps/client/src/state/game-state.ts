@@ -1,14 +1,38 @@
 import {
+  createDefaultAccountVaultSave,
+  createDefaultAchievementsSave,
+  createDefaultChallengesSave,
+  createDefaultCodexSave,
+  createDefaultCraftingSave,
+  createDefaultForgeSave,
   createDefaultHeroSave,
+  createDefaultLibrarySave,
+  createDefaultQuestsSave,
+  createDefaultRelicHuntSave,
   createDefaultSettingsSave,
+  createDefaultStoryBranchSave,
   createDefaultStorySave,
+  createDefaultTalentsSave,
+  createDefaultTutorialSave,
+  type AccountVaultSave,
+  type AchievementsSave,
+  type ChallengesSave,
+  type CodexSave,
+  type CraftingSave,
   type EquipmentSave,
+  type ForgeSave,
   type HeroSave,
   type ItemSave,
+  type LibrarySave,
   type Phase2SavePayload,
+  type QuestsSave,
+  type RelicHuntSave,
   type SettingsSave,
   type StatBlockSave,
+  type StoryBranchSave,
   type StorySave,
+  type TalentsSave,
+  type TutorialSave,
 } from "@adv/protocol";
 import type { Locale, StoryBoss } from "@adv/content";
 
@@ -28,6 +52,11 @@ export type ResourcesState = {
   readonly mnemeFragmente: bigint;
   readonly totalMnemeFragmente: bigint;
   readonly ewigeMneme: bigint;
+  readonly relics: bigint;
+  readonly totalRelics: bigint;
+  readonly artifacts: bigint;
+  readonly memoryDust: bigint;
+  readonly catalyst: bigint;
 };
 
 export type OfflineReport = {
@@ -42,6 +71,24 @@ export type EquipmentState = EquipmentSave;
 export type HeroState = HeroSave;
 export type StoryMetaState = StorySave;
 export type SettingsState = SettingsSave;
+export type QuestsState = QuestsSave;
+export type AchievementsState = AchievementsSave;
+export type ForgeState = ForgeSave;
+export type CraftingState = CraftingSave;
+export type LibraryState = LibrarySave;
+export type TalentsState = TalentsSave;
+export type ChallengesState = ChallengesSave;
+export type CodexState = CodexSave;
+export type StoryBranchState = StoryBranchSave;
+export type RelicHuntState = RelicHuntSave;
+export type AccountVaultState = {
+  readonly particles: bigint;
+  readonly relics: bigint;
+  readonly artifacts: bigint;
+  readonly memoryDust: bigint;
+  readonly items: readonly ItemSave[];
+};
+export type TutorialState = TutorialSave;
 
 export type CombatLogEntry = {
   readonly text: string;
@@ -91,6 +138,18 @@ export type GameState = {
     readonly battle: BattleState | null;
   };
   readonly settings: SettingsState;
+  readonly quests: QuestsState;
+  readonly achievements: AchievementsState;
+  readonly forge: ForgeState;
+  readonly crafting: CraftingState;
+  readonly library: LibraryState;
+  readonly talents: TalentsState;
+  readonly challenges: ChallengesState;
+  readonly codex: CodexState;
+  readonly storyBranch: StoryBranchState;
+  readonly relicHunt: RelicHuntState;
+  readonly accountVault: AccountVaultState;
+  readonly tutorial: TutorialState;
   readonly meta: {
     readonly lastActiveAt: number;
     readonly lastSavedAt: number | null;
@@ -98,6 +157,26 @@ export type GameState = {
     readonly offlineReport: OfflineReport | null;
   };
 };
+
+function accountVaultFromSave(vault: AccountVaultSave): AccountVaultState {
+  return {
+    particles: BigInt(vault.particles),
+    relics: BigInt(vault.relics),
+    artifacts: BigInt(vault.artifacts),
+    memoryDust: BigInt(vault.memoryDust),
+    items: vault.items,
+  };
+}
+
+function accountVaultToSave(vault: AccountVaultState): AccountVaultSave {
+  return {
+    particles: vault.particles.toString(),
+    relics: vault.relics.toString(),
+    artifacts: vault.artifacts.toString(),
+    memoryDust: vault.memoryDust.toString(),
+    items: [...vault.items],
+  };
+}
 
 export function createInitialGameState(now = Date.now()): GameState {
   return {
@@ -107,6 +186,11 @@ export function createInitialGameState(now = Date.now()): GameState {
       mnemeFragmente: 0n,
       totalMnemeFragmente: 0n,
       ewigeMneme: 0n,
+      relics: 0n,
+      totalRelics: 0n,
+      artifacts: 0n,
+      memoryDust: 0n,
+      catalyst: 0n,
     },
     idleGenerators: {
       gedankenArchiv: {
@@ -128,6 +212,18 @@ export function createInitialGameState(now = Date.now()): GameState {
       battle: null,
     },
     settings: createDefaultSettingsSave(),
+    quests: createDefaultQuestsSave(),
+    achievements: createDefaultAchievementsSave(),
+    forge: createDefaultForgeSave(),
+    crafting: createDefaultCraftingSave(),
+    library: createDefaultLibrarySave(),
+    talents: createDefaultTalentsSave(),
+    challenges: createDefaultChallengesSave(),
+    codex: createDefaultCodexSave(),
+    storyBranch: createDefaultStoryBranchSave(),
+    relicHunt: createDefaultRelicHuntSave(),
+    accountVault: accountVaultFromSave(createDefaultAccountVaultSave()),
+    tutorial: createDefaultTutorialSave(),
     meta: {
       lastActiveAt: now,
       lastSavedAt: null,
@@ -145,6 +241,11 @@ export function gameStateToPayload(state: GameState): Phase2SavePayload {
       mnemeFragmente: state.resources.mnemeFragmente.toString(),
       totalMnemeFragmente: state.resources.totalMnemeFragmente.toString(),
       ewigeMneme: state.resources.ewigeMneme.toString(),
+      relics: state.resources.relics.toString(),
+      totalRelics: state.resources.totalRelics.toString(),
+      artifacts: state.resources.artifacts.toString(),
+      memoryDust: state.resources.memoryDust.toString(),
+      catalyst: state.resources.catalyst.toString(),
     },
     idleGenerators: {
       gedankenArchiv: state.idleGenerators.gedankenArchiv,
@@ -158,6 +259,18 @@ export function gameStateToPayload(state: GameState): Phase2SavePayload {
       selectedChapter: state.story.selectedChapter,
     },
     settings: state.settings,
+    quests: state.quests,
+    achievements: state.achievements,
+    forge: state.forge,
+    crafting: state.crafting,
+    library: state.library,
+    talents: state.talents,
+    challenges: state.challenges,
+    codex: state.codex,
+    storyBranch: state.storyBranch,
+    relicHunt: state.relicHunt,
+    accountVault: accountVaultToSave(state.accountVault),
+    tutorial: state.tutorial,
     meta: {
       lastActiveAt: state.meta.lastActiveAt,
     },
@@ -172,6 +285,11 @@ export function gameStateFromPayload(payload: Phase2SavePayload): GameState {
       mnemeFragmente: BigInt(payload.resources.mnemeFragmente),
       totalMnemeFragmente: BigInt(payload.resources.totalMnemeFragmente),
       ewigeMneme: BigInt(payload.resources.ewigeMneme),
+      relics: BigInt(payload.resources.relics),
+      totalRelics: BigInt(payload.resources.totalRelics),
+      artifacts: BigInt(payload.resources.artifacts),
+      memoryDust: BigInt(payload.resources.memoryDust),
+      catalyst: BigInt(payload.resources.catalyst),
     },
     idleGenerators: {
       gedankenArchiv: payload.idleGenerators.gedankenArchiv,
@@ -187,6 +305,18 @@ export function gameStateFromPayload(payload: Phase2SavePayload): GameState {
       battle: null,
     },
     settings: payload.settings,
+    quests: payload.quests,
+    achievements: payload.achievements,
+    forge: payload.forge,
+    crafting: payload.crafting,
+    library: payload.library,
+    talents: payload.talents,
+    challenges: payload.challenges,
+    codex: payload.codex,
+    storyBranch: payload.storyBranch,
+    relicHunt: payload.relicHunt,
+    accountVault: accountVaultFromSave(payload.accountVault),
+    tutorial: payload.tutorial,
     meta: {
       lastActiveAt: payload.meta.lastActiveAt,
       lastSavedAt: null,

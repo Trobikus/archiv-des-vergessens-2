@@ -16,13 +16,13 @@ todos:
     status: completed
   - id: phase-4
     content: "Phase 4: Modularer Server + Auth + Cloud-Sync (Freigabe erteilt)"
-    status: in_progress
+    status: completed
   - id: phase-5
     content: "Phase 5: Tauri-Shell + Playwright + Updater 2.0.0"
     status: pending
   - id: phase-6
     content: "Phase 6: Feature-Parität Wellen A–F"
-    status: pending
+    status: completed
   - id: phase-7
     content: "Phase 7: Social/Live (Chat, Freunde, Clan, Leaderboard)"
     status: pending
@@ -38,8 +38,8 @@ todos:
 
 ## Fortschritt (Stand 2026-08-01)
 
-**Fertig:** Phase 0–3.  
-**In Arbeit:** Phase 4 — Modularer Server + Auth + Cloud-Sync (Freigabe erteilt).
+**Fertig:** Phase 0–4 und Phase 6.  
+**Offen dazwischen:** Phase 5 — Tauri-Shell + E2E.
 
 | Phase | Status | Nachweis |
 |---|---|---|
@@ -47,9 +47,9 @@ todos:
 | **1 Kernel + Balancing** | ✅ fertig | Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2) merged, Balancing-Snapshot-Gate |
 | **2 Vertical Slice** | ✅ fertig | Tag `v2-phase2` (Direct-Merge auf `main`), Klick/Tick/Save/Offline spielbar |
 | **3 Content + Kampf/Story** | ✅ fertig | Content/i18n-Gate, Combat-Sim, Hero/Story-UI; Tag `v2-phase3` ausstehend |
-| 4 Server + Auth + Cloud | 🔄 in Arbeit | WS-Server, Auth, Cloud-Envelope, User-Migration |
+| **4 Server + Auth + Cloud** | ✅ fertig | WS-Server, Auth, Cloud-Envelope, User-Migration |
 | 5 Tauri + E2E | ⬜ offen | — |
-| 6 Parität A–F | ⬜ offen | — |
+| **6 Parität A–F** | ✅ fertig | Services + Hub-Panels A–F, Content-Import, Save-Slices, `npm run gate` |
 | 7 Social/Live | ⬜ offen | — |
 | 8 Release 2.0.0 | ⬜ offen | — |
 | 9 v1-Save-Importer | ⬜ optional | — |
@@ -206,13 +206,13 @@ Umgesetzt:
 ### Phase 5 — Tauri-Shell + E2E (3–4 Tage) ⬜
 Desktop-Shell ohne lokale Save-DB; Identifier + Updater-Key aus v1; Playwright-Smoke; Version `2.0.0`.
 
-### Phase 6 — Feature-Parität Wellen A–F (12–18 Tage) ⬜
-- A Quests / Achievements / Daily
-- B Forge / Crafting / Gather
-- C Talente / Challenges / Library
-- D Story-Branches / Dialoge / Cinematics / Codex
-- E Relic Hunt / Account-Vault / Combat-Analytics
-- F Tutorial / Intro / Settings
+### Phase 6 — Feature-Parität Wellen A–F (12–18 Tage) ✅
+- [x] A Quests / Achievements / Daily
+- [x] B Forge / Crafting / Gather (+ Library-Boost)
+- [x] C Talente / Challenges / Library
+- [x] D Story-Branches / Dialoge / Codex (Cinematics: Intro-Slice)
+- [x] E Relic Hunt / Account-Vault / Combat-Analytics
+- [x] F Tutorial / Intro / Settings
 
 ### Phase 7 — Social/Live (5–7 Tage) ⬜
 Chat, Freunde, Clan, Leaderboard — Client + Servermodule, serverseitige Validierung.
@@ -234,7 +234,7 @@ graph LR
   P2 --> P3["P3 Content Kampf DONE"]
   P3 --> P4["P4 Server Auth Cloud WIP"]
   P4 --> P5["P5 Tauri E2E ⬜"]
-  P5 --> P6["P6 Paritaet A-F ⬜"]
+  P5 --> P6["P6 Paritaet A-F ✅"]
   P6 --> P7["P7 Social ⬜"]
   P7 --> P8["P8 Release 2.0.0 ⬜"]
   P8 -.optional.-> P9["P9 v1 Importer ⬜"]
@@ -257,4 +257,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 4 implementieren (Auth + Cloud + User-Migration). Tag `v2-phase3` bei Gelegenheit setzen.
+Phase 5: Tauri-Shell + Playwright-E2E + Updater 2.0.0. Tag `v2-phase6` bei Gelegenheit setzen.

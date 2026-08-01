@@ -1,7 +1,9 @@
 import {
+  createEventBus,
   createLogger,
   createStore,
   createTicker,
+  type EventBus,
   type Store,
   type Ticker,
   type TickPayload,
@@ -13,23 +15,59 @@ import {
   type GameState,
   type OfflineReport,
 } from "../state/game-state";
+import {
+  createAccountVaultService,
+  type AccountVaultService,
+} from "./account-vault-service";
+import {
+  createAchievementService,
+  type AchievementService,
+} from "./achievement-service";
 import { createAuthService, type AuthService } from "./auth-service";
 import {
   createBootProgressReporter,
   type BootProgressListener,
 } from "./boot-progress";
 import {
+  createChallengeService,
+  type ChallengeService,
+} from "./challenge-service";
+import {
   createCloudSyncService,
   type CloudSyncService,
 } from "./cloud-sync-service";
+import {
+  createCodexService,
+  type CodexService,
+} from "./codex-service";
+import {
+  createCombatAnalyticsService,
+  type CombatAnalyticsService,
+} from "./combat-analytics-service";
+import {
+  createCraftingService,
+  type CraftingService,
+} from "./crafting-service";
+import {
+  createDailyRewardService,
+  type DailyRewardService,
+} from "./daily-reward-service";
+import { createDialogService, type DialogService } from "./dialog-service";
+import { createForgeService, type ForgeService } from "./forge-service";
 import { createGatherService, type GatherService } from "./gather-service";
 import { createHeroService, type HeroService } from "./hero-service";
 import { createIdleService, type IdleService } from "./idle-service";
 import { createI18nService, type I18nService } from "./i18n-service";
+import { createLibraryService, type LibraryService } from "./library-service";
 import {
   createOfflineProgressService,
   type OfflineProgressService,
 } from "./offline-progress-service";
+import {
+  createRelicHuntService,
+  type RelicHuntService,
+} from "./relic-hunt-service";
+import { createQuestService, type QuestService } from "./quest-service";
 import { createResourceService, type ResourceService } from "./resource-service";
 import {
   createIndexedDbSaveStorage,
@@ -37,19 +75,44 @@ import {
   type SaveStorage,
 } from "./save-storage";
 import { createSaveStore, type SaveStore } from "./save-store";
+import {
+  createStoryBranchService,
+  type StoryBranchService,
+} from "./story-branch-service";
 import { createStoryService, type StoryService } from "./story-service";
+import { createTalentService, type TalentService } from "./talent-service";
+import {
+  createTutorialService,
+  type TutorialService,
+} from "./tutorial-service";
 import { createWsClient, type WsClient } from "./ws-client";
 
 const log = createLogger("game-session");
 
 export type GameSession = {
   readonly store: Store<GameState>;
+  readonly eventBus: EventBus;
   readonly resources: ResourceService;
   readonly idle: IdleService;
   readonly gather: GatherService;
   readonly offline: OfflineProgressService;
   readonly hero: HeroService;
   readonly story: StoryService;
+  readonly storyBranch: StoryBranchService;
+  readonly dialog: DialogService;
+  readonly codex: CodexService;
+  readonly relicHunt: RelicHuntService;
+  readonly accountVault: AccountVaultService;
+  readonly combatAnalytics: CombatAnalyticsService;
+  readonly tutorial: TutorialService;
+  readonly quests: QuestService;
+  readonly achievements: AchievementService;
+  readonly dailyRewards: DailyRewardService;
+  readonly forge: ForgeService;
+  readonly crafting: CraftingService;
+  readonly library: LibraryService;
+  readonly talents: TalentService;
+  readonly challenges: ChallengeService;
   readonly i18n: I18nService;
   readonly saves: SaveStore;
   readonly ws: WsClient;
@@ -80,8 +143,6 @@ function defaultStorage(useIndexedDb: boolean): SaveStorage {
 }
 
 function yieldToUi(): Promise<void> {
-  // Prefer setTimeout over rAF so boot progress works under test rAF mocks
-  // and still lets the UI paint between steps in the browser.
   return new Promise((resolve) => {
     setTimeout(resolve, 0);
   });
@@ -96,16 +157,56 @@ export function createGameSession(
   const store = createStore<GameState>({
     initialState: createInitialGameState(nowFn()),
   });
+  const eventBus = createEventBus();
   const resources = createResourceService(store);
+  const library = createLibraryService(store, eventBus, resources);
   const idle = createIdleService(store, resources);
-  const gather = createGatherService(store, resources);
+  const gather = createGatherService(store, resources, library, {
+    onGather: () => {
+      eventBus.publish("quest:manualGather", {});
+    },
+  });
   const offline = createOfflineProgressService(store, resources);
   const hero = createHeroService(store);
-  const story = createStoryService(store, hero);
-  const i18n = createI18nService(store);
-  const saves = createSaveStore(storage);
+  const forge = createForgeService(store, eventBus, resources, hero, library);
+  const crafting = createCraftingService(
+    store,
+    eventBus,
+    resources,
+    hero,
+    forge,
+    library,
+  );
+  const quests = createQuestService(store, eventBus, resources, hero);
+  const achievements = createAchievementService(
+    store,
+    eventBus,
+    resources,
+    hero,
+  );
+  const dailyRewards = createDailyRewardService(
+    store,
+    eventBus,
+    resources,
+    hero,
+  );
+  const talents = createTalentService(store, eventBus);
+  const challenges = createChallengeService(store, eventBus, hero);
+  const combatAnalytics = createCombatAnalyticsService(eventBus);
+  const story = createStoryService(store, hero, {
+    eventBus,
+    combatAnalytics,
+  });
+  const storyBranch = createStoryBranchService(store, eventBus, hero);
+  const dialog = createDialogService(eventBus);
+  const codex = createCodexService(store, eventBus);
+  const relicHunt = createRelicHuntService(store, eventBus, resources, hero);
   const ws = options.ws ?? createWsClient();
   const auth = createAuthService({ ws });
+  const accountVault = createAccountVaultService(store, eventBus, auth);
+  const tutorial = createTutorialService(store, eventBus);
+  const i18n = createI18nService(store);
+  const saves = createSaveStore(storage);
   const cloud = createCloudSyncService({ ws, auth, storage });
 
   let ticker: Ticker | null = null;
@@ -139,12 +240,28 @@ export function createGameSession(
 
   return {
     store,
+    eventBus,
     resources,
     idle,
     gather,
     offline,
     hero,
     story,
+    storyBranch,
+    dialog,
+    codex,
+    relicHunt,
+    accountVault,
+    combatAnalytics,
+    tutorial,
+    quests,
+    achievements,
+    dailyRewards,
+    forge,
+    crafting,
+    library,
+    talents,
+    challenges,
     i18n,
     saves,
     ws,
@@ -161,7 +278,7 @@ export function createGameSession(
       await step("core");
 
       await step("fonts");
-      if (typeof document !== "undefined" && document.fonts?.ready) {
+      if (typeof document !== "undefined") {
         try {
           await document.fonts.ready;
         } catch {
@@ -199,9 +316,10 @@ export function createGameSession(
       const report = offline.applyOnBoot(nowFn());
 
       await step("systems");
-      // rAF only schedules frames; timestamps must stay on the same clock as
-      // `now` (Date.now). Passing rAF's performance.now values here previously
-      // made every slow delta negative, so idle income and autofight never ran.
+      quests.checkDailyReset();
+      achievements.checkProgress();
+      talents.syncPointsFromHeroLevel();
+
       const tickerOptions = {
         logicIntervalMs: CONFIG.SYSTEM.LOGIC_TICK_MS,
         slowIntervalMs: CONFIG.SYSTEM.SLOW_TICK_MS,
@@ -230,10 +348,15 @@ export function createGameSession(
       ticker = createTicker(tickerOptions);
       ticker.start();
 
-      const autosaveMs = options.autosaveMs ?? CONFIG.SYSTEM.AUTOSAVE_INTERVAL_MS;
+      const settingsAutosave = store.getState().settings.autosaveMs;
+      const autosaveMs = options.autosaveMs ?? settingsAutosave;
       autosaveTimer = setInterval(() => {
         void saveNow();
       }, autosaveMs);
+
+      if (!store.getState().tutorial.finished) {
+        tutorial.maybeAutoStart();
+      }
 
       store.setState((prev) => ({
         ...prev,
@@ -292,6 +415,13 @@ export function createGameSession(
         clearInterval(autosaveTimer);
         autosaveTimer = null;
       }
+      tutorial.destroy();
+      codex.destroy();
+      storyBranch.destroy();
+      dialog.destroy();
+      accountVault.destroy();
+      combatAnalytics.destroy();
+      eventBus.destroy();
       cloud.destroy();
       auth.destroy();
       ws.close();

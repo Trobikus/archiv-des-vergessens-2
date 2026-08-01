@@ -28,13 +28,18 @@ export function createIdleService(
     return 1 + ewige * EWIGE_MNEME_BONUS;
   };
 
+  const getDroughtMultiplier = (): number =>
+    store.getState().challenges.droughtBonus ? 1.5 : 1;
+
   const getYieldPerSecond = (): number => {
     const gen = store.getState().idleGenerators.gedankenArchiv;
-    return calculateYieldPerSecond(
-      gen.baseYield,
-      gen.level,
-      gen.upgrades.focusBonus,
-      getPrestigeMultiplier(),
+    return (
+      calculateYieldPerSecond(
+        gen.baseYield,
+        gen.level,
+        gen.upgrades.focusBonus,
+        getPrestigeMultiplier(),
+      ) * getDroughtMultiplier()
     );
   };
 

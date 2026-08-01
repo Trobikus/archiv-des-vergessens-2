@@ -33,6 +33,9 @@ describe("validatePhase2SavePayload", () => {
       expect(result.value.hero.created).toBe(false);
       expect(result.value.story.selectedChapter).toBe(1);
       expect(result.value.settings.locale).toBe("de");
+      expect(result.value.resources.relics).toBe("0");
+      expect(result.value.quests.mainIndex).toBe(0);
+      expect(result.value.tutorial.finished).toBe(false);
     }
   });
 

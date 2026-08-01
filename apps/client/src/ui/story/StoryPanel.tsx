@@ -4,6 +4,8 @@ import type { GameSession } from "../../services/game-session";
 import { FloatingDamageOverlay } from "../combat/FloatingDamageOverlay";
 import { useStore } from "../useStore";
 import { StoryFightsIntro } from "./StoryFightsIntro";
+import { StoryBranchPanel } from "./StoryBranchPanel";
+import { DialogPanel } from "../dialog/DialogPanel";
 
 type Props = {
   readonly session: GameSession;
@@ -189,6 +191,8 @@ export function StoryPanel({ session }: Props) {
           </ul>
         </div>
       ) : null}
+      <StoryBranchPanel session={session} />
+      <DialogPanel session={session} />
     </section>
   );
 }

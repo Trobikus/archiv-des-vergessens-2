@@ -231,7 +231,7 @@ export function LoginView({
 
       <div class="login-screen__center">
         <div class="login-card">
-          {isLoggedIn && currentUser !== null ? (
+          {isLoggedIn ? (
             <div class="login-screen__logged-in">
               <div class="login-screen__avatar" aria-hidden="true">
                 {currentUser.avatar || "A"}

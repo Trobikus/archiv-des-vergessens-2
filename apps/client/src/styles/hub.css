@@ -1,0 +1,149 @@
+/* Phase 6 hub panels — glass/gold Abyss theme */
+
+.game__subtabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+  margin-top: -0.15rem;
+  padding: 2px;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(197, 160, 89, 0.15);
+  border-radius: var(--border-radius-md);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.game__subtab {
+  appearance: none;
+  flex: 0 0 auto;
+  min-width: max-content;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-text-muted);
+  padding: 0.28rem 0.55rem;
+  font-family: var(--font-header);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: calc(var(--border-radius-md) - 1px);
+  transition: all var(--transition-default);
+}
+
+.game__subtab:hover:not(.is-active) {
+  color: var(--color-text-main);
+  background: rgba(197, 160, 89, 0.08);
+}
+
+.game__subtab.is-active {
+  background: rgba(197, 160, 89, 0.14);
+  border-color: rgba(197, 160, 89, 0.45);
+  color: var(--color-gold-hover);
+}
+
+.hub-panel,
+.phase6-panel,
+.panel {
+  min-width: 0;
+}
+
+.hub-panel {
+  display: grid;
+  gap: 1rem;
+  animation: fadeInEffect 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.hub-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.hub-card {
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(197, 160, 89, 0.18);
+  border-top: 2px solid rgba(197, 160, 89, 0.32);
+  border-radius: var(--border-radius-lg);
+  background: linear-gradient(
+    135deg,
+    rgba(12, 12, 18, 0.78) 0%,
+    rgba(6, 6, 10, 0.62) 100%
+  );
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.75),
+    inset 0 0 24px rgba(0, 0, 0, 0.65);
+}
+
+.hub-card--compact {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.hub-card--daily {
+  border-color: rgba(197, 160, 89, 0.35);
+}
+
+.hub-card__title {
+  margin: 0;
+  font-family: var(--font-header);
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  color: var(--color-gold-hover);
+}
+
+.hub-skill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.55rem;
+}
+
+.hub-skill-node {
+  padding: 0.65rem;
+  border: 1px solid rgba(197, 160, 89, 0.12);
+  border-radius: var(--border-radius-md);
+  background: rgba(0, 0, 0, 0.35);
+  display: grid;
+  gap: 0.25rem;
+  text-align: center;
+}
+
+.hub-skill-node.is-allocated {
+  border-color: rgba(197, 160, 89, 0.55);
+  box-shadow: 0 0 12px rgba(197, 160, 89, 0.15);
+}
+
+.hub-skill-node.is-available {
+  border-color: rgba(134, 239, 172, 0.35);
+}
+
+.hub-skill-node__icon {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.hub-skill-node__name {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--color-text-main);
+}
+
+.hub-skill-node .game__btn {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.68rem;
+}
+
+@media (max-width: 520px) {
+  .hub-skill-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
