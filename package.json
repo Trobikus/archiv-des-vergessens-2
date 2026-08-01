@@ -20,7 +20,8 @@
     "lint": "eslint . --max-warnings=0",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "gate": "node tools/gates/gate.mjs"
+    "gate": "node tools/gates/gate.mjs",
+    "migrate:v1-saves": "node --experimental-strip-types tools/migrate-v1-saves/migrate-v1-saves.ts"
   },
   "engines": {
     "node": ">=22"

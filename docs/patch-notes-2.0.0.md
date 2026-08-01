@@ -18,7 +18,8 @@ gleiche Welt, frische Grundlage.
 
 ## 🐛 Wichtig zu wissen
 
-- **Cloud-Spielstände aus v1 werden nicht übernommen** — Fortschritt startet neu
+- **Cloud-Spielstände aus v1 werden serverseitig nicht übernommen** — Fortschritt startet in der Cloud neu
+- **Lokaler Import:** unter Einstellungen kannst du einen v1-JSON-Export laden (Phase-9-Importer)
 - **Accounts** (Benutzername + Passwort) können migriert werden; bitte neu anmelden
 - Bitte den neuen Desktop-Build installieren; der alte v1-Updater bleibt auf dem v1-Feed
 

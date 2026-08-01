@@ -102,4 +102,5 @@ type Phase2SavePayload = {
 - Cloud authority (Phase 4): registered sessions upsert the full `SaveEnvelope` JSON in SQLite `saves.saveData`
 - Offline queue: pending envelopes under `cloud_pending_<userId>` until flush
 - Conflict rule: newer `savedAt` wins when merging cloud vs local
-- v1 cloud blobs are discarded; only the users table may migrate (see `tools/migrate-v1-users/`)
+- Account cutover: users table may migrate via `tools/migrate-v1-users/`
+- **Phase 9 v1 save import:** `importV1Save` / `importV1SaveJson` in `@adv/protocol` maps v1 JSON (inner state, IDB envelope, or cloud `saveData`) → validated v2 `SaveEnvelope`. In-game: Options → import. CLI: `tools/migrate-v1-saves/`. Chat / battle state are dropped (ephemeral in v2).

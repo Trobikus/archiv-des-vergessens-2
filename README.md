@@ -8,9 +8,9 @@
 | | |
 |---|---|
 | **Version** | `2.0.0` |
-| **Stand** | Phase **0–8 abgeschlossen** · Release-Härtung fertig |
+| **Stand** | Phase **0–9 abgeschlossen** · inkl. v1-Save-Importer |
 | **Stack** | TypeScript strict · Preact · Vite · Tauri 2 · Node WS |
-| **Optional danach** | Phase 9 — v1-Save-Importer |
+| **Als Nächstes** | Release-Tag `v2.0.0` / Playtest |
 | **Repo** | [Trobikus/archiv-des-vergessens-2](https://github.com/Trobikus/archiv-des-vergessens-2) |
 
 Spieler-Patch Notes → [`docs/patch-notes-2.0.0.md`](docs/patch-notes-2.0.0.md)  
@@ -182,7 +182,7 @@ npm run clippy        # Rust-Lint der Desktop-Shell
 | **6** Feature-Parität A–F | ✅ | Hub, Quests, Forge, Talente, Story, Tutorial |
 | **7** Social / Live | ✅ | Chat, Freunde, Clan, Leaderboard |
 | **8** Release 2.0.0 | ✅ | Perf, a11y, Patch Notes, Updater-Rollout, Cutover |
-| **9** v1-Save-Importer | ⬜ | Optional nach Release |
+| **9** v1-Save-Importer | ✅ | `importV1Save`, Options-UI, CLI `migrate-v1-saves` |
 
 ```mermaid
 graph LR
@@ -194,7 +194,7 @@ graph LR
   P5 --> P6["P6 Parität ✅"]
   P6 --> P7["P7 Social ✅"]
   P7 --> P8["P8 Release 2.0.0 ✅"]
-  P8 -.optional.-> P9["P9 v1 Importer ⬜"]
+  P8 --> P9["P9 v1 Importer ✅"]
 ```
 
 ### Phase 8 — geliefert
@@ -224,7 +224,8 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 > Accounts (Benutzername + PBKDF2-Passwort) können migriert werden — Spieler melden sich neu an.  
 > v1-Clients bleiben auf dem v1-Updater-Feed, bis der v2-Build manuell installiert wird.
 
-Migrationstool: [`tools/migrate-v1-users/`](tools/migrate-v1-users/)
+Account-Migration: [`tools/migrate-v1-users/`](tools/migrate-v1-users/)  
+Spielstand-Import (Phase 9): Options-UI oder [`tools/migrate-v1-saves/`](tools/migrate-v1-saves/) · API `importV1Save` in `@adv/protocol`
 
 ---
 

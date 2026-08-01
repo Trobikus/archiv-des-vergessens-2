@@ -31,15 +31,15 @@ todos:
     status: completed
   - id: phase-9
     content: "Phase 9 (optional): v1-Save-Importer"
-    status: pending
+    status: completed
 ---
 
 # Greenfield-Rewrite: Archiv des Vergessens v2
 
 ## Fortschritt (Stand 2026-08-01)
 
-**Fertig:** Phase 0–8 (Release 2.0.0 Härtung).
-**Als Nächstes:** optional Phase 9 — v1-Save-Importer; Tag `v2.0.0` / Playtest.
+**Fertig:** Phase 0–9 (inkl. v1-Save-Importer).
+**Als Nächstes:** Tag `v2.0.0` / manueller Playtest.
 
 | Phase | Status | Nachweis |
 |---|---|---|
@@ -52,7 +52,7 @@ todos:
 | **6 Feature-Parität A–F** | ✅ fertig | Quests…Tutorial; Hub-Tabs |
 | **7 Social/Live** | ✅ Code fertig | Chat/LB Servermodule + Freunde/Clan lokal; Playtest/Tag offen |
 | **8 Härtung → 2.0.0** | ✅ Code fertig | Perf-Budgets, DomPool, a11y-Gate, CHANGELOG, Updater-Rollout, Cutover-Docs |
-| **9 v1-Importer** | ⬜ optional | |
+| **9 v1-Importer** | ✅ fertig | `importV1Save` + Options-UI + `tools/migrate-v1-saves` |
 
 ### Was in Phase 0–1 geliefert wurde
 
@@ -247,8 +247,15 @@ Erledigt:
 - [x] Cutover-Runbook `docs/cutover-v1.md`; Versionen → `2.0.0`
 - [ ] Manueller Playtest + Tag `v2.0.0` / `v2-phase8`
 
-### Phase 9 (optional) — v1-Save-Importer ⬜
-Nach Release: Adapter v1-JSON → v2-Envelope.
+### Phase 9 (optional) — v1-Save-Importer ✅
+Adapter v1-JSON → v2-Envelope.
+
+Erledigt:
+- [x] `@adv/protocol` `importV1Save` / `importV1SaveJson` / `unwrapV1Save` / `mapV1StateToPayload`
+- [x] Unit-Tests (IDB-/Cloud-Wrapper, Achievements-List→Map, Talents, Vault, Infinity-Zeiten)
+- [x] Client: Options-UI + `GameSession.importV1Progress`
+- [x] CLI `tools/migrate-v1-saves` (dry-run / `--apply`)
+- [x] Docs: `save-format.md`, Cutover-Hinweis, README/CHANGELOG
 
 ---
 
@@ -264,7 +271,7 @@ graph LR
   P5 --> P6["P6 Paritaet A-F DONE"]
   P6 --> P7["P7 Social DONE"]
   P7 --> P8["P8 Release 2.0.0 DONE"]
-  P8 -.optional.-> P9["P9 v1 Importer ⬜"]
+  P8 --> P9["P9 v1 Importer ✅"]
 ```
 
 ## Portiert vs. neu
@@ -284,4 +291,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Release-Tag `v2.0.0` nach Playtest; optional Phase 9 (v1-Save-Importer).
+Release-Tag `v2.0.0` nach Playtest.

@@ -91,3 +91,11 @@ DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei grï¿½nem `npm
 - [x] `npm run gate` Schritte `a11y-basis` / `perf-budgets`
 - [ ] Manueller Playtest: lange Session ohne Leak; Update-Check in Desktop
 - [ ] Tag `v2-phase8` / Release-Tag `v2.0.0` nach Freigabe
+
+## Phase 9 ? v1-Save-Importer
+
+- [x] `importV1Save` mappt IDB-/Cloud-/Inner-State ? validiertes v2-Envelope
+- [x] Options-UI Datei-Import + Confirm
+- [x] CLI `tools/migrate-v1-saves` dry-run/`--apply`
+- [ ] Manueller Playtest: echten v1-Export importieren und Hub/Kampf prüfen
+- [ ] Tag `v2-phase9` nach Freigabe

@@ -16,6 +16,7 @@ project follows [Semantic Versioning](https://semver.org/).
 - Accessibility basis checklist + static a11y gate + Playwright landmark smoke
 - User migration tool `tools/migrate-v1-users` and cutover runbook `docs/cutover-v1.md`
 - Player-facing patch notes `docs/patch-notes-2.0.0.md`
+- Phase 9 v1 save importer: `@adv/protocol` `importV1Save`, Options UI import, `tools/migrate-v1-saves`
 
 ### Changed
 

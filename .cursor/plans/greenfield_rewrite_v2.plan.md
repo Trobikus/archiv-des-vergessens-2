@@ -31,15 +31,15 @@ todos:
     status: completed
   - id: phase-9
     content: "Phase 9 (optional): v1-Save-Importer"
-    status: pending
+    status: completed
 ---
 
 # Greenfield-Rewrite: Archiv des Vergessens v2
 
 ## Fortschritt (Stand 2026-08-01)
 
-**Fertig:** Phase 0–8.
-**Als Nächstes:** optional Phase 9 — v1-Save-Importer; Tag `v2.0.0`.
+**Fertig:** Phase 0–9.
+**Als Nächstes:** Tag `v2.0.0` / manueller Playtest.
 
 | Phase | Status | Nachweis |
 |---|---|---|
@@ -52,7 +52,7 @@ todos:
 | **6 Parität A–F** | ✅ fertig | Feature-Wellen A–F + Hub-UI |
 | **7 Social/Live** | ✅ fertig | Tag `v2-phase7`, Chat/LB online, Freunde/Clan lokal |
 | **8 Release 2.0.0** | ✅ fertig | Perf-Budgets, a11y, Updater-Rollout, Cutover-Docs |
-| 9 v1-Save-Importer | ⬜ optional | — |
+| **9 v1-Save-Importer** | ✅ fertig | `importV1Save`, Options-UI, `tools/migrate-v1-saves` |
 
 ### Was in Phase 0–1 geliefert wurde
 
@@ -203,8 +203,8 @@ Protocol-Events/`chat:*`/`leaderboard:*`, SQLite, Jump-Limits, Hub-UI, Save-Slic
 ### Phase 8 — Härtung → Release 2.0.0 (4–6 Tage) ✅
 Perf-Budgets, Leak-Tests, a11y-Basis, Patch Notes, Updater-Rollout, v1-Cutover.
 
-### Phase 9 (optional) — v1-Save-Importer ⬜
-Nach Release: Adapter v1-JSON → v2-Envelope.
+### Phase 9 (optional) — v1-Save-Importer ✅
+Adapter v1-JSON → v2-Envelope (`importV1Save`), Options-Import, CLI `tools/migrate-v1-saves`.
 
 ---
 
@@ -220,7 +220,7 @@ graph LR
   P5 --> P6["P6 Paritaet A-F ✅"]
   P6 --> P7["P7 Social ✅"]
   P7 --> P8["P8 Release 2.0.0 ⬜"]
-  P8 -.optional.-> P9["P9 v1 Importer ⬜"]
+  P8 --> P9["P9 v1 Importer ✅"]
 ```
 
 ## Portiert vs. neu
@@ -240,4 +240,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 8 erledigt. Als Nächstes: Release-Tag / optional Phase 9.
+Phase 9 erledigt. Als Nächstes: Release-Tag `v2.0.0` / Playtest.

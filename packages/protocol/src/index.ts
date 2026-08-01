@@ -121,4 +121,12 @@ export {
   type LeaderboardSubmitPayload,
   type LeaderboardUpdatePayload,
 } from "./social-payloads";
+export {
+  importV1Save,
+  importV1SaveJson,
+  mapV1StateToPayload,
+  unwrapV1Save,
+  type V1ImportOptions,
+  type V1ImportUnwrap,
+} from "./v1-import";
 export { validateWsMessage, type WsMessage } from "./ws-message";

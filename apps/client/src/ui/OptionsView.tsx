@@ -1,4 +1,5 @@
 import type { Locale } from "@adv/content";
+import { useRef, useState } from "preact/hooks";
 
 import type { GameSession } from "../services/game-session";
 import { useStore } from "./useStore";
@@ -8,6 +9,10 @@ type Props = {
   readonly onBack: () => void;
   readonly onOpenAccount: () => void;
   readonly onHardReset: () => void;
+  readonly onConfirmImport: (
+    messageKey: "options.importV1Confirm",
+    run: () => void,
+  ) => void;
 };
 
 export function OptionsView({
@@ -15,12 +20,15 @@ export function OptionsView({
   onBack,
   onOpenAccount,
   onHardReset,
+  onConfirmImport,
 }: Props) {
   const state = useStore(session.store);
   const authState = useStore(session.auth.store);
   const locale = state.settings.locale;
   const t = session.i18n.translate.bind(session.i18n);
   const user = authState.user;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [importMessage, setImportMessage] = useState<string | null>(null);
 
   return (
     <section
@@ -195,6 +203,77 @@ export function OptionsView({
           </div>
 
           <h3 class="options-header">System</h3>
+          <div class="option-row flex-between">
+            <span class="option-label text-muted">
+              {t("options.importV1")}
+              <br />
+              <small class="text-muted">{t("options.importV1Hint")}</small>
+            </span>
+            <button
+              type="button"
+              class="glass-btn btn-small"
+              data-testid="opt-import-v1"
+              onClick={() => {
+                fileInputRef.current?.click();
+              }}
+            >
+              {t("options.importV1Button")}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/json,.json"
+              hidden
+              data-testid="opt-import-v1-file"
+              onChange={(event) => {
+                const input = event.target as HTMLInputElement;
+                const file = input.files?.[0];
+                input.value = "";
+                if (!file) {
+                  return;
+                }
+                onConfirmImport("options.importV1Confirm", () => {
+                  void file
+                    .text()
+                    .then(async (text) => {
+                      let parsed: unknown;
+                      try {
+                        parsed = JSON.parse(text) as unknown;
+                      } catch {
+                        setImportMessage(
+                          `${t("options.importV1Failed")}: invalid JSON`,
+                        );
+                        return;
+                      }
+                      const result = await session.importV1Progress(parsed);
+                      if (!result.ok) {
+                        setImportMessage(
+                          `${t("options.importV1Failed")}: ${result.error}`,
+                        );
+                        return;
+                      }
+                      setImportMessage(t("options.importV1Success"));
+                    })
+                    .catch((cause: unknown) => {
+                      setImportMessage(
+                        `${t("options.importV1Failed")}: ${
+                          cause instanceof Error ? cause.message : "read error"
+                        }`,
+                      );
+                    });
+                });
+              }}
+            />
+          </div>
+          {importMessage !== null ? (
+            <p
+              class="text-center text-muted"
+              data-testid="opt-import-v1-status"
+              role="status"
+            >
+              {importMessage}
+            </p>
+          ) : null}
           <div class="option-row flex-between option-row--danger">
             <span class="option-label text-danger">
               {t("options.deleteSave")}

@@ -29,6 +29,7 @@ export default tsConfig(
             "*.mjs",
             "vitest.config.ts",
             "apps/client/vite.config.ts",
+            "tools/migrate-v1-saves/*.ts",
           ],
           defaultProject: "./tsconfig.eslint.json",
         },
@@ -85,7 +86,7 @@ export default tsConfig(
   },
   {
     files: [
-      "tools/**/*.{js,mjs}",
+      "tools/**/*.{js,mjs,ts}",
       "packages/*/scripts/**/*.{js,mjs}",
       "eslint.config.js",
       "**/vite.config.ts",

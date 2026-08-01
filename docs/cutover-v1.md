@@ -43,7 +43,9 @@ Users must re-login (`sessionToken` cleared).
 1. Deploy `@adv/server` with `CLOUD_SAVE_VERSION=2.0.0`
 2. Keep v1 server reachable in read-only / announce mode until traffic drains
 3. Point DNS / reverse-proxy WS endpoint at v2
-4. Announce Discord / in-game: saves start fresh; accounts reuse password
+4. Announce Discord / in-game: accounts reuse password; cloud saves are fresh by default.
+   Players can import a local v1 JSON dump via **Options → v1-Spielstand importieren**
+   or `tools/migrate-v1-saves` (see `docs/save-format.md`).
 
 ## Rollback
 
