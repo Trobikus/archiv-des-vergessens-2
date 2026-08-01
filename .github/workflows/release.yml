@@ -3,8 +3,13 @@ name: release
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "v*"
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing git tag to build (e.g. v0.2.0-alpha)"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -14,10 +19,12 @@ jobs:
   # workflow_dispatch has no tag push — run gate here so it cannot be skipped.
   gate:
     name: Quality gate (workflow_dispatch only)
-    if: github.event_name == "workflow_dispatch"
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag }}
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -31,10 +38,12 @@ jobs:
   desktop:
     name: Build portable game ZIP
     needs: [gate]
-    if: always() && (needs.gate.result == 'success' || needs.gate.result == 'skipped')
+    if: ${{ always() && (needs.gate.result == 'success' || needs.gate.result == 'skipped') }}
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref }}
 
       - uses: actions/setup-node@v4
         with:
@@ -100,10 +109,12 @@ jobs:
   launcher:
     name: Build Siegel-Portal launcher
     needs: [gate]
-    if: always() && (needs.gate.result == 'success' || needs.gate.result == 'skipped')
+    if: ${{ always() && (needs.gate.result == 'success' || needs.gate.result == 'skipped') }}
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref }}
 
       - uses: actions/setup-node@v4
         with:
@@ -143,8 +154,19 @@ jobs:
   publish:
     name: Publish release assets
     needs: [desktop, launcher]
+    if: ${{ always() && needs.desktop.result == 'success' && needs.launcher.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Resolve release tag
+        id: meta
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/download-artifact@v4
         with:
           name: launcher-exe
@@ -158,8 +180,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Archiv des Vergessens ${{ github.ref_name }}
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: Archiv des Vergessens ${{ steps.meta.outputs.tag }}
           draft: true
           prerelease: false
           # Launcher first — this is the only player-facing EXE.
@@ -168,7 +190,7 @@ jobs:
             release-assets/archiv-des-vergessens.zip
             release-assets/archiv-des-vergessens.zip.sig
           body: |
-            ## Archiv des Vergessens ${{ github.ref_name }}
+            ## Archiv des Vergessens ${{ steps.meta.outputs.tag }}
 
             ### Installation
             1. Lade **`ArchivDesVergessens-Launcher.exe`** herunter und starte sie.
