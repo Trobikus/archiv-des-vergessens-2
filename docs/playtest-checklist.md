@@ -1,12 +1,12 @@
-# Phasen-Playtest-Checkliste
+ï»¿# Phasen-Playtest-Checkliste
 
-DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei grünem `npm run gate` und Git-Tag `v2-phaseN`.
+DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei grï¿½nem `npm run gate` und Git-Tag `v2-phaseN`.
 
 ## Phase 0 ? Fundament ? (`v2-phase0`)
 
-- [x] `npm run gate` grün (tsc, eslint 0 warnings, tests+coverage, client build)
+- [x] `npm run gate` grï¿½n (tsc, eslint 0 warnings, tests+coverage, client build)
 - [x] Client zeigt Boot-Shell (?Boot OK? / Ladezustand)
-- [x] Workspaces `packages/*`, `apps/*`, `tools/*` auflösbar
+- [x] Workspaces `packages/*`, `apps/*`, `tools/*` auflï¿½sbar
 - [x] ADRs + Parity-/Protocol-/Save-Docs vorhanden
 - [x] CI-Workflow `.github/workflows/ci.yml` vorhanden
 
@@ -15,27 +15,27 @@ DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei grünem `npm r
 - [x] `@adv/core` Kernel nutzbar (DI, EventBus, Store, Ticker, Logger, Result, BigNum, RNG)
 - [x] `@adv/sim` CONFIG + Math-Formeln vorhanden
 - [x] Balancing-Snapshot-Gate in `npm run gate` (Golden `balancing.golden.json`)
-- [x] Snapshot unverändert ohne explizite Freigabe
+- [x] Snapshot unverï¿½ndert ohne explizite Freigabe
 
 ## Phase 2 ? Vertical Slice ? (`v2-phase2`)
 
-- [x] Sammeln erhöht Partikel; Klickkraft-Upgrade kostet Partikel und erhöht Gewinn
-- [x] GedankenArchiv kaufen erzeugt Mneme über Tick
+- [x] Sammeln erhï¿½ht Partikel; Klickkraft-Upgrade kostet Partikel und erhï¿½ht Gewinn
+- [x] GedankenArchiv kaufen erzeugt Mneme ï¿½ber Tick
 - [x] Speichern / Laden rundtrippt Fortschritt (Memory + IndexedDB-Adapter)
 - [x] Offline-Fortschritt vergibt Mneme beim Boot und zeigt Report-Banner
-- [x] Autosave läuft im Session-Loop
-- [x] Vertical-Slice-Tests + Coverage-Gates (inkl. Client-Services/State ?60 %) grün
+- [x] Autosave lï¿½uft im Session-Loop
+- [x] Vertical-Slice-Tests + Coverage-Gates (inkl. Client-Services/State ?60 %) grï¿½n
 - [x] Tag `v2-phase2` auf `main` (Direct-Merge; kein separater PR)
 
 ## Phase 3 ? Content + Kampf/Story ? (`v2-phase3`)
 
 - [x] Charakter erstellen (Name 2?20, Klasse kosmetisch) und Spiel starten
-- [x] DE/EN umschalten; Labels aus i18n-Keys; i18n-Key-Gate in `npm run gate` grün
-- [x] Story-Intro (3 Frames) beim ersten Öffnen der Chronik, danach gespeichert als gesehen
+- [x] DE/EN umschalten; Labels aus i18n-Keys; i18n-Key-Gate in `npm run gate` grï¿½n
+- [x] Story-Intro (3 Frames) beim ersten ï¿½ffnen der Chronik, danach gespeichert als gesehen
 - [x] Boss-Kampf starten: Auto-Ticks, Speer/Schild/Heilung, Fliehen
 - [x] Sieg vergibt EXP (+ Item bei Mid/End-Boss); Held kann Stats verteilen und looten/equippen
-- [x] Speichern/Laden behält Held, Boss-Fortschritt, Locale und Intro-Flag
-- [x] Phase-3-Slice-Tests + `npm run gate` grün
+- [x] Speichern/Laden behï¿½lt Held, Boss-Fortschritt, Locale und Intro-Flag
+- [x] Phase-3-Slice-Tests + `npm run gate` grï¿½n
 - [ ] Tag `v2-phase3` (nach Freigabe setzen)
 
 ## Phase 4 ? Server + Auth + Cloud ??
@@ -46,41 +46,41 @@ DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei grünem `npm r
 - [x] Cloud save/load (Save-Envelope); neueres `savedAt` gewinnt
 - [x] Superseded Token kann nicht cloud-speichern
 - [x] User-Migration Dry-Run Tool (`tools/migrate-v1-users/`)
-- [x] Phase-4-Tests + `npm run gate` grün
+- [x] Phase-4-Tests + `npm run gate` grï¿½n
 - [ ] Tag `v2-phase4` nach Merge
-- [ ] Manueller Playtest (Guest/Register/Cloud über zwei Sessions)
+- [ ] Manueller Playtest (Guest/Register/Cloud ï¿½ber zwei Sessions)
 
 ## Phase 5 ? Tauri-Shell + E2E ??
 
 - [x] `@adv/desktop` startet Client im Webview (devUrl 5173 / frontendDist)
 - [x] Identifier `com.grimoire.archivdesvergessens` + Updater-Pubkey/Endpoint aus v1
 - [x] Keine lokale Save-DB / kein Rust-Game-Loop
-- [x] `quit_app` + Safe-Quit über `app:quit-requested` (Client speichert vor Exit)
+- [x] `quit_app` + Safe-Quit ï¿½ber `app:quit-requested` (Client speichert vor Exit)
 - [x] Playwright-Smoke (`npm run e2e`): Intro ? Login, keine pageerrors
 - [x] `cargo clippy -D warnings` in Gate/CI-Job `desktop`
-- [x] App-Version `2.0.0` (Root/Cloud später Phase 8 vereinheitlicht)
+- [x] App-Version `2.0.0` (Root/Cloud spï¿½ter Phase 8 vereinheitlicht)
 - [ ] Manueller Playtest: `npm run tauri:dev` ? Quit-Button + Fenster-X speichern und beenden
 - [ ] Nach Quit: CMD-Meldungen `Chrome_WidgetWin_0` / Vite-Lifecycle sind harmlos (siehe `apps/desktop/README.md`)
 - [ ] Tag `v2-phase5` nach Merge
 
-## Phase 6 ? Feature-Parität A?F ?
+## Phase 6 ? Feature-Paritï¿½t A?F ?
 
 - [x] Hub-Tabs Wellen A?F spielbar (Quests?Tutorial/Settings)
-- [x] Phase-6-Service-Tests + `npm run gate` grün
+- [x] Phase-6-Service-Tests + `npm run gate` grï¿½n
 - [ ] Tag `v2-phase6` nach Freigabe
 
 ## Phase 7 ? Social/Live ??
 
 - [x] Globaler Chat: senden, Broadcast, History; Offline-Fallback lokal
-- [x] Leaderboard: persönliche Rekorde + globales Top-10 (nur registriert submit)
+- [x] Leaderboard: persï¿½nliche Rekorde + globales Top-10 (nur registriert submit)
 - [x] Freunde: Anfragen/Accept-Sim/Entfernen (lokal)
 - [x] Clan: Rekrutieren (`#clan-recruit-panel`), Produktion, Expedition, Raid
 - [x] Clan-Offline-Produktion im Boot-Report
-- [x] Server-Module + Protocol-Docs; Phase-7-Tests grün
+- [x] Server-Module + Protocol-Docs; Phase-7-Tests grï¿½n
 - [x] Playtest-Abdeckung: 2-Client Chat-Broadcast + registrierter LB-Submit/Jump-Limits; Clan/Freunde offline (inkl. Expedition/Raid/Offline-Produktion)
 - [x] Tag `v2-phase7` nach Freigabe
 
-## Phase 8 ? Härtung ? Release 2.0.0
+## Phase 8 â€” HÃ¤rtung â†’ Release 2.0.0
 
 - [x] Perf-Budgets + Frame-Degradation im Session-Ticker
 - [x] DomPool / ObjectPool + Leak-Tests; FloatingDamage pooled
