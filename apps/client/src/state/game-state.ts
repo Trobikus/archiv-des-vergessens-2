@@ -1,4 +1,16 @@
-import type { Phase2SavePayload } from "@adv/protocol";
+import {
+  createDefaultHeroSave,
+  createDefaultSettingsSave,
+  createDefaultStorySave,
+  type EquipmentSave,
+  type HeroSave,
+  type ItemSave,
+  type Phase2SavePayload,
+  type SettingsSave,
+  type StatBlockSave,
+  type StorySave,
+} from "@adv/protocol";
+import type { Locale, StoryBoss } from "@adv/content";
 
 export type GedankenArchivState = {
   readonly level: number;
@@ -24,6 +36,46 @@ export type OfflineReport = {
   readonly mnemeGained: number;
 };
 
+export type StatBlock = StatBlockSave;
+export type InventoryItem = ItemSave;
+export type EquipmentState = EquipmentSave;
+export type HeroState = HeroSave;
+export type StoryMetaState = StorySave;
+export type SettingsState = SettingsSave;
+
+export type CombatLogEntry = {
+  readonly text: string;
+  readonly type: string;
+};
+
+export type SpellState = {
+  readonly id: "spear" | "shield" | "heal";
+  readonly name: string;
+  readonly cooldown: number;
+  readonly maxCooldown: number;
+};
+
+export type BattleState = {
+  readonly heroHp: number;
+  readonly heroMaxHp: number;
+  readonly bossHp: number;
+  readonly bossMaxHp: number;
+  readonly boss: StoryBoss;
+  readonly combatLog: readonly CombatLogEntry[];
+  readonly spells: readonly SpellState[];
+  readonly activeEffects: {
+    readonly shieldAmount: number;
+    readonly isEnraged: boolean;
+  };
+  readonly floatingTexts: readonly FloatingText[];
+};
+
+export type FloatingText = {
+  readonly id: string;
+  readonly text: string;
+  readonly kind: "damage" | "crit" | "heal" | "miss" | "info";
+};
+
 export type GameState = {
   readonly resources: ResourcesState;
   readonly idleGenerators: {
@@ -33,6 +85,12 @@ export type GameState = {
     readonly clickPowerLevel: number;
     readonly lastClickAt: number;
   };
+  readonly hero: HeroState;
+  readonly story: StoryMetaState & {
+    readonly battleInProgress: boolean;
+    readonly battle: BattleState | null;
+  };
+  readonly settings: SettingsState;
   readonly meta: {
     readonly lastActiveAt: number;
     readonly lastSavedAt: number | null;
@@ -63,6 +121,13 @@ export function createInitialGameState(now = Date.now()): GameState {
       clickPowerLevel: 0,
       lastClickAt: 0,
     },
+    hero: createDefaultHeroSave(),
+    story: {
+      ...createDefaultStorySave(),
+      battleInProgress: false,
+      battle: null,
+    },
+    settings: createDefaultSettingsSave(),
     meta: {
       lastActiveAt: now,
       lastSavedAt: null,
@@ -87,6 +152,12 @@ export function gameStateToPayload(state: GameState): Phase2SavePayload {
     gather: {
       clickPowerLevel: state.gather.clickPowerLevel,
     },
+    hero: state.hero,
+    story: {
+      storyFightsIntroSeen: state.story.storyFightsIntroSeen,
+      selectedChapter: state.story.selectedChapter,
+    },
+    settings: state.settings,
     meta: {
       lastActiveAt: state.meta.lastActiveAt,
     },
@@ -109,6 +180,13 @@ export function gameStateFromPayload(payload: Phase2SavePayload): GameState {
       clickPowerLevel: payload.gather.clickPowerLevel,
       lastClickAt: 0,
     },
+    hero: payload.hero,
+    story: {
+      ...payload.story,
+      battleInProgress: false,
+      battle: null,
+    },
+    settings: payload.settings,
     meta: {
       lastActiveAt: payload.meta.lastActiveAt,
       lastSavedAt: null,
@@ -117,3 +195,5 @@ export function gameStateFromPayload(payload: Phase2SavePayload): GameState {
     },
   };
 }
+
+export type { Locale };

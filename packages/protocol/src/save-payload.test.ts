@@ -24,12 +24,15 @@ const validPayload = {
 };
 
 describe("validatePhase2SavePayload", () => {
-  it("accepts a valid phase-2 payload", () => {
+  it("accepts a valid phase-2 payload and fills hero/story defaults", () => {
     const result = validatePhase2SavePayload(validPayload);
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.value.gather.clickPowerLevel).toBe(1);
       expect(result.value.idleGenerators.gedankenArchiv.level).toBe(2);
+      expect(result.value.hero.created).toBe(false);
+      expect(result.value.story.selectedChapter).toBe(1);
+      expect(result.value.settings.locale).toBe("de");
     }
   });
 

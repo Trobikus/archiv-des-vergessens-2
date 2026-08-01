@@ -199,8 +199,232 @@ body {
   }
 }
 
+.game__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.game__tab {
+  appearance: none;
+  border: 1px solid transparent;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  padding: 0.45rem 0.8rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.game__tab.is-active {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+}
+
+.panel {
+  padding: 1.25rem 1.2rem;
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+  animation: rise 0.7s ease-out both;
+}
+
+.panel__sub {
+  margin: 1.1rem 0 0.35rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.panel__list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--muted);
+}
+
+.panel__list .is-current {
+  color: var(--ink);
+}
+
+.select {
+  width: min(720px, 100%);
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.select__hero {
+  text-align: center;
+  animation: rise 0.7s ease-out both;
+}
+
+.select__brand {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  letter-spacing: 0.04em;
+  font-weight: 650;
+}
+
+.select__tagline,
+.select__label,
+.select__error {
+  color: var(--muted);
+}
+
+.select__panel {
+  padding: 1.25rem 1.2rem;
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.select__heading {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+}
+
+.select__input {
+  width: 100%;
+  margin: 0.35rem 0 1rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg-0) 70%, transparent);
+  color: var(--ink);
+  font: inherit;
+}
+
+.select__classes {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.select__class {
+  appearance: none;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  padding: 0.7rem 0.9rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.select__class.is-active {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.select__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.intro {
+  position: relative;
+  min-height: 18rem;
+  display: grid;
+  place-content: center;
+  gap: 1rem;
+  padding: 2rem 1.25rem;
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  animation: rise 0.6s ease-out both;
+}
+
+.intro__plane {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(700px 280px at 30% 20%, #35517a 0%, transparent 60%),
+    linear-gradient(160deg, #101828, #0b1016 70%);
+  animation: drift 8s ease-in-out infinite alternate;
+}
+
+.intro__copy {
+  position: relative;
+  text-align: center;
+  z-index: 1;
+}
+
+.intro__line {
+  margin: 0.35rem 0;
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  letter-spacing: 0.08em;
+  animation: rise 0.8s ease-out both;
+}
+
+.battle {
+  position: relative;
+  margin-top: 1rem;
+}
+
+.hp {
+  height: 0.45rem;
+  margin: 0.35rem 0;
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+  overflow: hidden;
+}
+
+.hp__fill {
+  height: 100%;
+  transition: width 0.2s ease;
+}
+
+.hp__fill--hero {
+  background: var(--accent-2);
+}
+
+.hp__fill--boss {
+  background: #d47b7b;
+}
+
+.battle__log {
+  max-height: 10rem;
+  overflow: auto;
+  font-size: 0.9rem;
+}
+
+.floaters {
+  position: absolute;
+  right: 0.5rem;
+  top: 0;
+  display: grid;
+  gap: 0.25rem;
+  pointer-events: none;
+}
+
+.floater {
+  animation: rise 0.45s ease-out both;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+.floater--crit {
+  color: #ffd27a;
+}
+
+.floater--heal {
+  color: var(--accent-2);
+}
+
+.floater--miss {
+  color: var(--muted);
+}
+
+@keyframes drift {
+  from {
+    transform: scale(1) translateY(0);
+  }
+  to {
+    transform: scale(1.04) translateY(-0.4rem);
+  }
+}
+
 @media (max-width: 520px) {
-  .game__actions {
+  .game__actions,
+  .select__actions {
     flex-direction: column;
   }
 

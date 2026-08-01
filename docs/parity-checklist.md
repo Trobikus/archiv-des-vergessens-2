@@ -27,9 +27,9 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | resource-service | 2 | [x] |
 | idle-service | 2 | [x] GedankenArchiv Slice |
 | offline-progress-service | 2 | [x] Idle-Offline (Clan später) |
-| hero-service | 3 | [ ] |
-| i18n-service | 3 | [ ] |
-| story-service | 3 | [ ] |
+| hero-service | 3 | [x] create/exp/stats/equip |
+| i18n-service | 3 | [x] DE/EN + key-gate |
+| story-service | 3 | [x] fight/spells/intro slice |
 | story-branch-service | 6D | [ ] |
 | quest-service | 6A | [ ] |
 | achievement-service | 6A | [ ] |
@@ -58,14 +58,14 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 |---|---|---|
 | Boot shell (“Boot OK”) | 0 | [x] |
 | views/LoginView | 4 | [ ] |
-| views/CharacterSelectView | 3 | [ ] |
+| views/CharacterSelectView | 3 | [x] |
 | views/IntroView | 6F | [ ] |
-| views/GameView | 2–3 | [x] Phase-2 Vertical Slice |
+| views/GameView | 2–3 | [x] Idle + Hero/Story tabs |
 | views/HubView + hub/* | 6 | [ ] |
 | views/MainApp | 2 | [x] App boot + GameView |
 | views/OptionsView | 6F | [ ] |
-| hero/* | 3 | [ ] |
-| combat/* | 3 / 6E | [ ] |
+| hero/* | 3 | [x] HeroPanel (slim) |
+| combat/* | 3 / 6E | [x] FloatingDamage; analytics later 6E |
 | quest/QuestUI | 6A | [ ] |
 | achievement/AchievementUI | 6A | [ ] |
 | challenges/ChallengeUI | 6C | [ ] |
@@ -73,7 +73,7 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | crafting/CraftingUI | 6B | [ ] |
 | library/LibraryUI | 6C | [ ] |
 | skilltree/SkillTreeModal | 6C | [ ] |
-| story/* + dialog/DialogUI | 3 / 6D | [ ] |
+| story/* + dialog/DialogUI | 3 / 6D | [x] StoryPanel + Intro; DialogUI/branches 6D |
 | codex/CodexUI | 6D | [ ] |
 | relic/RelicHuntUI | 6E | [ ] |
 | tutorial/TutorialUI | 6F | [ ] |

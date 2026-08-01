@@ -1,4 +1,6 @@
-export type Locale = "de" | "en";
+import type { Locale } from "./types";
+
+export type { Locale };
 
 const BOOT_LABELS = {
   de: "Boot OK",

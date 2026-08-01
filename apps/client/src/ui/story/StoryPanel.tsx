@@ -1,0 +1,153 @@
+import { useState } from "preact/hooks";
+
+import type { GameSession } from "../../services/game-session";
+import { FloatingDamageOverlay } from "../combat/FloatingDamageOverlay";
+import { useStore } from "../useStore";
+import { StoryFightsIntro } from "./StoryFightsIntro";
+
+type Props = {
+  readonly session: GameSession;
+};
+
+export function StoryPanel({ session }: Props) {
+  const state = useStore(session.store);
+  const [showIntro, setShowIntro] = useState(!state.story.storyFightsIntroSeen);
+  const chapter = state.story.selectedChapter;
+  const bosses = session.story.getBossesForChapter(chapter);
+  const current = session.story.getCurrentBoss();
+  const battle = state.story.battle;
+
+  if (showIntro && !state.story.storyFightsIntroSeen) {
+    return (
+      <StoryFightsIntro
+        locale={state.settings.locale}
+        onDone={() => {
+          session.story.markIntroSeen();
+          setShowIntro(false);
+          void session.saveNow();
+        }}
+      />
+    );
+  }
+
+  return (
+    <section class="panel" data-testid="story-panel">
+      <h2 class="game__heading">{session.i18n.translate("hub.story")}</h2>
+      <p class="game__meta">
+        Kapitel {String(chapter)} · Fortschritt{" "}
+        {String(state.hero.prestige.bossProgress)}/100
+      </p>
+      <div class="game__actions">
+        <button
+          type="button"
+          class="game__btn"
+          disabled={chapter <= 1}
+          onClick={() => {
+            session.story.selectChapter(chapter - 1);
+          }}
+        >
+          ←
+        </button>
+        <button
+          type="button"
+          class="game__btn"
+          disabled={chapter >= 10}
+          onClick={() => {
+            session.story.selectChapter(chapter + 1);
+          }}
+        >
+          →
+        </button>
+        <button
+          type="button"
+          class="game__btn game__btn--primary"
+          data-testid="start-fight"
+          disabled={current === null || state.story.battleInProgress}
+          onClick={() => {
+            session.story.startBossFight();
+          }}
+        >
+          Kampf starten
+        </button>
+        {state.story.battleInProgress ? (
+          <button
+            type="button"
+            class="game__btn"
+            data-testid="flee-fight"
+            onClick={() => {
+              session.story.fleeBattle();
+            }}
+          >
+            Fliehen
+          </button>
+        ) : null}
+      </div>
+
+      <ul class="panel__list" data-testid="boss-list">
+        {bosses.map((boss) => {
+          const defeated = state.hero.prestige.defeatedBosses.includes(boss.id);
+          const isCurrent = current?.id === boss.id;
+          return (
+            <li key={boss.id} class={isCurrent ? "is-current" : undefined}>
+              #{String(boss.id)} {boss.name}
+              {defeated ? " ✓" : ""}
+              {isCurrent ? " ←" : ""}
+            </li>
+          );
+        })}
+      </ul>
+
+      {battle !== null ? (
+        <div class="battle" data-testid="battle-hud">
+          <FloatingDamageOverlay texts={battle.floatingTexts} />
+          <p class="game__meta">
+            Held {String(battle.heroHp)}/{String(battle.heroMaxHp)} ·{" "}
+            {battle.boss.name} {String(battle.bossHp)}/
+            {String(battle.bossMaxHp)}
+            {battle.activeEffects.isEnraged ? " · WUT" : ""}
+          </p>
+          <div class="hp">
+            <div
+              class="hp__fill hp__fill--hero"
+              style={{
+                width: `${String((battle.heroHp / battle.heroMaxHp) * 100)}%`,
+              }}
+            />
+          </div>
+          <div class="hp">
+            <div
+              class="hp__fill hp__fill--boss"
+              style={{
+                width: `${String((battle.bossHp / battle.bossMaxHp) * 100)}%`,
+              }}
+            />
+          </div>
+          <div class="game__actions">
+            {battle.spells.map((spell) => (
+              <button
+                key={spell.id}
+                type="button"
+                class="game__btn"
+                data-testid={`spell-${spell.id}`}
+                disabled={spell.cooldown > 0}
+                onClick={() => {
+                  session.story.castSpell(spell.id);
+                }}
+              >
+                {spell.name}
+                {spell.cooldown > 0
+                  ? ` (${String(Math.ceil(spell.cooldown / 1000))}s)`
+                  : ""}
+              </button>
+            ))}
+          </div>
+          <ul class="panel__list battle__log" data-testid="combat-log">
+            {battle.combatLog.map((entry, index) => (
+              <li key={`${entry.type}-${String(index)}`}>{entry.text}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </section>
+  );
+}

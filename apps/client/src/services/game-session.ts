@@ -14,7 +14,9 @@ import {
   type OfflineReport,
 } from "../state/game-state";
 import { createGatherService, type GatherService } from "./gather-service";
+import { createHeroService, type HeroService } from "./hero-service";
 import { createIdleService, type IdleService } from "./idle-service";
+import { createI18nService, type I18nService } from "./i18n-service";
 import {
   createOfflineProgressService,
   type OfflineProgressService,
@@ -26,6 +28,7 @@ import {
   type SaveStorage,
 } from "./save-storage";
 import { createSaveStore, type SaveStore } from "./save-store";
+import { createStoryService, type StoryService } from "./story-service";
 
 const log = createLogger("game-session");
 
@@ -35,6 +38,9 @@ export type GameSession = {
   readonly idle: IdleService;
   readonly gather: GatherService;
   readonly offline: OfflineProgressService;
+  readonly hero: HeroService;
+  readonly story: StoryService;
+  readonly i18n: I18nService;
   readonly saves: SaveStore;
   boot(): Promise<OfflineReport | null>;
   saveNow(): Promise<boolean>;
@@ -69,6 +75,9 @@ export function createGameSession(
   const idle = createIdleService(store, resources);
   const gather = createGatherService(store, resources);
   const offline = createOfflineProgressService(store, resources);
+  const hero = createHeroService(store);
+  const story = createStoryService(store, hero);
+  const i18n = createI18nService(store);
   const saves = createSaveStore(storage);
 
   let ticker: Ticker | null = null;
@@ -105,6 +114,9 @@ export function createGameSession(
     idle,
     gather,
     offline,
+    hero,
+    story,
+    i18n,
     saves,
 
     async boot() {
@@ -123,6 +135,7 @@ export function createGameSession(
         now: nowFn,
         onSlowTick: (payload: TickPayload) => {
           idle.processTick(payload.deltaMs);
+          story.processBattleTick(payload.deltaMs);
           touchActive(payload.timestamp);
         },
         ...(typeof requestAnimationFrame === "function"

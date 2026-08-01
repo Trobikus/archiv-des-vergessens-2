@@ -13,7 +13,7 @@ todos:
     status: completed
   - id: phase-3
     content: "Phase 3: Content-Pipeline + Combat/Story-Slice + i18n-Gates"
-    status: pending
+    status: in_progress
   - id: phase-4
     content: "Phase 4: Modularer Server + Auth + Cloud-Sync (vorher Freigabe)"
     status: pending
@@ -39,14 +39,14 @@ todos:
 ## Fortschritt (Stand 2026-08-01)
 
 **Fertig:** Phase 0 + Phase 1 + Phase 2.  
-**Als Nächstes:** Phase 3 — Content-Pipeline + Combat/Story-Slice + i18n-Gates.
+**In Arbeit:** Phase 3 — Content-Pipeline + Combat/Story-Slice + i18n-Gates.
 
 | Phase | Status | Nachweis |
 |---|---|---|
 | **0 Fundament** | ✅ fertig | Tag `v2-phase0`, PR [#1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1) merged |
 | **1 Kernel + Balancing** | ✅ fertig | Tag `v2-phase1`, Balancing-Snapshot-Gate |
 | **2 Vertical Slice** | ✅ fertig | Tag `v2-phase2` (Direct-Merge auf `main`), Klick/Tick/Save/Offline spielbar |
-| 3 Content + Kampf/Story | ⬜ offen | — |
+| 3 Content + Kampf/Story | 🔄 in Arbeit | Content/i18n-Gate, Combat-Sim, Hero/Story-UI |
 | 4 Server + Auth + Cloud | ⬜ offen (Freigabe nötig) | — |
 | 5 Tauri + E2E | ⬜ offen | — |
 | 6 Parität A–F | ⬜ offen | — |
@@ -179,8 +179,16 @@ Erledigt:
 - [x] Vitest Vertical-Slice-Tests (inkl. IndexedDB-Adapter) + `npm run gate`
 - [x] Playtest-Checkliste Phase 2 abgehakt
 
-### Phase 3 — Content + Kampf/Story (6–8 Tage) ⬜
+### Phase 3 — Content + Kampf/Story (6–8 Tage) 🔄
 `@adv/content` mit typisierten Records aus `js/data/`, i18n DE/EN mit Key-Gate, Combat/Loot in `@adv/sim`, Combat- + Hero-UI.
+
+Umgesetzt in diesem Branch:
+- [x] Items (inkl. Chapter-Uniques), Bosse, Story-Fights-Intro, Hero-Klassen
+- [x] i18n DE/EN + `tools/gates/i18n-keys.mjs`
+- [x] Combat-Math/EXP in `@adv/sim`
+- [x] Hero-/Story-/I18n-Services + Save-Felder
+- [x] CharacterSelect + HeroPanel + StoryPanel/Intro + FloatingDamage
+- [ ] Playtest abhaken + Tag `v2-phase3` nach Merge
 
 ### Phase 4 — Modularer Server + Auth + Cloud (Freigabe nötig) (7–9 Tage) ⬜
 Modularer WS-Server, Events in `@adv/protocol`, Auth (Guest/Register/Login/Token/convertGuest), Cloud-Save, User-Migration aus v1-Kopie (Dry-Run zuerst).
@@ -239,4 +247,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 2 erledigt. Als Nächstes Phase 3: Content + Kampf/Story + i18n-Gates.
+Phase 3 Branch mergen, Playtest abhaken, Tag `v2-phase3`. Danach Phase 4 nur mit Freigabe (Auth + Cloud).

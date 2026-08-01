@@ -13,7 +13,7 @@ todos:
     status: completed
   - id: phase-3
     content: "Phase 3: Content-Pipeline + Combat/Story-Slice + i18n-Gates"
-    status: pending
+    status: in_progress
   - id: phase-4
     content: "Phase 4: Modularer Server + Auth + Cloud-Sync (vorher Freigabe)"
     status: pending
@@ -39,14 +39,14 @@ todos:
 ## Fortschritt (Stand 2026-08-01)
 
 **Fertig:** Phase 0 + Phase 1 + Phase 2.  
-**Als Nächstes:** Phase 3 — Content-Pipeline + Combat/Story-Slice + i18n-Gates.
+**In Arbeit:** Phase 3 — Content-Pipeline + Combat/Story-Slice + i18n-Gates.
 
 | Phase | Status | Nachweis |
 |---|---|---|
 | **0 Fundament** | ✅ fertig | Tag `v2-phase0`, PR [#1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1) merged |
 | **1 Kernel + Balancing** | ✅ fertig | Tag `v2-phase1`, Balancing-Snapshot-Gate |
 | **2 Vertical Slice** | ✅ fertig | Tag `v2-phase2` (Direct-Merge auf `main`), Klick/Tick/Save/Offline spielbar |
-| 3 Content + Kampf/Story | ⬜ offen | — |
+| 3 Content + Kampf/Story | 🔄 in Arbeit | Content/i18n-Gate, Combat-Sim, Hero/Story-UI |
 | 4 Server + Auth + Cloud | ⬜ offen (Freigabe nötig) | — |
 | 5 Tauri + E2E | ⬜ offen | — |
 | 6 Parität A–F | ⬜ offen | — |
