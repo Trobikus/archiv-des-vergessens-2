@@ -1,0 +1,145 @@
+import { createEventBus, createStore } from "@adv/core";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+import { createInitialGameState } from "../state/game-state";
+import { createFriendService } from "./friend-service";
+import { createGameSession } from "./game-session";
+import { createMemorySaveStorage } from "./save-storage";
+
+describe("phase 7 social services", () => {
+  const sessions: Array<ReturnType<typeof createGameSession>> = [];
+
+  afterEach(() => {
+    for (const session of sessions) {
+      session.destroy();
+    }
+    sessions.length = 0;
+    vi.useRealTimers();
+  });
+
+  async function bootSession() {
+    const session = createGameSession({
+      storage: createMemorySaveStorage(),
+      useIndexedDb: false,
+      autosaveMs: 60_000,
+      connectNetwork: false,
+    });
+    sessions.push(session);
+    await session.boot();
+    session.store.setState((prev) => ({
+      ...prev,
+      hero: { ...prev.hero, name: "Tester" },
+    }));
+    return session;
+  }
+
+  it("friend add simulates accept for NPC names after 5s", () => {
+    vi.useFakeTimers();
+    const base = createInitialGameState();
+    const store = createStore({
+      initialState: {
+        ...base,
+        hero: { ...base.hero, name: "Tester" },
+      },
+    });
+    const eventBus = createEventBus();
+    const friends = createFriendService(store, eventBus);
+
+    const result = friends.addFriend("Eldor");
+    expect(result.success).toBe(true);
+    expect(friends.getSentRequests()).toHaveLength(1);
+    expect(friends.getFriends()).toHaveLength(0);
+
+    vi.advanceTimersByTime(5_000);
+
+    expect(friends.getSentRequests()).toHaveLength(0);
+    expect(friends.getFriends()).toHaveLength(1);
+    expect(friends.getFriends()[0]?.name).toBe("Eldor");
+
+    friends.destroy();
+    eventBus.destroy();
+    store.destroy();
+  });
+
+  it("friend accept/decline/cancel/remove work locally", async () => {
+    const session = await bootSession();
+    session.friends.simulateIncomingRequest("Chronos");
+    expect(session.friends.getPendingRequests()).toHaveLength(1);
+
+    expect(session.friends.declineFriendRequest("Chronos").success).toBe(true);
+    expect(session.friends.getPendingRequests()).toHaveLength(0);
+
+    session.friends.simulateIncomingRequest("Aria");
+    expect(session.friends.acceptFriend("Aria").success).toBe(true);
+    expect(session.friends.getFriends().some((f) => f.name === "Aria")).toBe(
+      true,
+    );
+
+    expect(session.friends.addFriend("Luminos").success).toBe(true);
+    expect(session.friends.cancelSentRequest("Luminos").success).toBe(true);
+    expect(session.friends.getSentRequests()).toHaveLength(0);
+
+    expect(session.friends.removeFriend("Aria").success).toBe(true);
+    expect(session.friends.getFriends()).toHaveLength(0);
+  });
+
+  it("clan recruit costs scale and deduct particles", async () => {
+    const session = await bootSession();
+    expect(session.clan.getRecruitCost("collector")).toBe(10);
+
+    session.resources.addParticles(100);
+    expect(session.clan.recruitMember("collector")).toBe(true);
+    expect(session.clan.getMembers()).toHaveLength(1);
+    expect(session.clan.getMembers()[0]?.role).toBe("collector");
+    expect(session.clan.getMembers()[0]?.baseCollectRate).toBe(2.0);
+    expect(session.store.getState().resources.particles).toBe(90n);
+    expect(session.clan.getRecruitCost("collector")).toBe(11);
+
+    expect(session.clan.recruitMember("collector")).toBe(true);
+    expect(session.clan.getRecruitCost("collector")).toBe(13);
+    expect(session.clan.getRecruitCost("weaver")).toBe(25);
+  });
+
+  it("chat falls back to local global messages when offline", async () => {
+    const session = await bootSession();
+    expect(session.ws.status()).not.toBe("open");
+
+    const result = session.chat.sendGlobal("Hallo Archiv");
+    expect(result.success).toBe(true);
+    const messages = session.chat.getGlobalMessages();
+    expect(messages).toHaveLength(1);
+    expect(messages[0]?.message).toBe("Hallo Archiv");
+    expect(messages[0]?.player).toBe("Tester");
+    expect(messages[0]?.type).toBe("global");
+
+    expect(session.chat.sendClan("Clan hallo").success).toBe(true);
+    expect(session.chat.getClanMessages()[0]?.type).toBe("clan");
+  });
+
+  it("leaderboard syncs prestige from ewigeMneme and bosses from bossProgress", async () => {
+    const session = await bootSession();
+    session.store.setState((prev) => ({
+      ...prev,
+      resources: { ...prev.resources, ewigeMneme: 3n },
+      hero: {
+        ...prev.hero,
+        level: 12,
+        prestige: { bossProgress: 7, defeatedBosses: [1, 2, 3, 4, 5, 6, 7] },
+      },
+    }));
+
+    session.leaderboard.syncFromState();
+    const records = session.leaderboard.getRecords();
+    expect(records.highestPrestige).toBe(3);
+    expect(records.totalBossesDefeated).toBe(7);
+    expect(records.highestLevel).toBe(12);
+    expect(records.highestChapterReached).toBe(1);
+
+    session.leaderboard.addEntry({ prestige: 5, bosses: 25, level: 20 });
+    const updated = session.leaderboard.getRecords();
+    expect(updated.highestPrestige).toBe(5);
+    expect(updated.totalBossesDefeated).toBe(25);
+    expect(updated.highestLevel).toBe(20);
+    expect(updated.highestChapterReached).toBe(3);
+  });
+});

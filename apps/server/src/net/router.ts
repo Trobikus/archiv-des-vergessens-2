@@ -6,13 +6,24 @@ import {
   type AuthHandlerDeps,
 } from "../modules/auth/handlers";
 import {
+  handleChatMessage,
+  type ChatHandlerDeps,
+} from "../modules/chat/handlers";
+import {
+  handleLeaderboardMessage,
+  type LeaderboardHandlerDeps,
+} from "../modules/leaderboard/handlers";
+import {
   handleSaveMessage,
   type SaveHandlerDeps,
 } from "../modules/save/handlers";
 import { sendJson } from "./send";
 import type { ClientSession } from "./session";
 
-export type RouterDeps = AuthHandlerDeps & SaveHandlerDeps;
+export type RouterDeps = AuthHandlerDeps &
+  SaveHandlerDeps &
+  ChatHandlerDeps &
+  LeaderboardHandlerDeps;
 
 export function routeMessage(
   ws: WebSocket,
@@ -39,6 +50,12 @@ export function routeMessage(
     return;
   }
   if (handleSaveMessage(ws, type, payload, session, deps)) {
+    return;
+  }
+  if (handleChatMessage(ws, type, payload, session, deps)) {
+    return;
+  }
+  if (handleLeaderboardMessage(ws, type, payload, session, deps)) {
     return;
   }
   sendJson(ws, WS_EVENTS.ERROR, {

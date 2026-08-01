@@ -8,7 +8,6 @@ const V2_TARGET_OVERRIDES: Record<string, string> = {
   "#hub-archive": '[data-testid="tab-idle"]',
   "#manual-gather-btn": '[data-testid="gather-click"]',
   "#upgrade-click-btn": '[data-testid="gather-upgrade"]',
-  "#clan-recruit-panel": '[data-testid="archiv-buy"]',
   "#back-to-hub-btn": '[data-testid="tab-idle"]',
   "#hub-hero": '[data-testid="tab-hero"]',
   "#hero-close": '[data-testid="tab-idle"]',

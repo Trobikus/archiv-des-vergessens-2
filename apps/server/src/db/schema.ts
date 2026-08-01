@@ -55,3 +55,40 @@ CREATE TABLE IF NOT EXISTS saves (
   timestamp INTEGER
 );
 `;
+
+export const LEADERBOARD_SCHEMA = `
+CREATE TABLE IF NOT EXISTS leaderboard (
+  userId TEXT PRIMARY KEY,
+  username TEXT,
+  prestige INTEGER,
+  bosses INTEGER,
+  level INTEGER,
+  timestamp INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_leaderboard_rank
+  ON leaderboard(prestige DESC, bosses DESC, level DESC);
+`;
+
+export const CHATS_SCHEMA = `
+CREATE TABLE IF NOT EXISTS chats (
+  id TEXT PRIMARY KEY,
+  player TEXT,
+  message TEXT,
+  timestamp INTEGER,
+  type TEXT,
+  guildId TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_chats_global
+  ON chats(type, timestamp DESC);
+`;
+
+export const MAX_CHAT_MESSAGE_LENGTH = 200;
+export const CHAT_HISTORY_LIMIT = 50;
+export const CHAT_PRUNE_KEEP = 500;
+export const LEADERBOARD_TOP_N = 10;
+export const MAX_LEADERBOARD_PRESTIGE = 99_999;
+export const MAX_LEADERBOARD_BOSSES = 999_999;
+export const MAX_LEADERBOARD_LEVEL = 100_000;
+export const LEADERBOARD_JUMP_PRESTIGE = 50;
+export const LEADERBOARD_JUMP_BOSSES = 200;
+export const LEADERBOARD_JUMP_LEVEL = 1000;
