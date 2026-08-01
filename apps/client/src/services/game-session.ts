@@ -20,6 +20,7 @@ import {
 } from "@adv/protocol";
 import { CONFIG } from "@adv/sim";
 
+import { getAppVersion } from "../app-version";
 import {
   createInitialGameState,
   gameStateFromPayload,
@@ -240,7 +241,12 @@ export function createGameSession(
   });
   const i18n = createI18nService(store);
   const saves = createSaveStore(storage);
-  const cloud = createCloudSyncService({ ws, auth, storage });
+  const cloud = createCloudSyncService({
+    ws,
+    auth,
+    storage,
+    appVersion: getAppVersion(),
+  });
 
   let ticker: Ticker | null = null;
   let frameBudget: FrameBudgetMonitor | null = null;

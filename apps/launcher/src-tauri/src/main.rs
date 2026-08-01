@@ -12,7 +12,8 @@ use std::process::Command;
 use tauri::{AppHandle, Emitter};
 
 const GITHUB_REPO: &str = "Trobikus/archiv-des-vergessens-2";
-const USER_AGENT_VALUE: &str = "ArchivDesVergessensLauncher/2.0";
+const USER_AGENT_VALUE: &str =
+    concat!("ArchivDesVergessensLauncher/", env!("CARGO_PKG_VERSION"));
 /// Ed25519 verifying key for portable ZIP signatures (v2 release key).
 const RELEASE_PUBKEY_HEX: &str = "1a8208b9aa60550ff38869657b82d88fdf330bb863ab1f1bf1fa7cd4a0cb55cb";
 const ZIP_ASSET_NAME: &str = "archiv-des-vergessens.zip";
@@ -276,7 +277,7 @@ fn get_installed_game_version() -> Result<Option<String>, String> {
         }
     }
 
-    Ok(Some("2.0.0".to_string()))
+    Ok(Some(env!("CARGO_PKG_VERSION").to_string()))
 }
 
 #[tauri::command]

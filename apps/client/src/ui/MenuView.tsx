@@ -1,3 +1,4 @@
+import { formatVersionLabel } from "../app-version";
 import type { GameSession } from "../services/game-session";
 import { AccountBadge } from "./auth/AccountBadge";
 import { useStore } from "./useStore";
@@ -392,7 +393,9 @@ export function MenuView({
         </nav>
       </div>
 
-      <footer class="menu-footer">{t("menu.version")}</footer>
+      <footer class="menu-footer">
+        {formatVersionLabel(t("menu.version"))}
+      </footer>
     </section>
   );
 }

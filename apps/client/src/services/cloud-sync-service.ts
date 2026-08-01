@@ -48,7 +48,8 @@ export function createCloudSyncService(
 ): CloudSyncService {
   let status: CloudSyncStatus = "idle";
   let lastError: string | null = null;
-  const version = options.appVersion ?? "2.0.0";
+  // Prefer explicit appVersion from game-session (root package.json via Vite).
+  const version = options.appVersion ?? "0.0.0-dev";
 
   const setError = (message: string): void => {
     status = "error";

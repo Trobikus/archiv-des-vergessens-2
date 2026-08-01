@@ -1,5 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 
+import { formatVersionLabel } from "../../app-version";
 import type { AuthService } from "../../services/auth-service";
 import type { I18nService } from "../../services/i18n-service";
 import type { WsClient } from "../../services/ws-client";
@@ -643,7 +644,9 @@ export function LoginView({
       </aside>
 
       <footer class="login-screen__footer">
-        <span class="login-screen__version text-muted">{t("menu.version")}</span>
+        <span class="login-screen__version text-muted">
+          {formatVersionLabel(t("menu.version"))}
+        </span>
         <div class="login-screen__langs">
           <button
             type="button"

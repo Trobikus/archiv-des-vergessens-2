@@ -6,7 +6,7 @@ export const DE = {
     'menu.continue': 'Weiter',
     'menu.options': 'Optionen',
     'menu.quit': 'Beenden',
-    'menu.version': 'Version 2.0.0 – AAA Overhaul',
+    'menu.version': 'Version {version}',
     'menu.loginPortal': 'LOGIN PORTAL',
     'menu.continueToMenu': 'Weiter zur Charakterauswahl',
     'menu.quitConfirm': 'Möchtest du das Spiel wirklich beenden?',

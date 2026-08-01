@@ -6,7 +6,7 @@ export const EN = {
     'menu.continue': 'Continue',
     'menu.options': 'Settings',
     'menu.quit': 'Exit Game',
-    'menu.version': 'Version 2.0.0 – AAA Overhaul',
+    'menu.version': 'Version {version}',
     'menu.loginPortal': 'LOGIN PORTAL',
     'menu.continueToMenu': 'Continue to Character Select',
     'menu.quitConfirm': 'Do you really want to quit the game?',

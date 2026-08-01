@@ -1,6 +1,22 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { defineConfig } from "vitest/config";
 
+const rootDir = dirname(fileURLToPath(import.meta.url));
+const rootPackage = JSON.parse(
+  readFileSync(join(rootDir, "package.json"), "utf8"),
+) as { readonly version?: string };
+const appVersion =
+  typeof rootPackage.version === "string" && rootPackage.version.length > 0
+    ? rootPackage.version
+    : "0.0.0-dev";
+
 export default defineConfig({
+  define: {
+    "import.meta.env.VITE_APP_VERSION": JSON.stringify(appVersion),
+  },
   test: {
     include: ["packages/*/src/**/*.test.ts", "apps/*/src/**/*.test.ts"],
     coverage: {

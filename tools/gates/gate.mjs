@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 const steps = [
   ["balancing-snapshot", "node tools/gates/balancing-snapshot.mjs"],
   ["i18n-keys", "node tools/gates/i18n-keys.mjs"],
+  ["version-parity", "node tools/gates/version-parity.mjs"],
   ["a11y-basis", "node tools/gates/a11y-basis.mjs"],
   ["perf-budgets", "node tools/gates/perf-budgets.mjs"],
   ["typecheck", "npm run typecheck"],
