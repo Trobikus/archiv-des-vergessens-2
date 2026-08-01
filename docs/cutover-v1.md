@@ -5,12 +5,13 @@ Procedure for switching production from `archiv-des-vergessens` (v1) to
 
 ## Preconditions
 
-1. `npm run gate` green on the release commit
+1. `npm run gate` green on the release commit (enforced by `.githooks/pre-push`
+   when pushing `v*.*.*` tags; release workflow does **not** re-run the gate)
 2. Desktop updater endpoint points at
    `https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest/download/latest.json`
 3. Signing secrets available in GitHub Actions:
    - `TAURI_PRIVATE_KEY`, `TAURI_KEY_PASSWORD` (NSIS / `latest.json`)
-   - `ED25519_PRIVATE_KEY` (portable ZIP hex key — same as v1 launcher)
+   - `ED25519_PRIVATE_KEY` (portable ZIP: 64-char hex seed matching launcher pubkey)
 4. Fresh backup of the live v1 `database.db`
 
 ## Account migration

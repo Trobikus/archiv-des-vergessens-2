@@ -1,5 +1,6 @@
 /**
  * Sign a portable release artifact with the Ed25519 private key in ./private.key (hex).
+ * Expected key: 32-byte seed as 64 lowercase/uppercase hex chars (no PEM/base64).
  * Usage: node tools/sign_release.mjs <path-to-file>
  */
 import crypto from "node:crypto";
@@ -24,6 +25,15 @@ if (!fs.existsSync(keyPath)) {
 }
 
 const privateKeyHex = fs.readFileSync(keyPath, "utf8").trim();
+if (!/^[0-9a-fA-F]{64}$/.test(privateKeyHex)) {
+  console.error(
+    "ED25519_PRIVATE_KEY / private.key muss genau 64 Hex-Zeichen sein (32-Byte-Seed).",
+  );
+  console.error(
+    `Erhalten: Länge ${privateKeyHex.length}, Format ${/^[0-9a-fA-F]+$/.test(privateKeyHex) ? "hex" : "nicht-hex"}.`,
+  );
+  process.exit(1);
+}
 
 const privDer = Buffer.concat([
   Buffer.from("302e020100300506032b657004220420", "hex"),

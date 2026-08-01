@@ -10,8 +10,28 @@ permissions:
   contents: write
 
 jobs:
-  release:
-    name: Build signed desktop + portable launcher
+  # Tag pushes: gate is mandatory locally via .githooks/pre-push.
+  # workflow_dispatch has no tag push — run gate here so it cannot be skipped.
+  gate:
+    name: Quality gate (workflow_dispatch only)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run gate
+        env:
+          SKIP_CLIPPY: "1"
+          SKIP_E2E: "1"
+
+  desktop:
+    name: Build signed desktop + portable ZIP
+    needs: [gate]
+    if: always() && (needs.gate.result == 'success' || needs.gate.result == 'skipped')
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,17 +49,10 @@ jobs:
       - name: Rust Cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: |
-            apps/desktop/src-tauri -> target
-            apps/launcher/src-tauri -> target
+          workspaces: apps/desktop/src-tauri -> target
+          shared-key: release-desktop-windows
 
       - run: npm ci
-
-      - name: Quality gate (no clippy/e2e — covered by ci.yml)
-        run: npm run gate
-        env:
-          SKIP_CLIPPY: "1"
-          SKIP_E2E: "1"
 
       - name: Build Tauri app + updater artifacts
         uses: tauri-apps/tauri-action@v0
@@ -92,6 +105,43 @@ jobs:
           node tools/sign_release.mjs apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip
           Remove-Item private.key -Force
 
+      - name: Upload portable assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          draft: true
+          files: |
+            apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip
+            apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip.sig
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  launcher:
+    name: Build Siegel-Portal launcher
+    needs: [gate]
+    if: always() && (needs.gate.result == 'success' || needs.gate.result == 'skipped')
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: apps/launcher/src-tauri -> target
+          shared-key: release-launcher-windows
+
+      - run: npm ci
+
       - name: Build Siegel-Portal launcher
         run: npm run launcher:build
 
@@ -103,14 +153,26 @@ jobs:
           if (-not (Test-Path $src)) { throw "Launcher EXE fehlt: $src" }
           Copy-Item $src $dst -Force
 
-      - name: Upload portable + launcher assets
+      - uses: actions/upload-artifact@v4
+        with:
+          name: launcher-exe
+          path: apps/launcher/src-tauri/target/release/ArchivDesVergessens-Launcher.exe
+          if-no-files-found: error
+
+  attach-launcher:
+    name: Attach launcher to release
+    needs: [desktop, launcher]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: launcher-exe
+
+      - name: Upload launcher asset
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           draft: true
-          files: |
-            apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip
-            apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip.sig
-            apps/launcher/src-tauri/target/release/ArchivDesVergessens-Launcher.exe
+          files: ArchivDesVergessens-Launcher.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

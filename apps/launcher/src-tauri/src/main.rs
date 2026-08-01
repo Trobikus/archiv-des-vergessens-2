@@ -12,8 +12,8 @@ use tauri::{AppHandle, Emitter};
 
 const GITHUB_REPO: &str = "Trobikus/archiv-des-vergessens-2";
 const USER_AGENT_VALUE: &str = "ArchivDesVergessensLauncher/2.0";
-/// Ed25519 verifying key for portable ZIP signatures (same key family as v1).
-const RELEASE_PUBKEY_HEX: &str = "8894761a4e3b7bbe5896bf6ef15ae2f13c1610b7248b992425ffb712a2adab08";
+/// Ed25519 verifying key for portable ZIP signatures (v2 release key).
+const RELEASE_PUBKEY_HEX: &str = "1a8208b9aa60550ff38869657b82d88fdf330bb863ab1f1bf1fa7cd4a0cb55cb";
 const ZIP_ASSET_NAME: &str = "archiv-des-vergessens.zip";
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

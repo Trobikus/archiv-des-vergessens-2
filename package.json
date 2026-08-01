@@ -10,6 +10,7 @@
     "tools/*"
   ],
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks",
     "build": "npm run build -w @adv/client",
     "dev:client": "npm run dev -w @adv/client",
     "dev:server": "npm run dev -w @adv/server",

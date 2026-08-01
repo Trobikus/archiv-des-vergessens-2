@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+# Enforce quality gate before pushing release tags (triggers .github/workflows/release.yml).
+# No bypass: every v*.*.* tag push must pass `npm run gate` locally first.
+
+set -e
+
+remote="$1"
+url="$2"
+
+release_tag_push=0
+while read -r local_ref local_sha remote_ref remote_sha
+do
+  case "$remote_ref" in
+    refs/tags/v*.*.*)
+      release_tag_push=1
+      echo "pre-push: release tag $remote_ref → running npm run gate (mandatory)"
+      ;;
+  esac
+done
+
+if [ "$release_tag_push" -eq 1 ]; then
+  npm run gate
+fi
+
+exit 0
