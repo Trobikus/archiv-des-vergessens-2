@@ -322,8 +322,15 @@ Cutover-Runbook: [`docs/cutover-v1.md`](docs/cutover-v1.md)
 
 Privates Studio-Projekt von **Grimoire Interactive** (Mneme-Bund).
 
-Lizenz: **proprietär — All Rights Reserved** → [`LICENSE`](LICENSE)  
-Offizielle Release-Builds dürfen persönlich und nicht-kommerziell gespielt werden; Source, Assets und Weitergabe sind ohne schriftliche Freigabe nicht gestattet.
+| Dokument | Inhalt |
+|---|---|
+| [`LICENSE`](LICENSE) | Proprietär — All Rights Reserved |
+| [`docs/legal/PRIVACY.md`](docs/legal/PRIVACY.md) | Datenschutz / Privacy Policy (DE + EN) |
+| [`docs/legal/EULA.md`](docs/legal/EULA.md) | Nutzungsbedingungen / EULA (DE + EN) |
+| [`docs/legal/THIRD_PARTY_NOTICES.md`](docs/legal/THIRD_PARTY_NOTICES.md) | OSS- & Dritthinweise |
+
+Offizielle Release-Builds dürfen persönlich und nicht-kommerziell gespielt werden; Source, Assets und Weitergabe sind ohne schriftliche Freigabe nicht gestattet.  
+Rechtliches: **grimoire.interactive@gmail.com**
 
 Repository: [github.com/Trobikus/archiv-des-vergessens-2](https://github.com/Trobikus/archiv-des-vergessens-2)
 
