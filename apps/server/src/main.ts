@@ -8,6 +8,8 @@ import { WebSocketServer, type WebSocket } from "ws";
 import { loadConfig, type ServerConfig } from "./config";
 import { openDatabase, type AppDatabase } from "./db/open";
 import { createRateLimiter } from "./modules/auth/rate-limit";
+import { sendChatHistory } from "./modules/chat/handlers";
+import { sendLeaderboardUpdate } from "./modules/leaderboard/handlers";
 import { isOriginAllowed, resolveClientIp } from "./net/origins";
 import { routeMessage } from "./net/router";
 import { createSessionStore } from "./net/session";
@@ -64,6 +66,11 @@ export function createGameServer(
     db,
     rateLimiter,
     cloudVersion: config.cloudVersion,
+    broadcastClients: () => wss.clients,
+    onAuthenticated: (ws: WebSocket) => {
+      sendChatHistory(ws, stmts);
+      sendLeaderboardUpdate(ws, stmts);
+    },
   };
 
   wss.on("connection", (ws: WebSocket, req) => {

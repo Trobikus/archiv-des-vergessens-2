@@ -10,3 +10,13 @@ export function sendJson(
   }
   ws.send(JSON.stringify({ type, payload }));
 }
+
+export function broadcastJson(
+  clients: Iterable<WebSocket>,
+  type: string,
+  payload: Record<string, unknown>,
+): void {
+  for (const client of clients) {
+    sendJson(client, type, payload);
+  }
+}

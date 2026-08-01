@@ -2,10 +2,13 @@ import {
   createDefaultAccountVaultSave,
   createDefaultAchievementsSave,
   createDefaultChallengesSave,
+  createDefaultClanSave,
   createDefaultCodexSave,
   createDefaultCraftingSave,
   createDefaultForgeSave,
+  createDefaultFriendsSave,
   createDefaultHeroSave,
+  createDefaultLeaderboardSave,
   createDefaultLibrarySave,
   createDefaultQuestsSave,
   createDefaultRelicHuntSave,
@@ -17,12 +20,16 @@ import {
   type AccountVaultSave,
   type AchievementsSave,
   type ChallengesSave,
+  type ChatMessage,
+  type ClanSave,
   type CodexSave,
   type CraftingSave,
   type EquipmentSave,
   type ForgeSave,
+  type FriendsSave,
   type HeroSave,
   type ItemSave,
+  type LeaderboardSave,
   type LibrarySave,
   type Phase2SavePayload,
   type QuestsSave,
@@ -63,6 +70,21 @@ export type OfflineReport = {
   readonly elapsedSeconds: number;
   readonly clampedSeconds: number;
   readonly mnemeGained: number;
+  readonly clanParticlesGained?: number;
+  readonly clanRelicsGained?: number;
+};
+
+export type ClanChatMessage = {
+  readonly id: string;
+  readonly player: string;
+  readonly message: string;
+  readonly timestamp: number;
+  readonly type: "clan";
+};
+
+export type ChatState = {
+  readonly global: readonly ChatMessage[];
+  readonly clan: readonly ClanChatMessage[];
 };
 
 export type StatBlock = StatBlockSave;
@@ -89,6 +111,9 @@ export type AccountVaultState = {
   readonly items: readonly ItemSave[];
 };
 export type TutorialState = TutorialSave;
+export type FriendsState = FriendsSave;
+export type ClanState = ClanSave;
+export type LeaderboardState = LeaderboardSave;
 
 export type CombatLogEntry = {
   readonly text: string;
@@ -150,6 +175,11 @@ export type GameState = {
   readonly relicHunt: RelicHuntState;
   readonly accountVault: AccountVaultState;
   readonly tutorial: TutorialState;
+  readonly friends: FriendsState;
+  readonly clan: ClanState;
+  readonly leaderboard: LeaderboardState;
+  /** Runtime-only; not persisted in save payload. */
+  readonly chat: ChatState;
   readonly meta: {
     readonly lastActiveAt: number;
     readonly lastSavedAt: number | null;
@@ -224,6 +254,10 @@ export function createInitialGameState(now = Date.now()): GameState {
     relicHunt: createDefaultRelicHuntSave(),
     accountVault: accountVaultFromSave(createDefaultAccountVaultSave()),
     tutorial: createDefaultTutorialSave(),
+    friends: createDefaultFriendsSave(),
+    clan: createDefaultClanSave(),
+    leaderboard: createDefaultLeaderboardSave(now),
+    chat: { global: [], clan: [] },
     meta: {
       lastActiveAt: now,
       lastSavedAt: null,
@@ -271,6 +305,9 @@ export function gameStateToPayload(state: GameState): Phase2SavePayload {
     relicHunt: state.relicHunt,
     accountVault: accountVaultToSave(state.accountVault),
     tutorial: state.tutorial,
+    friends: state.friends,
+    clan: state.clan,
+    leaderboard: state.leaderboard,
     meta: {
       lastActiveAt: state.meta.lastActiveAt,
     },
@@ -317,6 +354,10 @@ export function gameStateFromPayload(payload: Phase2SavePayload): GameState {
     relicHunt: payload.relicHunt,
     accountVault: accountVaultFromSave(payload.accountVault),
     tutorial: payload.tutorial,
+    friends: payload.friends,
+    clan: payload.clan,
+    leaderboard: payload.leaderboard,
+    chat: { global: [], clan: [] },
     meta: {
       lastActiveAt: payload.meta.lastActiveAt,
       lastSavedAt: null,

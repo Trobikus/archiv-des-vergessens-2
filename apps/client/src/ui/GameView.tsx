@@ -6,11 +6,15 @@ import { nextGedankenArchivCost } from "../services/idle-service";
 import type { GameSession } from "../services/game-session";
 import { AchievementPanel } from "./achievement/AchievementPanel";
 import { ChallengePanel } from "./challenge/ChallengePanel";
+import { ChatPanel } from "./chat/ChatPanel";
+import { ClanPanel } from "./clan/ClanPanel";
 import { CombatAnalyticsPanel } from "./combat/CombatAnalyticsPanel";
 import { CodexPanel } from "./codex/CodexPanel";
 import { CraftingPanel } from "./crafting/CraftingPanel";
 import { ForgePanel } from "./forge/ForgePanel";
+import { FriendsPanel } from "./friends/FriendsPanel";
 import { HeroPanel, type HeroSubTab } from "./hero/HeroPanel";
+import { LeaderboardPanel } from "./leaderboard/LeaderboardPanel";
 import { LibraryPanel } from "./library/LibraryPanel";
 import { QuestPanel } from "./quest/QuestPanel";
 import { RelicHuntPanel } from "./relic-hunt/RelicHuntPanel";
@@ -29,13 +33,15 @@ type CategoryId =
   | "story"
   | "missions"
   | "workshop"
-  | "collection";
+  | "collection"
+  | "social";
 
 type HeroNavId = HeroSubTab | "skilltree" | "vault";
 type StoryNavId = "fights" | "challenges" | "analytics";
 type MissionsNavId = "quests" | "achievements";
 type WorkshopNavId = "forge" | "crafting" | "library";
 type CollectionNavId = "relicHunt" | "codex";
+type SocialNavId = "chat" | "friends" | "clan" | "leaderboard";
 
 type CategoryDef = {
   readonly id: CategoryId;
@@ -50,6 +56,7 @@ const CATEGORIES: readonly CategoryDef[] = [
   { id: "missions", labelKey: "hub.missions", testId: "tab-missions" },
   { id: "workshop", labelKey: "hub.workshop", testId: "tab-workshop" },
   { id: "collection", labelKey: "hub.collection", testId: "tab-collection" },
+  { id: "social", labelKey: "hub.guild", testId: "tab-social" },
 ];
 
 export function GameView({ session }: Props) {
@@ -63,6 +70,7 @@ export function GameView({ session }: Props) {
   const [workshopNav, setWorkshopNav] = useState<WorkshopNavId>("forge");
   const [collectionNav, setCollectionNav] =
     useState<CollectionNavId>("relicHunt");
+  const [socialNav, setSocialNav] = useState<SocialNavId>("chat");
 
   const yieldPerSec = session.idle.getYieldPerSecond();
   const clickGain = session.gather.getClickGain();
@@ -250,11 +258,50 @@ export function GameView({ session }: Props) {
           </nav>
         ) : null}
 
-        {offline !== null && offline.mnemeGained > 0 ? (
+        {category === "social" ? (
+          <nav class="game__subtabs" aria-label={t("hub.guild")}>
+            {(
+              [
+                ["chat", "hub.chat", "tab-chat"],
+                ["friends", "hub.friends", "tab-friends"],
+                ["clan", "hub.clan", "tab-clan"],
+                ["leaderboard", "hub.leaderboard", "tab-leaderboard"],
+              ] as const
+            ).map(([id, key, testId]) => (
+              <button
+                key={id}
+                type="button"
+                class={
+                  socialNav === id ? "game__subtab is-active" : "game__subtab"
+                }
+                data-testid={testId}
+                aria-current={socialNav === id ? "page" : undefined}
+                onClick={() => {
+                  setSocialNav(id);
+                }}
+              >
+                {t(key)}
+              </button>
+            ))}
+          </nav>
+        ) : null}
+
+        {offline !== null &&
+        (offline.mnemeGained > 0 ||
+          (offline.clanParticlesGained ?? 0) > 0 ||
+          (offline.clanRelicsGained ?? 0) > 0) ? (
           <section class="game__offline" aria-live="polite">
             <p>
-              Offline {formatDuration(offline.clampedSeconds * 1000)} · +
-              {formatAmount(offline.mnemeGained)} Mneme-Fragmente
+              Offline {formatDuration(offline.clampedSeconds * 1000)}
+              {offline.mnemeGained > 0
+                ? ` · +${formatAmount(offline.mnemeGained)} Mneme-Fragmente`
+                : ""}
+              {(offline.clanParticlesGained ?? 0) > 0
+                ? ` · +${formatAmount(offline.clanParticlesGained ?? 0)} Clan-Partikel`
+                : ""}
+              {(offline.clanRelicsGained ?? 0) > 0
+                ? ` · +${formatAmount(offline.clanRelicsGained ?? 0)} Clan-Relikte`
+                : ""}
             </p>
             <button
               type="button"
@@ -315,6 +362,19 @@ export function GameView({ session }: Props) {
         ) : null}
         {category === "collection" && collectionNav === "codex" ? (
           <CodexPanel session={session} />
+        ) : null}
+
+        {category === "social" && socialNav === "chat" ? (
+          <ChatPanel session={session} />
+        ) : null}
+        {category === "social" && socialNav === "friends" ? (
+          <FriendsPanel session={session} />
+        ) : null}
+        {category === "social" && socialNav === "clan" ? (
+          <ClanPanel session={session} />
+        ) : null}
+        {category === "social" && socialNav === "leaderboard" ? (
+          <LeaderboardPanel session={session} />
         ) : null}
 
         {category === "archiv" ? (

@@ -26,7 +26,7 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 |---|---|---|
 | resource-service | 2 | [x] |
 | idle-service | 2 | [x] GedankenArchiv Slice |
-| offline-progress-service | 2 | [x] Idle-Offline (Clan später) |
+| offline-progress-service | 2 / 7 | [x] Idle-Offline + Clan-Produktion offline |
 | hero-service | 3 | [x] create/exp/stats/equip |
 | i18n-service | 3 | [x] DE/EN + key-gate |
 | story-service | 3 | [x] fight/spells/intro slice |
@@ -47,10 +47,10 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | tutorial-service | 6F | [x] |
 | auth-service | 4 | [x] |
 | network-service | 4 | [x] WsClient |
-| chat-service | 7 | [ ] |
-| friend-service | 7 | [ ] |
-| clan-service | 7 | [ ] |
-| leaderboard-service | 7 | [ ] |
+| chat-service | 7 | [x] |
+| friend-service | 7 | [x] local sim |
+| clan-service | 7 | [x] local idle / raid / expedition |
+| leaderboard-service | 7 | [x] personal + global WS |
 
 ## UI modules
 
@@ -79,10 +79,10 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | relic/RelicHuntUI | 6E | [x] RelicHuntPanel |
 | tutorial/TutorialUI | 6F | [x] |
 | account/* | 4 | [x] AccountBadge + convertGuest |
-| chat/ChatUI | 7 | [ ] |
-| friends/FriendsUI | 7 | [ ] |
-| clan/ClanUI | 7 | [ ] |
-| leaderboard/LeaderboardUI | 7 | [ ] |
+| chat/ChatUI | 7 | [x] ChatPanel |
+| friends/FriendsUI | 7 | [x] FriendsPanel |
+| clan/ClanUI | 7 | [x] ClanPanel (`#clan-recruit-panel`) |
+| leaderboard/LeaderboardUI | 7 | [x] LeaderboardPanel |
 | shared/* (modals, toasts, offline) | 2+ | [x] Offline-Report Banner (Phase 2) |
 | vault/VaultUI | 6E | [x] VaultPanel |
 

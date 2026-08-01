@@ -25,7 +25,7 @@ todos:
     status: completed
   - id: phase-7
     content: "Phase 7: Social/Live (Chat, Freunde, Clan, Leaderboard)"
-    status: pending
+    status: completed
   - id: phase-8
     content: "Phase 8: Härtung und Release 2.0.0"
     status: pending
@@ -38,8 +38,8 @@ todos:
 
 ## Fortschritt (Stand 2026-08-01)
 
-**Fertig:** Phase 0–6.
-**Als Nächstes:** Phase 7 — Social/Live.
+**Fertig:** Phase 0–7.
+**Als Nächstes:** Phase 8 — Härtung → Release 2.0.0.
 
 | Phase | Status | Nachweis |
 |---|---|---|
@@ -48,11 +48,11 @@ todos:
 | **2 Vertical Slice** | ✅ fertig | Tag `v2-phase2` (Direct-Merge auf `main`), Klick/Tick/Save/Offline spielbar |
 | **3 Content + Kampf/Story** | ✅ fertig | Content/i18n-Gate, Combat-Sim, Hero/Story-UI; Tag `v2-phase3` ausstehend |
 | **4 Server + Auth + Cloud** | ✅ Code fertig | WS-Server, Auth, Cloud-Envelope, User-Migration; Playtest/Tag offen |
-| **5 Tauri + E2E** | ✅ fertig | Shell, Updater-Config, Playwright-Smoke; Tag `v2-phase5` ausstehend |
-| **6 Parität A–F** | ✅ fertig | Hub-UI, Feature-Panels Wellen A–F, Tutorial/Intro/Settings-Parität |
-| 7 Social/Live | ⬜ offen | — |
-| 8 Release 2.0.0 | ⬜ offen | — |
-| 9 v1-Save-Importer | ⬜ optional | — |
+| **5 Tauri + E2E + Updater** | ✅ fertig | Desktop-Shell, Playwright, Updater-Pfad |
+| **6 Feature-Parität A–F** | ✅ fertig | Quests…Tutorial; Hub-Tabs |
+| **7 Social/Live** | ✅ Code fertig | Chat/LB Servermodule + Freunde/Clan lokal; Playtest/Tag offen |
+| **8 Härtung → 2.0.0** | ⬜ | Perf, a11y, Patch Notes, Cutover |
+| **9 v1-Importer** | ⬜ optional | |
 
 ### Was in Phase 0–1 geliefert wurde
 
@@ -225,8 +225,15 @@ Erledigt:
 - [x] E Relic Hunt / Account-Vault / Combat-Analytics
 - [x] F Tutorial / Intro / Settings
 
-### Phase 7 — Social/Live (5–7 Tage) ⬜
+### Phase 7 — Social/Live ✅
 Chat, Freunde, Clan, Leaderboard — Client + Servermodule, serverseitige Validierung.
+
+Erledigt:
+- [x] Protocol-Events + Validatoren (`chat:*`, `leaderboard:*`)
+- [x] Server: SQLite `chats` / `leaderboard`, Handler, Broadcast, Jump-Limits
+- [x] Client: Chat / Friends / Clan / Leaderboard Services + Hub-UI
+- [x] Save-Slices `friends` / `clan` / `leaderboard` (optional mit Defaults)
+- [x] Clan-Offline-Produktion; Freunde/Clan lokal wie v1
 
 ### Phase 8 — Härtung → Release 2.0.0 (4–6 Tage) ⬜
 Perf-Budgets, Leak-Tests, a11y-Basis, Patch Notes, Updater-Rollout, v1-Cutover.
@@ -246,7 +253,7 @@ graph LR
   P3 --> P4["P4 Server Auth Cloud WIP"]
   P4 --> P5["P5 Tauri E2E DONE"]
   P5 --> P6["P6 Paritaet A-F DONE"]
-  P6 --> P7["P7 Social ⬜"]
+  P6 --> P7["P7 Social DONE"]
   P7 --> P8["P8 Release 2.0.0 ⬜"]
   P8 -.optional.-> P9["P9 v1 Importer ⬜"]
 ```
@@ -268,4 +275,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 6 — Feature-Parität Wellen A–F. Tags `v2-phase3`/`v2-phase4`/`v2-phase5` bei Gelegenheit setzen; manueller `tauri:dev`-Playtest für Phase 5.
+Phase 8 — Härtung → Release 2.0.0. Tag `v2-phase7` bei Gelegenheit setzen; Social-Playtest (Chat/LB online, Clan/Freunde offline).

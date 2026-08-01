@@ -20,6 +20,15 @@ export const WS_EVENTS = {
   CLOUD_LOAD: "cloud:load",
   CLOUD_LOAD_SUCCESS: "cloud:load:success",
   CLOUD_LOAD_ERROR: "cloud:load:error",
+  CHAT_GLOBAL: "chat:global",
+  CHAT_GLOBAL_MESSAGE: "chat:globalMessage",
+  CHAT_GET_HISTORY: "chat:getHistory",
+  CHAT_HISTORY: "chat:history",
+  CHAT_ERROR: "chat:error",
+  LEADERBOARD_SUBMIT: "leaderboard:submit",
+  LEADERBOARD_GET: "leaderboard:get",
+  LEADERBOARD_UPDATE: "leaderboard:update",
+  LEADERBOARD_ERROR: "leaderboard:error",
   ERROR: "error",
 } as const;
 

@@ -32,6 +32,8 @@ import {
   createChallengeService,
   type ChallengeService,
 } from "./challenge-service";
+import { createChatService, type ChatService } from "./chat-service";
+import { createClanService, type ClanService } from "./clan-service";
 import {
   createCloudSyncService,
   type CloudSyncService,
@@ -54,10 +56,15 @@ import {
 } from "./daily-reward-service";
 import { createDialogService, type DialogService } from "./dialog-service";
 import { createForgeService, type ForgeService } from "./forge-service";
+import { createFriendService, type FriendService } from "./friend-service";
 import { createGatherService, type GatherService } from "./gather-service";
 import { createHeroService, type HeroService } from "./hero-service";
 import { createIdleService, type IdleService } from "./idle-service";
 import { createI18nService, type I18nService } from "./i18n-service";
+import {
+  createLeaderboardService,
+  type LeaderboardService,
+} from "./leaderboard-service";
 import { createLibraryService, type LibraryService } from "./library-service";
 import {
   createOfflineProgressService,
@@ -113,6 +120,10 @@ export type GameSession = {
   readonly library: LibraryService;
   readonly talents: TalentService;
   readonly challenges: ChallengeService;
+  readonly chat: ChatService;
+  readonly friends: FriendService;
+  readonly clan: ClanService;
+  readonly leaderboard: LeaderboardService;
   readonly i18n: I18nService;
   readonly saves: SaveStore;
   readonly ws: WsClient;
@@ -205,6 +216,12 @@ export function createGameSession(
   const auth = createAuthService({ ws });
   const accountVault = createAccountVaultService(store, eventBus, auth);
   const tutorial = createTutorialService(store, eventBus);
+  const friends = createFriendService(store, eventBus, { now: nowFn });
+  const clan = createClanService(store, eventBus, resources, library);
+  const chat = createChatService(store, eventBus, ws);
+  const leaderboard = createLeaderboardService(store, eventBus, ws, auth, {
+    now: nowFn,
+  });
   const i18n = createI18nService(store);
   const saves = createSaveStore(storage);
   const cloud = createCloudSyncService({ ws, auth, storage });
@@ -262,6 +279,10 @@ export function createGameSession(
     library,
     talents,
     challenges,
+    chat,
+    friends,
+    clan,
+    leaderboard,
     i18n,
     saves,
     ws,
@@ -319,6 +340,14 @@ export function createGameSession(
       quests.checkDailyReset();
       achievements.checkProgress();
       talents.syncPointsFromHeroLevel();
+      leaderboard.markSessionStart();
+      leaderboard.syncFromState();
+      if (ws.status() === "open") {
+        if (auth.isRegistered()) {
+          leaderboard.submit();
+        }
+        chat.getHistory();
+      }
 
       const tickerOptions = {
         logicIntervalMs: CONFIG.SYSTEM.LOGIC_TICK_MS,
@@ -327,6 +356,7 @@ export function createGameSession(
         onSlowTick: (payload: TickPayload) => {
           idle.processTick(payload.deltaMs);
           story.processBattleTick(payload.deltaMs);
+          clan.processTick(payload.deltaMs);
           touchActive(payload.timestamp);
         },
         ...(typeof requestAnimationFrame === "function"
@@ -421,6 +451,10 @@ export function createGameSession(
       dialog.destroy();
       accountVault.destroy();
       combatAnalytics.destroy();
+      chat.destroy();
+      friends.destroy();
+      clan.destroy();
+      leaderboard.destroy();
       eventBus.destroy();
       cloud.destroy();
       auth.destroy();

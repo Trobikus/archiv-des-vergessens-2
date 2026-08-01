@@ -2,7 +2,7 @@
 
 **Der Mneme-Bund** — Idle-/Progression-RPG als TypeScript-Monorepo (Client, Server, Desktop).
 
-Version `2.0.0` (Greenfield-Rewrite). Aktueller Stand: **Phase 0–6 abgeschlossen**. Als Nächstes: Social/Live (Phase 7) und Release-Härtung (Phase 8).
+Version `2.0.0` (Greenfield-Rewrite). Aktueller Stand: **Phase 0–7 abgeschlossen**. Als Nächstes: Release-Härtung (Phase 8).
 
 ---
 
@@ -13,7 +13,7 @@ Archiv des Vergessens ist ein atmosphärisches Idle-RPG mit Charakterfortschritt
 | Fläche | Paket | Rolle |
 |---|---|---|
 | Spiel-Client | `@adv/client` | Preact-UI, Game-Session, Save/Offline |
-| Live-Server | `@adv/server` | Auth, Cloud-Sync, WS-Protokoll |
+| Live-Server | `@adv/server` | Auth, Cloud-Sync, Chat, Leaderboard |
 | Desktop-Shell | `@adv/desktop` | Tauri 2 Fenster, Updater, Quit |
 | Simulation | `@adv/sim` | Balancing, Combat-/Idle-Mathe |
 | Kernel | `@adv/core` | Store, Events, Ticker, DI |

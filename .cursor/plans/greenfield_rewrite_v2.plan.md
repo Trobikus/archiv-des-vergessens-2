@@ -25,7 +25,7 @@ todos:
     status: pending
   - id: phase-7
     content: "Phase 7: Social/Live (Chat, Freunde, Clan, Leaderboard)"
-    status: pending
+    status: completed
   - id: phase-8
     content: "Phase 8: Härtung und Release 2.0.0"
     status: pending

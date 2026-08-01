@@ -112,7 +112,15 @@ export type AuthHandlerDeps = {
   readonly stmts: PreparedStatements;
   readonly db: AppDatabase;
   readonly rateLimiter: RateLimiter;
+  readonly onAuthenticated?: (ws: WebSocket) => void;
 };
+
+function notifyAuthenticated(
+  ws: WebSocket,
+  deps: AuthHandlerDeps,
+): void {
+  deps.onAuthenticated?.(ws);
+}
 
 export function handleAuthMessage(
   ws: WebSocket,
@@ -137,6 +145,7 @@ export function handleAuthMessage(
         userId: parsed.value.userId,
         username,
       });
+      notifyAuthenticated(ws, deps);
       return true;
     }
 
@@ -228,6 +237,7 @@ export function handleAuthMessage(
           userId,
           username: creds.username,
         });
+        notifyAuthenticated(ws, deps);
       } catch {
         sendJson(ws, WS_EVENTS.AUTH_REGISTER_ERROR, {
           error: authErrorKey("server_error"),
@@ -290,6 +300,7 @@ export function handleAuthMessage(
           userId: user.id,
           username: user.username,
         });
+        notifyAuthenticated(ws, deps);
       } catch {
         sendJson(ws, WS_EVENTS.AUTH_LOGIN_ERROR, {
           error: authErrorKey("server_error"),
@@ -330,6 +341,7 @@ export function handleAuthMessage(
           userId: user.id,
           username: user.username,
         });
+        notifyAuthenticated(ws, deps);
       } catch {
         sendJson(ws, WS_EVENTS.AUTH_VERIFY_TOKEN_ERROR, {
           error: "Session token invalid or expired.",
@@ -453,6 +465,7 @@ export function handleAuthMessage(
           userId,
           username: creds.username,
         });
+        notifyAuthenticated(ws, deps);
       } catch {
         sendJson(ws, WS_EVENTS.AUTH_CONVERT_GUEST_ERROR, {
           error: authErrorKey("server_error"),
