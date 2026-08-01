@@ -1,0 +1,140 @@
+/* ============================================================
+   FILE: styles/layout.css – App-Shell, Vignette, View-States (from v1)
+   Adapted for v2 scrollable SPA mount (#app).
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100vh;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  background-image: radial-gradient(circle at 50% 0%, #15151c 0%, #050507 80%);
+  cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M6,4 L24,12 L15,15 L11,24 Z' fill='%23ffffff' stroke='%23c5a059' stroke-width='1.5' filter='drop-shadow(0px 0px 3px rgba(197,160,89,0.8))'/%3E%3C/svg%3E")
+      6 4,
+    auto;
+}
+
+a,
+button,
+.glass-btn,
+.btn-small,
+.interactive,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+.tab-btn,
+.clickable,
+.item-slot,
+.loot-row,
+.nav-btn,
+.card,
+.boss-btn,
+.recipe-card,
+.upgrade-card,
+.wiki-link,
+.game__btn,
+.game__tab,
+.select__class,
+.auth__tab,
+.auth__submit,
+.auth__guest,
+.session-chrome__auth,
+.account__badge,
+.account__action {
+  cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='rgba(197,160,89,0.5)' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23ffffff' filter='drop-shadow(0px 0px 4px %23c5a059)'/%3E%3Cpath d='M16 2 L16 6 M16 26 L16 30 M2 16 L6 16 M26 16 L30 16' stroke='%23c5a059' stroke-width='1.5'/%3E%3C/svg%3E")
+      16 16,
+    pointer !important;
+}
+
+@supports not (-moz-appearance: none) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0a0c;
+    border-left: 1px solid #1a1a20;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2a2a35;
+    border: 1px solid #111;
+    border-radius: 2px;
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a35 #0a0a0c;
+}
+
+/* ---- Cinematic Vignette ---- */
+.vignette-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  background:
+    radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.95) 100%),
+    url("data:image/svg+xml;utf8,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+.fade-in {
+  animation: fadeInEffect 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeInEffect {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.fade-out {
+  animation: fadeOutEffect 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeOutEffect {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.98) translateY(-10px);
+  }
+}
+
+.center-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+}

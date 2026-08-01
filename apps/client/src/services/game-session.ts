@@ -159,6 +159,9 @@ export function createGameSession(
 
       const report = offline.applyOnBoot(nowFn());
 
+      // rAF only schedules frames; timestamps must stay on the same clock as
+      // `now` (Date.now). Passing rAF's performance.now values here previously
+      // made every slow delta negative, so idle income and autofight never ran.
       const tickerOptions = {
         logicIntervalMs: CONFIG.SYSTEM.LOGIC_TICK_MS,
         slowIntervalMs: CONFIG.SYSTEM.SLOW_TICK_MS,
@@ -171,7 +174,9 @@ export function createGameSession(
         ...(typeof requestAnimationFrame === "function"
           ? {
               scheduleFrame: (cb: (timestamp: number) => void) =>
-                requestAnimationFrame(cb),
+                requestAnimationFrame(() => {
+                  cb(nowFn());
+                }),
             }
           : {}),
         ...(typeof cancelAnimationFrame === "function"

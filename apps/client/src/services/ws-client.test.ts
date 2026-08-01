@@ -90,4 +90,22 @@ describe("ws-client", () => {
     client.close();
     expect(client.status()).toBe("disconnected");
   });
+
+  it("rejects connect when the socket closes during handshake", async () => {
+    const WsImpl = vi.fn(function WsImpl() {
+      const socket = new FakeSocket();
+      queueMicrotask(() => {
+        socket.emit("close");
+      });
+      return socket;
+    }) as unknown as typeof WebSocket;
+    Object.assign(WsImpl, { OPEN: 1 });
+
+    const client = createWsClient({
+      url: "ws://test",
+      WebSocketImpl: WsImpl,
+    });
+    await expect(client.connect()).rejects.toThrow("WebSocket connection failed");
+    expect(client.status()).toBe("disconnected");
+  });
 });

@@ -16,6 +16,10 @@ export function StoryPanel({ session }: Props) {
   const bosses = session.story.getBossesForChapter(chapter);
   const current = session.story.getCurrentBoss();
   const battle = state.story.battle;
+  const currentInView =
+    current !== null && bosses.some((boss) => boss.id === current.id);
+  const canStartFight =
+    current !== null && currentInView && !state.story.battleInProgress;
 
   if (showIntro && !state.story.storyFightsIntroSeen) {
     return (
@@ -24,6 +28,10 @@ export function StoryPanel({ session }: Props) {
         onDone={() => {
           session.story.markIntroSeen();
           setShowIntro(false);
+          const boss = session.story.getCurrentBoss();
+          if (boss !== null) {
+            session.story.selectChapter(boss.chapter);
+          }
           void session.saveNow();
         }}
       />
@@ -37,10 +45,23 @@ export function StoryPanel({ session }: Props) {
         Kapitel {String(chapter)} · Fortschritt{" "}
         {String(state.hero.prestige.bossProgress)}/100
       </p>
+      {current !== null ? (
+        <p class="game__meta" data-testid="next-boss">
+          Nächster Kampf: #{String(current.id)} {current.name}
+          {!currentInView
+            ? ` (Kapitel ${String(current.chapter)})`
+            : ""}
+        </p>
+      ) : (
+        <p class="game__meta" data-testid="next-boss">
+          Alle Bosse besiegt.
+        </p>
+      )}
       <div class="game__actions">
         <button
           type="button"
           class="game__btn"
+          data-testid="chapter-prev"
           disabled={chapter <= 1}
           onClick={() => {
             session.story.selectChapter(chapter - 1);
@@ -51,6 +72,7 @@ export function StoryPanel({ session }: Props) {
         <button
           type="button"
           class="game__btn"
+          data-testid="chapter-next"
           disabled={chapter >= 10}
           onClick={() => {
             session.story.selectChapter(chapter + 1);
@@ -58,11 +80,30 @@ export function StoryPanel({ session }: Props) {
         >
           →
         </button>
+        {!currentInView && current !== null ? (
+          <button
+            type="button"
+            class="game__btn"
+            data-testid="chapter-current"
+            onClick={() => {
+              session.story.selectChapter(current.chapter);
+            }}
+          >
+            Zum Kampf
+          </button>
+        ) : null}
         <button
           type="button"
           class="game__btn game__btn--primary"
           data-testid="start-fight"
-          disabled={current === null || state.story.battleInProgress}
+          disabled={!canStartFight}
+          title={
+            current === null
+              ? "Keine weiteren Bosse"
+              : !currentInView
+                ? `Nächster Boss ist in Kapitel ${String(current.chapter)}`
+                : undefined
+          }
           onClick={() => {
             session.story.startBossFight();
           }}

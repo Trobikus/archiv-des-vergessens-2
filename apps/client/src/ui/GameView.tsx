@@ -20,6 +20,11 @@ export function GameView({ session }: Props) {
   const clickGain = session.gather.getClickGain();
   const clickUpgradeCost = session.gather.getUpgradeCost();
   const archivCost = nextGedankenArchivCost(state);
+  const canUpgradeGather =
+    clickUpgradeCost > 0 &&
+    state.resources.particles >= BigInt(clickUpgradeCost);
+  const canBuyArchiv =
+    archivCost > 0 && state.resources.mnemeFragmente >= BigInt(archivCost);
   const offline = state.meta.offlineReport;
   const locale = state.settings.locale;
 
@@ -46,6 +51,12 @@ export function GameView({ session }: Props) {
             class={tab === id ? "game__tab is-active" : "game__tab"}
             data-testid={`tab-${id}`}
             onClick={() => {
+              if (id === "story") {
+                const boss = session.story.getCurrentBoss();
+                if (boss !== null) {
+                  session.story.selectChapter(boss.chapter);
+                }
+              }
               setTab(id);
             }}
           >
@@ -111,6 +122,12 @@ export function GameView({ session }: Props) {
                 type="button"
                 class="game__btn"
                 data-testid="gather-upgrade"
+                disabled={!canUpgradeGather}
+                title={
+                  canUpgradeGather
+                    ? undefined
+                    : `Benötigt ${formatAmount(clickUpgradeCost)} Partikel`
+                }
                 onClick={() => {
                   session.gather.upgradeClickPower();
                 }}
@@ -129,12 +146,21 @@ export function GameView({ session }: Props) {
             <p class="game__meta">
               Stufe {String(state.idleGenerators.gedankenArchiv.level)} ·{" "}
               {formatAmount(yieldPerSec)} / s
+              {state.idleGenerators.gedankenArchiv.level === 0
+                ? " · Idle aktiv nach erstem Ausbau"
+                : " · Idle läuft"}
             </p>
             <div class="game__actions">
               <button
                 type="button"
                 class="game__btn game__btn--primary"
                 data-testid="archiv-buy"
+                disabled={!canBuyArchiv}
+                title={
+                  canBuyArchiv
+                    ? undefined
+                    : `Benötigt ${formatAmount(archivCost)} Mneme-Fragmente`
+                }
                 onClick={() => {
                   session.idle.buyLevel(1);
                 }}

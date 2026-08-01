@@ -162,4 +162,74 @@ describe("phase-2 vertical slice", () => {
     expect(envelope.schemaVersion).toBe(1);
     expect(envelope.payload).toEqual(payload);
   });
+
+  it("runs idle ticks and battle autofight on the session clock", async () => {
+    let now = 50_000;
+    const frames: Array<() => void> = [];
+    const previousRaf = globalThis.requestAnimationFrame;
+    const previousCaf = globalThis.cancelAnimationFrame;
+    globalThis.requestAnimationFrame = ((cb: FrameRequestCallback) => {
+      frames.push(() => {
+        cb(now);
+      });
+      return frames.length;
+    }) as typeof requestAnimationFrame;
+    globalThis.cancelAnimationFrame = (() => undefined) as typeof cancelAnimationFrame;
+
+    try {
+      const session = createGameSession({
+        storage: createMemorySaveStorage(),
+        now: () => now,
+        autosaveMs: 60_000,
+        useIndexedDb: false,
+        connectNetwork: false,
+      });
+      sessions.push(session);
+      await session.boot();
+
+      session.resources.addMnemeFragmente(10);
+      expect(session.idle.buyLevel(1)).toBe(true);
+      expect(session.idle.getYieldPerSecond()).toBe(1);
+
+      // Drive ~1.5s of wall time through the rAF→now wrapper in game-session.
+      for (let i = 0; i < 6; i++) {
+        now += 250;
+        const frame = frames.shift();
+        expect(frame).toBeTypeOf("function");
+        frame?.();
+      }
+      expect(session.store.getState().resources.mnemeFragmente).toBeGreaterThan(
+        0n,
+      );
+
+      session.hero.createHero({ name: "Ticker", classId: "light_warrior" });
+      session.story.markIntroSeen();
+      expect(session.story.startBossFight()).toBe(true);
+      const hpBefore =
+        session.store.getState().story.battle?.bossHp ?? Number.NaN;
+
+      for (let i = 0; i < 4; i++) {
+        now += 500;
+        frames.shift()?.();
+      }
+      const battle = session.store.getState().story.battle;
+      const progressed =
+        battle === null ||
+        (battle.bossHp < hpBefore && battle.combatLog.length > 1);
+      expect(progressed).toBe(true);
+      session.destroy();
+      sessions.length = 0;
+    } finally {
+      if (previousRaf !== undefined) {
+        globalThis.requestAnimationFrame = previousRaf;
+      } else {
+        Reflect.deleteProperty(globalThis, "requestAnimationFrame");
+      }
+      if (previousCaf !== undefined) {
+        globalThis.cancelAnimationFrame = previousCaf;
+      } else {
+        Reflect.deleteProperty(globalThis, "cancelAnimationFrame");
+      }
+    }
+  });
 });

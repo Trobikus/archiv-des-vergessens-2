@@ -1,0 +1,100 @@
+/* ============================================================
+   FILE: css/animations.css – Float-Text, Toasts, etc.
+   ============================================================ */
+
+/* ---- Floating Text ---- */
+.float-text {
+    position: fixed;
+    pointer-events: none;
+    font-family: var(--font-header);
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--color-gold);
+    text-shadow: 0 0 20px var(--color-gold-glow), 0 2px 10px rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    animation: floatUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    letter-spacing: 1px;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(0.8);
+    }
+    30% {
+        opacity: 1;
+        transform: translateY(-20px) scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-80px) scale(1);
+    }
+}
+
+/* ---- Toasts ---- */
+.toast-item {
+    animation: slideInToast 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideInToast {
+    from {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutToast {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+}
+
+/* ---- Spinner Animation ---- */
+.loading-spinner {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---- Auth Error & Banner Animations ---- */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes error-shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.error-shake {
+  animation: slideIn 0.3s ease-out, error-shake 0.5s ease-in-out;
+}
+
+.auth-error-box button:hover {
+  opacity: 1 !important;
+}

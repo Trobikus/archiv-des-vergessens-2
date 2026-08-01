@@ -1,0 +1,43 @@
+/* ============================================================
+   FILE: css/variables.css – Globale CSS-Variablen (AAA)
+   ============================================================ */
+
+:root {
+    /* ---- Farben: Abyss & Gold ---- */
+    --color-bg: #050507;
+    --color-surface: #0a0a0e;
+    --color-surface-light: #12121a;
+    --color-panel-inner: rgba(18, 18, 22, 0.6);
+
+    /* Tarnished Gold */
+    --color-gold: #c5a059;
+    --color-gold-hover: #ebd576;
+    --color-gold-glow: rgba(197, 160, 89, 0.4);
+
+    /* Accents */
+    --color-blue: #4a8b99;
+    --color-blue-hover: #6fb5c7;
+    --color-success: #3a7a45;
+    --color-danger: #8b1c1c;
+    --color-danger-glow: rgba(139, 28, 28, 0.5);
+    --color-dust: #8b7b9e;
+
+    /* Text */
+    --color-text-main: #d1d1d6;
+    --color-text-muted: #6e6e7a;
+    --color-text-disabled: #3a3a42;
+
+    /* Borders & Radius */
+    --border-glass: 1px solid rgba(197, 160, 89, 0.15);
+    --border-highlight: 1px solid rgba(197, 160, 89, 0.4);
+    --border-radius-lg: 4px;
+    --border-radius-md: 2px;
+    --border-radius-sm: 0px;
+
+    /* Fonts */
+    --font-body: 'Inter', sans-serif;
+    --font-header: 'Cinzel', serif;
+
+    /* Transitions */
+    --transition-default: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}

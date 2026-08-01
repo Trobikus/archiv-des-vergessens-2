@@ -55,4 +55,61 @@ describe("Ticker", () => {
     ticker.stop();
     ticker.destroy();
   });
+
+  it("fires slow ticks when scheduleFrame uses the same clock as now()", () => {
+    let wall = 1_000_000;
+    const slow = vi.fn();
+    const frames: Array<() => void> = [];
+    const ticker = createTicker({
+      logicIntervalMs: 100,
+      slowIntervalMs: 500,
+      maxDeltaMs: 100,
+      now: () => wall,
+      scheduleFrame: (cb) => {
+        frames.push(() => {
+          cb(wall);
+        });
+        return frames.length;
+      },
+      cancelFrame: () => undefined,
+      onSlowTick: slow,
+    });
+
+    ticker.start();
+    // Advance wall clock between frames (mirrors game-session rAF wrapper).
+    wall += 250;
+    frames.shift()?.();
+    wall += 250;
+    frames.shift()?.();
+    wall += 250;
+    frames.shift()?.();
+
+    expect(slow.mock.calls.length).toBeGreaterThanOrEqual(1);
+    ticker.destroy();
+  });
+
+  it("does not fire slow ticks when schedule timestamps regress vs now()", () => {
+    const slow = vi.fn();
+    const frames: Array<(t: number) => void> = [];
+    // Seed with Date.now-scale, then feed performance.now-scale (the old bug).
+    const ticker = createTicker({
+      logicIntervalMs: 100,
+      slowIntervalMs: 500,
+      maxDeltaMs: 100,
+      now: () => 1_700_000_000_000,
+      scheduleFrame: (cb) => {
+        frames.push(cb);
+        return frames.length;
+      },
+      cancelFrame: () => undefined,
+      onSlowTick: slow,
+    });
+
+    ticker.start();
+    frames.shift()?.(16);
+    frames.shift()?.(32);
+    frames.shift()?.(548);
+    expect(slow).not.toHaveBeenCalled();
+    ticker.destroy();
+  });
 });

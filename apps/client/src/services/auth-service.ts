@@ -173,8 +173,25 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
         log.warn(
           `ws connect failed: ${cause instanceof Error ? cause.message : String(cause)}`,
         );
-        await this.playAsGuest();
-        store.setState((prev) => ({ ...prev, ready: true }));
+        // Stay offline — do not retry connect() here; a second handshake
+        // race can leave boot hanging when the server rejects the socket.
+        const id = this.guestId();
+        const guestUser: AuthUser = {
+          id,
+          username: "Gast",
+          email: null,
+          avatar: "A",
+          createdAt: Date.now(),
+          lastLogin: Date.now(),
+          isGuest: true,
+        };
+        persistSession(guestUser, "");
+        store.setState((prev) => ({
+          ...prev,
+          token: null,
+          user: guestUser,
+          ready: true,
+        }));
         return;
       }
 

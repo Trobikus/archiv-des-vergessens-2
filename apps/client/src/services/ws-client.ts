@@ -92,30 +92,65 @@ export function createWsClient(options: WsClientOptions = {}): WsClient {
       }
       setStatus("connecting");
       return new Promise<void>((resolve, reject) => {
+        let connection: WebSocket;
         try {
-          socket = new WsImpl(url);
+          connection = new WsImpl(url);
+          socket = connection;
         } catch (cause) {
           setStatus("disconnected");
           reject(cause instanceof Error ? cause : new Error(String(cause)));
           return;
         }
-        socket.addEventListener("open", () => {
-          setStatus("open");
-          resolve();
+        let settled = false;
+        const settle = (fn: () => void): void => {
+          if (settled) {
+            return;
+          }
+          settled = true;
+          fn();
+        };
+        const isCurrent = (): boolean => socket === connection;
+
+        connection.addEventListener("open", () => {
+          if (!isCurrent()) {
+            return;
+          }
+          settle(() => {
+            setStatus("open");
+            resolve();
+          });
         });
-        socket.addEventListener("message", (event) => {
+        connection.addEventListener("message", (event) => {
+          if (!isCurrent()) {
+            return;
+          }
           if (typeof event.data === "string") {
             dispatch(event.data);
           }
         });
-        socket.addEventListener("close", () => {
+        connection.addEventListener("close", () => {
+          if (!isCurrent()) {
+            return;
+          }
+          const wasConnecting = status === "connecting";
           setStatus("disconnected");
           socket = null;
+          // Handshake failures often emit close without a usable error.
+          if (wasConnecting) {
+            settle(() => {
+              reject(new Error("WebSocket connection failed"));
+            });
+          }
         });
-        socket.addEventListener("error", () => {
+        connection.addEventListener("error", () => {
+          if (!isCurrent()) {
+            return;
+          }
           if (status === "connecting") {
             setStatus("disconnected");
-            reject(new Error("WebSocket connection failed"));
+            settle(() => {
+              reject(new Error("WebSocket connection failed"));
+            });
           }
         });
       });
