@@ -1,6 +1,10 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { createWsClient } from "./ws-client";
+import {
+  createWsClient,
+  defaultWsUrl,
+  RELEASE_WS_URL,
+} from "./ws-client";
 
 class FakeSocket {
   static OPEN = 1;
@@ -50,6 +54,31 @@ class FakeSocket {
     this.emit("open");
   }
 }
+
+describe("defaultWsUrl", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("uses the v1 live WSS endpoint as the release default", () => {
+    expect(RELEASE_WS_URL).toBe("wss://grimoireinteractive.duckdns.org");
+  });
+
+  it("honors a localStorage override", () => {
+    const store = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: (key: string) => store.get(key) ?? null,
+      setItem: (key: string, value: string) => {
+        store.set(key, value);
+      },
+      removeItem: (key: string) => {
+        store.delete(key);
+      },
+    });
+    localStorage.setItem("archiv_server_url", "ws://custom.example:9");
+    expect(defaultWsUrl()).toBe("ws://custom.example:9");
+  });
+});
 
 describe("ws-client", () => {
   it("connects, sends, and dispatches typed messages", async () => {

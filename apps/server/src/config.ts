@@ -18,6 +18,11 @@ const DEFAULT_ORIGINS = [
   "http://localhost:8080",
   "http://localhost:3000",
   "tauri://localhost",
+  // Live release origins (same allow-list as v1)
+  "https://archiv-des-vergessens.de",
+  "https://api.archiv-des-vergessens.de",
+  "https://grimoireinteractive.duckdns.org",
+  "wss://grimoireinteractive.duckdns.org",
 ] as const;
 
 export function loadConfig(

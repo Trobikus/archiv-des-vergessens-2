@@ -60,6 +60,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+          # Bake live WSS endpoint (TLS via nginx/Let's Encrypt) into the client
+          VITE_WS_URL: wss://grimoireinteractive.duckdns.org
         with:
           projectPath: apps/desktop
           tagName: ${{ github.ref_name }}
