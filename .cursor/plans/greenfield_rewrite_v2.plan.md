@@ -28,7 +28,7 @@ todos:
     status: completed
   - id: phase-8
     content: "Phase 8: Härtung und Release 2.0.0"
-    status: pending
+    status: completed
   - id: phase-9
     content: "Phase 9 (optional): v1-Save-Importer"
     status: pending
@@ -38,8 +38,8 @@ todos:
 
 ## Fortschritt (Stand 2026-08-01)
 
-**Fertig:** Phase 0–7.  
-**Als Nächstes:** Phase 8 — Härtung → Release 2.0.0.
+**Fertig:** Phase 0–8.
+**Als Nächstes:** optional Phase 9 — v1-Save-Importer; Tag `v2.0.0`.
 
 | Phase | Status | Nachweis |
 |---|---|---|
@@ -51,7 +51,7 @@ todos:
 | **5 Tauri + E2E** | ✅ fertig | Tauri 2 Shell, Playwright Smoke, Updater 2.0.0 |
 | **6 Parität A–F** | ✅ fertig | Feature-Wellen A–F + Hub-UI |
 | **7 Social/Live** | ✅ fertig | Tag `v2-phase7`, Chat/LB online, Freunde/Clan lokal |
-| 8 Release 2.0.0 | ⬜ offen | — |
+| **8 Release 2.0.0** | ✅ fertig | Perf-Budgets, a11y, Updater-Rollout, Cutover-Docs |
 | 9 v1-Save-Importer | ⬜ optional | — |
 
 ### Was in Phase 0–1 geliefert wurde
@@ -200,7 +200,7 @@ Desktop-Shell ohne lokale Save-DB; Identifier + Updater-Key aus v1; Playwright-S
 Chat, Freunde, Clan, Leaderboard — Client + Servermodule, serverseitige Validierung.
 Protocol-Events/`chat:*`/`leaderboard:*`, SQLite, Jump-Limits, Hub-UI, Save-Slices, Offline-Clan; Client-Error-UX für `chat:error` / `leaderboard:error`.
 
-### Phase 8 — Härtung → Release 2.0.0 (4–6 Tage) ⬜
+### Phase 8 — Härtung → Release 2.0.0 (4–6 Tage) ✅
 Perf-Budgets, Leak-Tests, a11y-Basis, Patch Notes, Updater-Rollout, v1-Cutover.
 
 ### Phase 9 (optional) — v1-Save-Importer ⬜
@@ -240,4 +240,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 7 erledigt. Als Nächstes Phase 8: Härtung → Release 2.0.0.
+Phase 8 erledigt. Als Nächstes: Release-Tag / optional Phase 9.

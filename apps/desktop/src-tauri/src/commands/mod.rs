@@ -23,13 +23,23 @@ pub fn show_main_window(app: AppHandle) {
     }
 }
 
-/// Validates that the URL points at the GitHub repository.
-pub fn validate_release_url(url: Option<String>) -> Result<String, String> {
-    let target_url = url.unwrap_or_else(|| {
-        "https://github.com/Trobikus/archiv-des-vergessens/releases/latest".to_string()
-    });
+const RELEASE_DEFAULT: &str =
+    "https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest";
 
-    if !target_url.starts_with("https://github.com/Trobikus/archiv-des-vergessens") {
+/// Validates that the URL points at the v2 (or legacy v1) GitHub repository.
+pub fn validate_release_url(url: Option<String>) -> Result<String, String> {
+    let target_url = url.unwrap_or_else(|| RELEASE_DEFAULT.to_string());
+
+    let allowed = target_url.starts_with(
+        "https://github.com/Trobikus/archiv-des-vergessens-2",
+    ) || target_url.starts_with("https://github.com/Trobikus/archiv-des-vergessens/");
+
+    // Exact v1 root without trailing slash (legacy bookmarks).
+    let allowed = allowed
+        || target_url == "https://github.com/Trobikus/archiv-des-vergessens"
+        || target_url.starts_with("https://github.com/Trobikus/archiv-des-vergessens?");
+
+    if !allowed {
         return Err("Ungültige URL".into());
     }
 
@@ -53,9 +63,25 @@ mod tests {
     use super::validate_release_url;
 
     #[test]
-    fn default_url_is_accepted() {
+    fn default_url_is_v2() {
         let url = validate_release_url(None).expect("default release url");
-        assert!(url.starts_with("https://github.com/Trobikus/archiv-des-vergessens"));
+        assert_eq!(
+            url,
+            "https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest"
+        );
+    }
+
+    #[test]
+    fn v1_and_v2_urls_are_accepted() {
+        assert!(validate_release_url(Some(
+            "https://github.com/Trobikus/archiv-des-vergessens-2/releases/tag/v2.0.0"
+                .into()
+        ))
+        .is_ok());
+        assert!(validate_release_url(Some(
+            "https://github.com/Trobikus/archiv-des-vergessens/releases/latest".into()
+        ))
+        .is_ok());
     }
 
     #[test]

@@ -20,8 +20,11 @@ npm run build -w @adv/desktop   # production shell (needs client build)
 
 ## Identifier / updater
 
-Ported from v1: `com.grimoire.archivdesvergessens` + minisign pubkey + GitHub `latest.json` endpoint.
-Signed updater artifacts land in Phase 8 (`createUpdaterArtifacts` stays off until then).
+Ported from v1: `com.grimoire.archivdesvergessens` + minisign pubkey.
+Updater feed (Phase 8 cutover):
+`https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest/download/latest.json`
+with `bundle.active` + `createUpdaterArtifacts` enabled (NSIS). Release workflow:
+`.github/workflows/release.yml`.
 
 ## Desktop feel (browser chrome lockdown)
 

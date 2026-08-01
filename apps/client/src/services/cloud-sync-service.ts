@@ -48,7 +48,7 @@ export function createCloudSyncService(
 ): CloudSyncService {
   let status: CloudSyncStatus = "idle";
   let lastError: string | null = null;
-  const version = options.appVersion ?? "2.0.0-phase5";
+  const version = options.appVersion ?? "2.0.0";
 
   const setError = (message: string): void => {
     status = "error";

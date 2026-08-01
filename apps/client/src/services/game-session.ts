@@ -1,9 +1,11 @@
 import {
   createEventBus,
+  createFrameBudgetMonitor,
   createLogger,
   createStore,
   createTicker,
   type EventBus,
+  type FrameBudgetMonitor,
   type Store,
   type Ticker,
   type TickPayload,
@@ -227,8 +229,21 @@ export function createGameSession(
   const cloud = createCloudSyncService({ ws, auth, storage });
 
   let ticker: Ticker | null = null;
+  let frameBudget: FrameBudgetMonitor | null = null;
   let autosaveTimer: ReturnType<typeof setInterval> | null = null;
   let destroyed = false;
+
+  const setVisualDegraded = (degraded: boolean): void => {
+    store.setState((prev) => {
+      if (prev.meta.visualDegraded === degraded) {
+        return prev;
+      }
+      return {
+        ...prev,
+        meta: { ...prev.meta, visualDegraded: degraded },
+      };
+    });
+  };
 
   const touchActive = (timestamp: number): void => {
     store.setState((prev) => ({
@@ -349,10 +364,24 @@ export function createGameSession(
         chat.getHistory();
       }
 
+      frameBudget = createFrameBudgetMonitor({
+        onDegrade: () => {
+          setVisualDegraded(true);
+          log.warn("frame budget exceeded — visual degradation on");
+        },
+        onRecover: () => {
+          setVisualDegraded(false);
+          log.info("frame budget recovered — visual degradation off");
+        },
+      });
+
       const tickerOptions = {
         logicIntervalMs: CONFIG.SYSTEM.LOGIC_TICK_MS,
         slowIntervalMs: CONFIG.SYSTEM.SLOW_TICK_MS,
         now: nowFn,
+        onFrame: (payload: TickPayload) => {
+          frameBudget?.sample(payload.deltaMs);
+        },
         onSlowTick: (payload: TickPayload) => {
           idle.processTick(payload.deltaMs);
           story.processBattleTick(payload.deltaMs);
@@ -441,6 +470,8 @@ export function createGameSession(
       destroyed = true;
       ticker?.destroy();
       ticker = null;
+      frameBudget?.reset();
+      frameBudget = null;
       if (autosaveTimer !== null) {
         clearInterval(autosaveTimer);
         autosaveTimer = null;

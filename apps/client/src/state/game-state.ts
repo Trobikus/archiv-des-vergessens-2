@@ -185,6 +185,8 @@ export type GameState = {
     readonly lastSavedAt: number | null;
     readonly bootstrapped: boolean;
     readonly offlineReport: OfflineReport | null;
+    /** Runtime-only: frame-budget degradation (particles / floaters off). */
+    readonly visualDegraded: boolean;
   };
 };
 
@@ -263,6 +265,7 @@ export function createInitialGameState(now = Date.now()): GameState {
       lastSavedAt: null,
       bootstrapped: false,
       offlineReport: null,
+      visualDegraded: false,
     },
   };
 }
@@ -363,6 +366,7 @@ export function gameStateFromPayload(payload: Phase2SavePayload): GameState {
       lastSavedAt: null,
       bootstrapped: true,
       offlineReport: null,
+      visualDegraded: false,
     },
   };
 }

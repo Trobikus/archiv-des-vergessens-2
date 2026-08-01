@@ -58,3 +58,16 @@ export {
   type TickerOptions,
   type TickPayload,
 } from "./ticker";
+export {
+  createObjectPool,
+  ObjectPool,
+  type ObjectPoolOptions,
+} from "./object-pool";
+export {
+  PERFORMANCE_BUDGETS,
+  createFrameBudgetMonitor,
+  FrameBudgetMonitor,
+  trimToBudget,
+  type FrameBudgetOptions,
+  type PerformanceBudgets,
+} from "./performance-budget";

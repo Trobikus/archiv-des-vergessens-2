@@ -155,7 +155,7 @@ describe("server auth + cloud", () => {
     first.send(
       JSON.stringify({
         type: "cloud:save",
-        payload: { envelope, version: "2.0.0-phase5" },
+        payload: { envelope, version: "2.0.0" },
       }),
     );
     const saved = await waitForMessage(first, [
@@ -176,7 +176,7 @@ describe("server auth + cloud", () => {
     first.send(
       JSON.stringify({
         type: "cloud:save",
-        payload: { envelope, version: "2.0.0-phase5" },
+        payload: { envelope, version: "2.0.0" },
       }),
     );
     const denied = await waitForMessage(first, ["cloud:save:error"]);

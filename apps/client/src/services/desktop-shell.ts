@@ -1,6 +1,7 @@
 import { createLogger } from "@adv/core";
 
 import type { GameSession } from "./game-session";
+import { checkForDesktopUpdate } from "./updater-service";
 
 const log = createLogger("desktop-shell");
 
@@ -41,6 +42,11 @@ export async function initDesktopShell(
   }
 
   void tauri.core?.invoke?.("show_main_window");
+  void checkForDesktopUpdate().then((result) => {
+    if (result.status === "available") {
+      log.info(`desktop update ready: ${result.version}`);
+    }
+  });
 
   try {
     return await tauri.event.listen("app:quit-requested", () => {

@@ -72,6 +72,7 @@ describe("phase-2 vertical slice", () => {
           lastSavedAt: null,
           bootstrapped: false,
           offlineReport: null,
+          visualDegraded: false,
         },
       },
     });

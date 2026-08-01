@@ -136,7 +136,7 @@ describe("cloud payload validators", () => {
   it("requires a valid save envelope", () => {
     const envelope = createSaveEnvelope({ resources: {} }, 100);
     expect(
-      validateCloudSavePayload({ envelope, version: "2.0.0-phase5" }).ok,
+      validateCloudSavePayload({ envelope, version: "2.0.0" }).ok,
     ).toBe(true);
     expect(validateCloudSavePayload({ envelope }).ok).toBe(true);
     expect(validateCloudSavePayload({ saveData: {} }).ok).toBe(false);
@@ -150,7 +150,7 @@ describe("cloud payload validators", () => {
         envelope,
         userId: "usr_1",
         timestamp: 100,
-        version: "2.0.0-phase5",
+        version: "2.0.0",
       }).ok,
     ).toBe(true);
     expect(

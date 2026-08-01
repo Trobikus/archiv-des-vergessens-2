@@ -44,6 +44,6 @@ export function loadConfig(
     dbFile: join(dataDir, "database.db"),
     allowedOrigins,
     trustProxy: env["TRUST_PROXY"] === "true",
-    cloudVersion: env["CLOUD_SAVE_VERSION"] ?? "2.0.0-phase5",
+    cloudVersion: env["CLOUD_SAVE_VERSION"] ?? "2.0.0",
   };
 }
