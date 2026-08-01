@@ -1,4 +1,8 @@
-﻿# 📜 Archiv des Vergessens
+﻿<p align="center">
+  <img src="docs/assets/banner.png" alt="Archiv des Vergessens" width="100%" />
+</p>
+
+# 📜 Archiv des Vergessens
 
 ### *Der Mneme-Bund* — Idle-/Progression-RPG
 
