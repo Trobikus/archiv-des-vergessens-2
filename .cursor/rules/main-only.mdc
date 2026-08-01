@@ -1,0 +1,12 @@
+---
+description: Work only on the main branch in this project
+alwaysApply: true
+---
+
+# Branching: main only
+
+- Use **only** the `main` branch for all work in this repository.
+- Do not create feature, fix, or cursor/* branches unless the user explicitly asks.
+- Commit and push directly to `main` (no PRs from side branches by default).
+- If you are not on `main`, switch to it before making changes: `git checkout main`.
+- Keep remote default as `main`; do not introduce `master` or parallel long-lived branches.
