@@ -161,7 +161,7 @@ export function createGameSession(
       await step("core");
 
       await step("fonts");
-      if (typeof document !== "undefined" && document.fonts?.ready) {
+      if (typeof document !== "undefined" && "fonts" in document) {
         try {
           await document.fonts.ready;
         } catch {

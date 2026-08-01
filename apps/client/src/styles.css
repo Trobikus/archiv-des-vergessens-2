@@ -625,8 +625,20 @@
 
 .char-select__top-nav {
   display: flex;
-  gap: 1.25rem;
+  gap: 1rem;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: min(720px, 58vw);
+}
+
+.char-select__account {
+  position: relative;
+  z-index: 6;
+}
+
+.char-select__account .account__badge {
+  white-space: nowrap;
 }
 
 .char-select__top-link {
@@ -968,7 +980,7 @@
   width: auto;
   position: absolute;
   top: 1rem;
-  right: 12rem;
+  right: 1.5rem;
   z-index: 30;
   margin: 0;
   padding: 0;

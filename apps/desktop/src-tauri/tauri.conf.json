@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "ArchivDesVergessens",
+  "version": "2.0.0",
+  "identifier": "com.grimoire.archivdesvergessens",
+  "build": {
+    "beforeDevCommand": {
+      "script": "npm run dev:client",
+      "cwd": "../../.."
+    },
+    "beforeBuildCommand": {
+      "script": "npm run build",
+      "cwd": "../../.."
+    },
+    "devUrl": "http://localhost:5173",
+    "frontendDist": "../../client/dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "Archiv des Vergessens",
+        "label": "main",
+        "url": "/index.html",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 1024,
+        "minHeight": 700,
+        "resizable": true,
+        "maximizable": true,
+        "maximized": false,
+        "visible": true,
+        "fullscreen": true,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; connect-src 'self' ws: wss: http: https:; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';"
+    }
+  },
+  "bundle": {
+    "active": false,
+    "createUpdaterArtifacts": false,
+    "targets": [],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico"
+    ]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDc2QTRFNUI0Mzk3MjAyRjEKUldUeEFuSTV0T1drZHNUa0JMOVlOZ2xvejNpem1QWFF2S0paNy9nWlZwYldpcVlaSFFYTzJCcGYK",
+      "endpoints": [
+        "https://github.com/Trobikus/archiv-des-vergessens/releases/latest/download/latest.json"
+      ]
+    }
+  }
+}

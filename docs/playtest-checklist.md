@@ -49,3 +49,16 @@ DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei grünem `npm 
 - [x] Phase-4-Tests + `npm run gate` grün
 - [ ] Tag `v2-phase4` nach Merge
 - [ ] Manueller Playtest (Guest/Register/Cloud über zwei Sessions)
+
+## Phase 5 — Tauri-Shell + E2E 🔄
+
+- [x] `@adv/desktop` startet Client im Webview (devUrl 5173 / frontendDist)
+- [x] Identifier `com.grimoire.archivdesvergessens` + Updater-Pubkey/Endpoint aus v1
+- [x] Keine lokale Save-DB / kein Rust-Game-Loop
+- [x] `quit_app` + Safe-Quit über `app:quit-requested` (Client speichert vor Exit)
+- [x] Playwright-Smoke (`npm run e2e`): Intro → Login, keine pageerrors
+- [x] `cargo clippy -D warnings` in Gate/CI-Job `desktop`
+- [x] App-Version `2.0.0` (Root/Cloud `2.0.0-phase5`)
+- [ ] Manueller Playtest: `npm run tauri:dev` — Quit-Button + Fenster-X speichern und beenden
+- [ ] Nach Quit: CMD-Meldungen `Chrome_WidgetWin_0` / Vite-Lifecycle sind harmlos (siehe `apps/desktop/README.md`)
+- [ ] Tag `v2-phase5` nach Merge

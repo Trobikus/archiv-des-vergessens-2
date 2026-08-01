@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from "preact/hooks";
+import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 
 import type { BootProgress } from "../services/boot-progress";
+import { initDesktopShell } from "../services/desktop-shell";
 import { createGameSession, type GameSession } from "../services/game-session";
 import { AccountBadge } from "./auth/AccountBadge";
 import { LoginView } from "./auth/LoginView";
@@ -9,9 +10,17 @@ import { GameView } from "./GameView";
 import { IntroView } from "./IntroView";
 import { OptionsView } from "./OptionsView";
 import { PcFrame } from "./PcFrame";
+import {
+  ScreenTransition,
+  transitionLabelFor,
+  type TransitionPhase,
+} from "./ScreenTransition";
 import { useStore } from "./useStore";
 
-type Screen = "login" | "options" | "characterSelect" | "game" | "convert";
+type Screen = "login" | "options" | "characterSelect" | "game";
+
+const TRANSITION_COVER_MS = 720;
+const TRANSITION_REVEAL_MS = 780;
 
 type ConfirmState = {
   readonly title: string;
@@ -109,13 +118,62 @@ function ConfirmModal({
 function SessionRoot({ session }: { readonly session: GameSession }) {
   const state = useStore(session.store);
   const authState = useStore(session.auth.store);
-  const [screen, setScreen] = useState<Screen>(() =>
-    session.auth.isRegistered() ? "characterSelect" : "login",
-  );
+  const [screen, setScreen] = useState<Screen>("login");
   const [returnScreen, setReturnScreen] = useState<Screen>("characterSelect");
   const [confirm, setConfirm] = useState<ConfirmState>(null);
+  const [transitionPhase, setTransitionPhase] =
+    useState<TransitionPhase>("idle");
+  const [transitionLabel, setTransitionLabel] = useState("");
+  const transitionTimers = useRef<number[]>([]);
+  const screenRef = useRef(screen);
+  const transitionPhaseRef = useRef(transitionPhase);
+  screenRef.current = screen;
+  transitionPhaseRef.current = transitionPhase;
 
   const t = session.i18n.translate.bind(session.i18n);
+
+  const clearTransitionTimers = useCallback(() => {
+    for (const id of transitionTimers.current) {
+      window.clearTimeout(id);
+    }
+    transitionTimers.current = [];
+  }, []);
+
+  useEffect(() => () => {
+    clearTransitionTimers();
+  }, [clearTransitionTimers]);
+
+  const navigateTo = useCallback(
+    (next: Screen, options?: { readonly instant?: boolean }) => {
+      if (next === screenRef.current) {
+        return;
+      }
+      if (options?.instant === true) {
+        clearTransitionTimers();
+        setTransitionPhase("idle");
+        setScreen(next);
+        return;
+      }
+      if (transitionPhaseRef.current !== "idle") {
+        return;
+      }
+
+      clearTransitionTimers();
+      setTransitionLabel(t(transitionLabelFor(screenRef.current, next)));
+      setTransitionPhase("cover");
+
+      const swapId = window.setTimeout(() => {
+        setScreen(next);
+        setTransitionPhase("reveal");
+        const idleId = window.setTimeout(() => {
+          setTransitionPhase("idle");
+        }, TRANSITION_REVEAL_MS);
+        transitionTimers.current.push(idleId);
+      }, TRANSITION_COVER_MS);
+      transitionTimers.current.push(swapId);
+    },
+    [clearTransitionTimers, t],
+  );
 
   const askConfirm = useCallback(
     (
@@ -145,14 +203,18 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
     if (!authState.ready) {
       return;
     }
-    if (
-      !session.auth.isRegistered() &&
-      screen !== "login" &&
-      screen !== "convert"
-    ) {
-      setScreen("login");
+    // Account required — anything beyond login needs a registered session.
+    if (!session.auth.isRegistered() && screen !== "login") {
+      navigateTo("login", { instant: true });
     }
-  }, [authState.ready, authState.token, authState.user, screen, session.auth]);
+  }, [
+    authState.ready,
+    authState.token,
+    authState.user,
+    navigateTo,
+    screen,
+    session.auth,
+  ]);
 
   useEffect(() => {
     if (screen !== "options") {
@@ -161,14 +223,14 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
     const onKey = (event: KeyboardEvent): void => {
       if (event.key === "Escape" && confirm === null) {
         event.preventDefault();
-        setScreen(returnScreen === "login" ? "login" : "characterSelect");
+        navigateTo(returnScreen === "login" ? "login" : "characterSelect");
       }
     };
     window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener("keydown", onKey);
     };
-  }, [confirm, returnScreen, screen]);
+  }, [confirm, navigateTo, returnScreen, screen]);
 
   if (!authState.ready) {
     return <BootShell message="Verbinde…" />;
@@ -185,26 +247,13 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
           onQuit={handleQuit}
           onOptions={() => {
             setReturnScreen("login");
-            setScreen("options");
+            navigateTo("options");
           }}
           onContinue={() => {
-            setScreen(
-              returnScreen === "options" ? "options" : "characterSelect",
-            );
-          }}
-        />
-      );
-      break;
-    case "convert":
-      body = (
-        <LoginView
-          auth={session.auth}
-          i18n={session.i18n}
-          ws={session.ws}
-          mode="convert"
-          onContinue={() => {
-            setScreen(returnScreen);
-            void session.cloud.push(session.store.getState());
+            if (!session.auth.isRegistered()) {
+              return;
+            }
+            navigateTo("characterSelect");
           }}
         />
       );
@@ -214,18 +263,18 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
         <OptionsView
           session={session}
           onBack={() => {
-            setScreen(
+            navigateTo(
               returnScreen === "login" ? "login" : "characterSelect",
             );
           }}
           onOpenAccount={() => {
             setReturnScreen("options");
-            setScreen("login");
+            navigateTo("login");
           }}
           onHardReset={() => {
             askConfirm("menu.resetConfirm", () => {
               void session.resetProgress().then(() => {
-                setScreen(
+                navigateTo(
                   returnScreen === "login" ? "login" : "characterSelect",
                 );
               });
@@ -236,42 +285,37 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
       break;
     case "characterSelect":
       body = (
-        <>
-          <div class="session-chrome session-chrome--wide">
+        <CharacterSelectView
+          session={session}
+          accountSlot={
             <AccountBadge
               auth={session.auth}
               i18n={session.i18n}
               ws={session.ws}
               cloud={session.cloud}
-              onConvertGuest={() => {
-                setReturnScreen("characterSelect");
-                setScreen("convert");
-              }}
             />
-          </div>
-          <CharacterSelectView
-            session={session}
-            onPlay={() => {
-              if (!state.hero.created) {
-                return;
-              }
-              setScreen("game");
-            }}
-            onBack={() => {
-              setReturnScreen("characterSelect");
-              setScreen("login");
-            }}
-            onOptions={() => {
-              setScreen("options");
-            }}
-            onQuit={handleQuit}
-            onDelete={() => {
-              askConfirm("charSelect.deleteConfirm", () => {
-                void session.resetProgress();
-              });
-            }}
-          />
-        </>
+          }
+          onPlay={() => {
+            if (!state.hero.created) {
+              return;
+            }
+            navigateTo("game");
+          }}
+          onBack={() => {
+            setReturnScreen("characterSelect");
+            navigateTo("login");
+          }}
+          onOptions={() => {
+            setReturnScreen("characterSelect");
+            navigateTo("options");
+          }}
+          onQuit={handleQuit}
+          onDelete={() => {
+            askConfirm("charSelect.deleteConfirm", () => {
+              void session.resetProgress();
+            });
+          }}
+        />
       );
       break;
     case "game":
@@ -283,10 +327,6 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
               i18n={session.i18n}
               ws={session.ws}
               cloud={session.cloud}
-              onConvertGuest={() => {
-                setReturnScreen("game");
-                setScreen("convert");
-              }}
             />
             <button
               type="button"
@@ -294,7 +334,7 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
               data-testid="game-back-chars"
               onClick={() => {
                 void session.saveNow().then(() => {
-                  setScreen("characterSelect");
+                  navigateTo("characterSelect");
                 });
               }}
             >
@@ -311,7 +351,16 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
 
   return (
     <>
-      {body}
+      <div
+        class={
+          transitionPhase === "idle"
+            ? "screen-stage"
+            : `screen-stage screen-stage--${transitionPhase}`
+        }
+      >
+        {body}
+      </div>
+      <ScreenTransition phase={transitionPhase} label={transitionLabel} />
       <ConfirmModal
         state={confirm}
         onCancel={() => {
@@ -336,23 +385,31 @@ export function App() {
   useEffect(() => {
     const next = createGameSession({ useIndexedDb: true });
     const lifecycle = { cancelled: false };
+    const desktop = { dispose: null as (() => void) | null };
+    const isCancelled = (): boolean => lifecycle.cancelled;
 
     void (async () => {
       try {
         await next.boot((progress) => {
-          if (!lifecycle.cancelled) {
+          if (!isCancelled()) {
             setBootProgress(progress);
           }
         });
-        if (lifecycle.cancelled) {
+        if (isCancelled()) {
           next.destroy();
           return;
         }
         setSession(next);
         setBootReady(true);
+        const dispose = await initDesktopShell(next);
+        if (isCancelled()) {
+          dispose();
+          return;
+        }
+        desktop.dispose = dispose;
       } catch (cause) {
         next.destroy();
-        if (!lifecycle.cancelled) {
+        if (!isCancelled()) {
           setError(cause instanceof Error ? cause.message : "Boot failed");
         }
       }
@@ -360,6 +417,7 @@ export function App() {
 
     return () => {
       lifecycle.cancelled = true;
+      desktop.dispose?.();
       next.destroy();
     };
   }, []);

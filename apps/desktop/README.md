@@ -1,5 +1,33 @@
 # @adv/desktop
 
-Tauri 2 shell (Fenster, Updater, `quit_app`) lands in **Phase 5**.
+Tauri 2 shell for Archiv des Vergessens — window, updater plugin, and `quit_app` only.
 
-Phase 0 only reserves the workspace package so the monorepo layout matches the rewrite plan.
+**Not in scope:** local Save-DB, Rust game loop, rusqlite.
+
+## Commands
+
+```powershell
+# From repo root
+npm run tauri:dev          # Vite client + Tauri window
+npm run clippy             # cargo clippy -D warnings
+npm run build -w @adv/desktop   # production shell (needs client build)
+```
+
+## Layout
+
+- `src-tauri/` — Rust crate + `tauri.conf.json`
+- Loads `@adv/client` via `devUrl` (5173) or `frontendDist` (`apps/client/dist`)
+
+## Identifier / updater
+
+Ported from v1: `com.grimoire.archivdesvergessens` + minisign pubkey + GitHub `latest.json` endpoint.
+Signed updater artifacts land in Phase 8 (`createUpdaterArtifacts` stays off until then).
+
+## After quit in `tauri:dev`
+
+Harmless Windows/dev noise you may see in the CMD window:
+
+- `Failed to unregister class Chrome_WidgetWin_0. Error = 1412` — WebView2/Chromium teardown race
+- `npm error … Lifecycle script dev failed` / exit `4294967295` — Tauri stops the Vite `beforeDevCommand`; npm reports that kill as failure
+
+Neither means the game crashed or that the save failed. Packaged builds (`tauri build`) do not run Vite, so those npm lines do not appear there.

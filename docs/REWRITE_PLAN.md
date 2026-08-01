@@ -19,7 +19,7 @@ todos:
     status: in_progress
   - id: phase-5
     content: "Phase 5: Tauri-Shell + Playwright + Updater 2.0.0"
-    status: pending
+    status: completed
   - id: phase-6
     content: "Phase 6: Feature-Parität Wellen A–F"
     status: pending
@@ -38,8 +38,8 @@ todos:
 
 ## Fortschritt (Stand 2026-08-01)
 
-**Fertig:** Phase 0–3.  
-**In Arbeit:** Phase 4 — Modularer Server + Auth + Cloud-Sync (Freigabe erteilt).
+**Fertig:** Phase 0–5.  
+**Als Nächstes:** Phase 6 — Feature-Parität Wellen A–F.
 
 | Phase | Status | Nachweis |
 |---|---|---|
@@ -47,8 +47,8 @@ todos:
 | **1 Kernel + Balancing** | ✅ fertig | Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2) merged, Balancing-Snapshot-Gate |
 | **2 Vertical Slice** | ✅ fertig | Tag `v2-phase2` (Direct-Merge auf `main`), Klick/Tick/Save/Offline spielbar |
 | **3 Content + Kampf/Story** | ✅ fertig | Content/i18n-Gate, Combat-Sim, Hero/Story-UI; Tag `v2-phase3` ausstehend |
-| 4 Server + Auth + Cloud | 🔄 in Arbeit | WS-Server, Auth, Cloud-Envelope, User-Migration |
-| 5 Tauri + E2E | ⬜ offen | — |
+| **4 Server + Auth + Cloud** | ✅ Code fertig | WS-Server, Auth, Cloud-Envelope, User-Migration; Playtest/Tag offen |
+| **5 Tauri + E2E** | ✅ fertig | Shell, Updater-Config, Playwright-Smoke; Tag `v2-phase5` ausstehend |
 | 6 Parität A–F | ⬜ offen | — |
 | 7 Social/Live | ⬜ offen | — |
 | 8 Release 2.0.0 | ⬜ offen | — |
@@ -203,8 +203,18 @@ Umgesetzt:
 - [x] `npm run gate` grün
 - [ ] Manueller Playtest + Tag `v2-phase4`
 
-### Phase 5 — Tauri-Shell + E2E (3–4 Tage) ⬜
-Desktop-Shell ohne lokale Save-DB; Identifier + Updater-Key aus v1; Playwright-Smoke; Version `2.0.0`.
+### Phase 5 — Tauri-Shell + E2E (3–4 Tage) ✅
+Desktop-Shell ohne lokale Save-DB; Identifier + Updater-Key aus v1; Playwright-Smoke; App-Version `2.0.0`.
+
+Erledigt:
+- [x] `@adv/desktop` Tauri 2 Shell (`quit_app`, `show_main_window`, `open_release_page`)
+- [x] Safe-Quit (`app:quit-requested` → Client-Save → `quit_app`) + 4s Force-Quit
+- [x] Identifier + Updater-Pubkey/Endpoint aus v1; Bundle-Artifacts Phase 8
+- [x] Client `desktop-shell.ts` + `withGlobalTauri`
+- [x] Playwright-Smoke in `tools/e2e/` (intro → login, offline)
+- [x] Gate: konditionales `cargo clippy -D warnings` + e2e; CI-Jobs `desktop` + `e2e`
+- [x] Version: App `2.0.0`, Root/Cloud `2.0.0-phase5`
+- [ ] Manueller `tauri:dev` Playtest + Tag `v2-phase5`
 
 ### Phase 6 — Feature-Parität Wellen A–F (12–18 Tage) ⬜
 - A Quests / Achievements / Daily
@@ -233,7 +243,7 @@ graph LR
   P1 --> P2["P2 Klick Save Offline ✅"]
   P2 --> P3["P3 Content Kampf DONE"]
   P3 --> P4["P4 Server Auth Cloud WIP"]
-  P4 --> P5["P5 Tauri E2E ⬜"]
+  P4 --> P5["P5 Tauri E2E DONE"]
   P5 --> P6["P6 Paritaet A-F ⬜"]
   P6 --> P7["P7 Social ⬜"]
   P7 --> P8["P8 Release 2.0.0 ⬜"]
@@ -257,4 +267,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 4 implementieren (Auth + Cloud + User-Migration). Tag `v2-phase3` bei Gelegenheit setzen.
+Phase 6 — Feature-Parität Wellen A–F. Tags `v2-phase3`/`v2-phase4`/`v2-phase5` bei Gelegenheit setzen; manueller `tauri:dev`-Playtest für Phase 5.

@@ -11,6 +11,10 @@ Thumbs.db
 apps/client/dist/
 apps/server/data/
 apps/desktop/src-tauri/target/
+apps/desktop/src-tauri/gen/
+tools/e2e/test-results/
+tools/e2e/playwright-report/
+tools/e2e/blob-report/
 *.log
 .vite/
 *.db

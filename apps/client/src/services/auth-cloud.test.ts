@@ -21,8 +21,8 @@ function memoryStorage() {
   };
 }
 
-describe("auth-service offline guest", () => {
-  it("creates a persistent guest id without server", async () => {
+describe("auth-service offline boot", () => {
+  it("stays logged out without creating a guest session", async () => {
     const storage = memoryStorage();
     function FailingSocket(): never {
       throw new Error("offline");
@@ -34,8 +34,9 @@ describe("auth-service offline guest", () => {
     });
     const auth = createAuthService({ ws, storage });
     await auth.boot();
-    expect(auth.guestId().startsWith("guest_")).toBe(true);
-    expect(auth.store.getState().user?.isGuest).toBe(true);
+    expect(auth.store.getState().ready).toBe(true);
+    expect(auth.store.getState().user).toBeNull();
+    expect(auth.isRegistered()).toBe(false);
     auth.destroy();
   });
 });

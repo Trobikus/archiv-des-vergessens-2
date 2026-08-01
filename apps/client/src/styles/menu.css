@@ -158,6 +158,15 @@
   pointer-events: auto;
 }
 
+.menu-screen__content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .menu-screen__account {
   position: absolute;
   top: 24px;
@@ -167,6 +176,112 @@
   align-items: center;
   gap: 0.65rem;
   pointer-events: auto;
+}
+
+/* ---- Menu rune rings (4 concentric, alternating spin) ---- */
+.menu-rune-rings {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.menu-rune-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.menu-rune-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.menu-rune-glyph {
+  animation: menuRuneFlicker 4.8s ease-in-out infinite;
+}
+
+/* klein → groß; ungerade CW, gerade CCW */
+.menu-rune-ring--1 {
+  width: min(32vmin, 260px);
+  height: min(32vmin, 260px);
+  opacity: 0.72;
+  animation: menuRuneSpinCw 38s linear infinite;
+  filter: drop-shadow(0 0 10px rgba(197, 160, 89, 0.22));
+}
+
+.menu-rune-ring--2 {
+  width: min(52vmin, 420px);
+  height: min(52vmin, 420px);
+  opacity: 0.62;
+  animation: menuRuneSpinCcw 52s linear infinite;
+  filter: drop-shadow(0 0 12px rgba(197, 160, 89, 0.2));
+}
+
+.menu-rune-ring--3 {
+  width: min(74vmin, 600px);
+  height: min(74vmin, 600px);
+  opacity: 0.52;
+  animation: menuRuneSpinCw 72s linear infinite;
+  filter: drop-shadow(0 0 16px rgba(197, 160, 89, 0.18));
+}
+
+.menu-rune-ring--4 {
+  width: min(98vmin, 820px);
+  height: min(98vmin, 820px);
+  opacity: 0.42;
+  animation: menuRuneSpinCcw 96s linear infinite;
+  filter: drop-shadow(0 0 20px rgba(197, 160, 89, 0.16));
+}
+
+.menu-rune-ring--1 .menu-rune-glyph {
+  animation-delay: 0s;
+}
+.menu-rune-ring--2 .menu-rune-glyph {
+  animation-delay: 0.6s;
+}
+.menu-rune-ring--3 .menu-rune-glyph {
+  animation-delay: 1.2s;
+}
+.menu-rune-ring--4 .menu-rune-glyph {
+  animation-delay: 1.8s;
+}
+
+@keyframes menuRuneSpinCw {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes menuRuneSpinCcw {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+@keyframes menuRuneFlicker {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  40% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.68;
+  }
 }
 
 #menu-container h1,
@@ -213,6 +328,7 @@
 .menu-footer {
   position: absolute;
   bottom: 2rem;
+  z-index: 10;
   font-size: 0.75rem;
   color: #555;
   letter-spacing: 2px;
@@ -263,6 +379,7 @@
   place-items: center;
   padding: 6rem 1.5rem 7rem;
   pointer-events: none;
+  overflow: auto;
 }
 
 .login-screen__center .login-card {
@@ -335,44 +452,197 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #020204;
+}
+
+.login-bg-depth {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 55% 45% at 50% 48%,
+      rgba(197, 160, 89, 0.1) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 80% 60% at 50% 42%,
+      rgba(74, 139, 153, 0.05) 0%,
+      transparent 58%
+    ),
+    radial-gradient(circle at 50% 50%, #12121a 0%, #07070c 42%, #020204 78%),
+    linear-gradient(180deg, #0a0a12 0%, #050507 48%, #010102 100%);
+}
+
+.login-bg-horizon {
+  position: absolute;
+  left: 50%;
+  bottom: -8%;
+  width: 140%;
+  height: 42%;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(
+      ellipse 55% 55% at 50% 70%,
+      rgba(197, 160, 89, 0.16) 0%,
+      rgba(197, 160, 89, 0.04) 38%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 80% 40% at 50% 100%,
+      rgba(20, 28, 32, 0.7) 0%,
+      transparent 65%
+    );
+  filter: blur(2px);
+  animation: loginHorizonBreath 9s ease-in-out infinite alternate;
+}
+
+@keyframes loginHorizonBreath {
+  0% {
+    opacity: 0.72;
+    transform: translateX(-50%) scaleX(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scaleX(1.04);
+  }
+}
+
+.login-bg-mist {
+  position: absolute;
+  inset: -20%;
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  filter: blur(28px);
+}
+
+.login-bg-mist--a {
+  background:
+    radial-gradient(
+      ellipse 40% 28% at 22% 68%,
+      rgba(197, 160, 89, 0.09) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 35% 24% at 78% 58%,
+      rgba(74, 139, 153, 0.07) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 50% 30% at 48% 82%,
+      rgba(30, 34, 42, 0.55) 0%,
+      transparent 75%
+    );
+  animation: loginMistDriftA 48s ease-in-out infinite alternate;
+}
+
+.login-bg-mist--b {
+  background:
+    radial-gradient(
+      ellipse 42% 26% at 68% 72%,
+      rgba(197, 160, 89, 0.07) 0%,
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse 30% 22% at 30% 40%,
+      rgba(74, 139, 153, 0.05) 0%,
+      transparent 65%
+    );
+  opacity: 0.4;
+  animation: loginMistDriftB 62s ease-in-out infinite alternate;
+}
+
+@keyframes loginMistDriftA {
+  0% {
+    transform: translate3d(-3%, 1%, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(4%, -2%, 0) scale(1.06);
+  }
+}
+
+@keyframes loginMistDriftB {
+  0% {
+    transform: translate3d(3%, -1%, 0) scale(1.05);
+  }
+  100% {
+    transform: translate3d(-4%, 2%, 0) scale(1);
+  }
 }
 
 .login-god-rays {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 160vmax;
-  height: 160vmax;
+  width: 175vmax;
+  height: 175vmax;
   border-radius: 50%;
   aspect-ratio: 1 / 1;
   background: conic-gradient(
-    from 0deg at 50% 50%,
+    from 12deg at 50% 50%,
     transparent 0deg,
-    rgba(197, 160, 89, 0.06) 20deg,
-    transparent 45deg,
-    rgba(197, 160, 89, 0.08) 90deg,
-    transparent 120deg,
-    rgba(197, 160, 89, 0.05) 180deg,
-    transparent 220deg,
-    rgba(197, 160, 89, 0.07) 270deg,
-    transparent 310deg
+    rgba(197, 160, 89, 0.02) 8deg,
+    rgba(235, 213, 118, 0.11) 14deg,
+    rgba(197, 160, 89, 0.03) 22deg,
+    transparent 34deg,
+    rgba(197, 160, 89, 0.08) 48deg,
+    transparent 58deg,
+    rgba(235, 213, 118, 0.09) 78deg,
+    transparent 92deg,
+    rgba(197, 160, 89, 0.05) 118deg,
+    transparent 132deg,
+    rgba(235, 213, 118, 0.1) 156deg,
+    transparent 170deg,
+    rgba(197, 160, 89, 0.06) 198deg,
+    transparent 214deg,
+    rgba(235, 213, 118, 0.08) 238deg,
+    transparent 252deg,
+    rgba(197, 160, 89, 0.07) 278deg,
+    transparent 294deg,
+    rgba(235, 213, 118, 0.09) 322deg,
+    transparent 338deg,
+    transparent 360deg
   );
   mix-blend-mode: screen;
-  animation: loginRaysRotate 100s linear infinite;
-  opacity: 0.85;
+  animation: loginRaysRotate 110s linear infinite;
+  opacity: 0.95;
   pointer-events: none;
   transform-origin: center center;
   -webkit-mask-image: radial-gradient(
     circle at 50% 50%,
-    rgba(0, 0, 0, 1) 10%,
-    rgba(0, 0, 0, 0.5) 40%,
-    rgba(0, 0, 0, 0) 65%
+    rgba(0, 0, 0, 1) 4%,
+    rgba(0, 0, 0, 0.75) 28%,
+    rgba(0, 0, 0, 0.35) 48%,
+    rgba(0, 0, 0, 0) 68%
   );
   mask-image: radial-gradient(
     circle at 50% 50%,
-    rgba(0, 0, 0, 1) 10%,
-    rgba(0, 0, 0, 0.5) 40%,
-    rgba(0, 0, 0, 0) 65%
+    rgba(0, 0, 0, 1) 4%,
+    rgba(0, 0, 0, 0.75) 28%,
+    rgba(0, 0, 0, 0.35) 48%,
+    rgba(0, 0, 0, 0) 68%
+  );
+}
+
+.login-god-rays--soft {
+  width: 190vmax;
+  height: 190vmax;
+  opacity: 0.55;
+  filter: blur(1.5px);
+  animation: loginRaysRotate 160s linear infinite reverse;
+  background: conic-gradient(
+    from 40deg at 50% 50%,
+    transparent 0deg,
+    rgba(197, 160, 89, 0.05) 18deg,
+    transparent 40deg,
+    rgba(74, 139, 153, 0.04) 70deg,
+    transparent 95deg,
+    rgba(197, 160, 89, 0.06) 140deg,
+    transparent 165deg,
+    rgba(235, 213, 118, 0.05) 210deg,
+    transparent 240deg,
+    rgba(197, 160, 89, 0.04) 290deg,
+    transparent 320deg,
+    transparent 360deg
   );
 }
 
@@ -385,25 +655,147 @@
   }
 }
 
+.login-portal-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(110vmin, 760px);
+  height: min(110vmin, 760px);
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(235, 213, 118, 0.12) 0%,
+    rgba(197, 160, 89, 0.08) 22%,
+    rgba(74, 139, 153, 0.04) 42%,
+    transparent 68%
+  );
+  animation: loginHaloPulse 7s ease-in-out infinite alternate;
+  z-index: 2;
+  transform-origin: center center;
+  filter: blur(1px);
+}
+
+@keyframes loginHaloPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.92);
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.08);
+    opacity: 0.95;
+  }
+}
+
+.login-portal-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(88vmin, 580px);
+  height: min(88vmin, 580px);
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 236, 180, 0.28) 0%,
+    rgba(197, 160, 89, 0.18) 18%,
+    rgba(197, 160, 89, 0.07) 40%,
+    rgba(0, 0, 0, 0) 72%
+  );
+  animation: loginCorePulse 4.5s ease-in-out infinite alternate;
+  z-index: 2;
+  pointer-events: none;
+  transform-origin: center center;
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 1) 16%,
+    rgba(0, 0, 0, 0) 72%
+  );
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 1) 16%,
+    rgba(0, 0, 0, 0) 72%
+  );
+}
+
+@keyframes loginCorePulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.88);
+    opacity: 0.65;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.18);
+    opacity: 1;
+  }
+}
+
+.login-portal-singularity {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(18vmin, 120px);
+  height: min(18vmin, 120px);
+  border-radius: 50%;
+  z-index: 3;
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(255, 248, 220, 0.85) 0%,
+    rgba(235, 213, 118, 0.45) 28%,
+    rgba(197, 160, 89, 0.12) 55%,
+    transparent 78%
+  );
+  box-shadow:
+    0 0 40px rgba(197, 160, 89, 0.35),
+    0 0 90px rgba(197, 160, 89, 0.18);
+  animation: loginSingularityPulse 3.2s ease-in-out infinite alternate;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes loginSingularityPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.85);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 1;
+  }
+}
+
 .login-rune-ring {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(75vmin, 620px);
-  height: min(75vmin, 620px);
   border-radius: 50%;
   aspect-ratio: 1 / 1;
   pointer-events: none;
-  z-index: 2;
-  opacity: 0.45;
-  animation: loginRuneSpin 80s linear infinite;
-  filter: drop-shadow(0 0 15px rgba(197, 160, 89, 0.3));
+  z-index: 3;
   transform-origin: center center;
+}
+
+.login-rune-ring--outer {
+  width: min(82vmin, 700px);
+  height: min(82vmin, 700px);
+  opacity: 0.62;
+  animation: loginRuneSpin 95s linear infinite;
+  filter: drop-shadow(0 0 18px rgba(197, 160, 89, 0.35));
+}
+
+.login-rune-ring--inner {
+  width: min(42vmin, 340px);
+  height: min(42vmin, 340px);
+  opacity: 0.55;
+  animation: loginRuneSpin 55s linear infinite reverse;
+  filter: drop-shadow(0 0 12px rgba(197, 160, 89, 0.28));
 }
 
 .login-rune-svg {
   width: 100%;
   height: 100%;
+}
+
+.login-rune-glyph {
+  animation: loginRuneFlicker 4.5s ease-in-out infinite;
 }
 
 @keyframes loginRuneSpin {
@@ -415,44 +807,226 @@
   }
 }
 
-.login-portal-core {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: min(85vmin, 550px);
-  height: min(85vmin, 550px);
-  border-radius: 50%;
-  aspect-ratio: 1 / 1;
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(197, 160, 89, 0.22) 0%,
-    rgba(197, 160, 89, 0.08) 35%,
-    rgba(0, 0, 0, 0) 70%
-  );
-  animation: loginCorePulse 4s ease-in-out infinite alternate;
-  z-index: 2;
-  pointer-events: none;
-  transform-origin: center center;
-  -webkit-mask-image: radial-gradient(
-    circle at 50% 50%,
-    rgba(0, 0, 0, 1) 20%,
-    rgba(0, 0, 0, 0) 70%
-  );
-  mask-image: radial-gradient(
-    circle at 50% 50%,
-    rgba(0, 0, 0, 1) 20%,
-    rgba(0, 0, 0, 0) 70%
-  );
+@keyframes loginRuneFlicker {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  40% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.7;
+  }
 }
 
-@keyframes loginCorePulse {
+.login-embers {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+}
+
+.login-ember {
+  position: absolute;
+  bottom: -4%;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(235, 213, 118, 0.85);
+  box-shadow: 0 0 6px rgba(197, 160, 89, 0.65);
+  animation: loginEmberRise 14s linear infinite;
+  opacity: 0;
+}
+
+.login-ember--1 {
+  left: 12%;
+  animation-duration: 16s;
+  animation-delay: 0s;
+}
+.login-ember--2 {
+  left: 28%;
+  width: 3px;
+  height: 3px;
+  animation-duration: 18s;
+  animation-delay: 2.2s;
+}
+.login-ember--3 {
+  left: 44%;
+  animation-duration: 13s;
+  animation-delay: 4.1s;
+}
+.login-ember--4 {
+  left: 58%;
+  width: 2.5px;
+  height: 2.5px;
+  animation-duration: 19s;
+  animation-delay: 1.1s;
+}
+.login-ember--5 {
+  left: 72%;
+  animation-duration: 15s;
+  animation-delay: 5.4s;
+}
+.login-ember--6 {
+  left: 86%;
+  width: 3px;
+  height: 3px;
+  animation-duration: 17s;
+  animation-delay: 3.3s;
+}
+
+.login-embers .login-ember:nth-child(7) {
+  left: 18%;
+  animation-delay: 7s;
+  animation-duration: 20s;
+}
+.login-embers .login-ember:nth-child(8) {
+  left: 36%;
+  animation-delay: 8.5s;
+}
+.login-embers .login-ember:nth-child(9) {
+  left: 51%;
+  animation-delay: 6.2s;
+  animation-duration: 12s;
+}
+.login-embers .login-ember:nth-child(10) {
+  left: 64%;
+  animation-delay: 9.8s;
+}
+.login-embers .login-ember:nth-child(11) {
+  left: 78%;
+  animation-delay: 11s;
+  animation-duration: 21s;
+}
+.login-embers .login-ember:nth-child(12) {
+  left: 8%;
+  animation-delay: 10.4s;
+}
+.login-embers .login-ember:nth-child(13) {
+  left: 93%;
+  animation-delay: 12.2s;
+}
+.login-embers .login-ember:nth-child(14) {
+  left: 40%;
+  animation-delay: 13.5s;
+  animation-duration: 22s;
+}
+.login-embers .login-ember:nth-child(15) {
+  left: 55%;
+  animation-delay: 14.1s;
+}
+.login-embers .login-ember:nth-child(16) {
+  left: 22%;
+  animation-delay: 15s;
+}
+.login-embers .login-ember:nth-child(17) {
+  left: 67%;
+  animation-delay: 16.4s;
+}
+.login-embers .login-ember:nth-child(18) {
+  left: 81%;
+  animation-delay: 17.8s;
+}
+
+@keyframes loginEmberRise {
   0% {
-    transform: translate(-50%, -50%) scale(0.9);
-    opacity: 0.6;
+    transform: translate3d(0, 0, 0) scale(0.6);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.85;
+  }
+  70% {
+    opacity: 0.55;
   }
   100% {
-    transform: translate(-50%, -50%) scale(1.15);
-    opacity: 1;
+    transform: translate3d(18px, -110vh, 0) scale(1.1);
+    opacity: 0;
+  }
+}
+
+.login-bg-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  opacity: 0.045;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  animation: loginGrainShift 0.8s steps(2) infinite;
+}
+
+@keyframes loginGrainShift {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-2%, 1%);
+  }
+}
+
+.login-bg-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background:
+    radial-gradient(
+      ellipse 90% 80% at 50% 48%,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.01) 30%,
+      rgba(0, 0, 0, 0.03) 45%,
+      rgba(0, 0, 0, 0.06) 58%,
+      rgba(0, 0, 0, 0.11) 70%,
+      rgba(0, 0, 0, 0.18) 80%,
+      rgba(0, 0, 0, 0.26) 90%,
+      rgba(0, 0, 0, 0.34) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.22) 0%,
+      rgba(0, 0, 0, 0.1) 12%,
+      rgba(0, 0, 0, 0.02) 28%,
+      rgba(0, 0, 0, 0) 42%,
+      rgba(0, 0, 0, 0) 58%,
+      rgba(0, 0, 0, 0.02) 72%,
+      rgba(0, 0, 0, 0.12) 88%,
+      rgba(0, 0, 0, 0.26) 100%
+    );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-rune-ring--1,
+  .menu-rune-ring--2,
+  .menu-rune-ring--3,
+  .menu-rune-ring--4,
+  .menu-rune-glyph,
+  .login-god-rays,
+  .login-god-rays--soft,
+  .login-rune-ring--outer,
+  .login-rune-ring--inner,
+  .login-portal-core,
+  .login-portal-halo,
+  .login-portal-singularity,
+  .login-bg-mist--a,
+  .login-bg-mist--b,
+  .login-bg-horizon,
+  .login-bg-grain,
+  .login-ember,
+  .login-rune-glyph {
+    animation: none !important;
+  }
+
+  .menu-rune-ring--1,
+  .menu-rune-ring--2,
+  .menu-rune-ring--3,
+  .menu-rune-ring--4 {
+    transform: translate(-50%, -50%);
+  }
+
+  .login-ember {
+    opacity: 0.35;
+    transform: none;
   }
 }
 
@@ -478,36 +1052,162 @@
   -webkit-backdrop-filter: blur(6px);
 }
 
-.login-screen__logged-in {
+.login-card--realm {
+  max-width: 460px;
+}
+
+.login-screen__realm {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
   text-align: center;
+  animation: loginRealmReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.login-screen__avatar {
-  font-size: 3rem;
-  background: rgba(197, 160, 89, 0.1);
-  width: 84px;
-  height: 80px;
-  border-radius: 50%;
-  display: flex;
+@keyframes loginRealmReveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.login-screen__realm-welcome {
+  margin: -0.35rem 0 0;
+  font-size: 0.9rem;
+}
+
+.login-screen__realm-sub {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(197, 160, 89, 0.7);
+}
+
+.login-realm-row {
+  appearance: none;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.9rem;
   align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  border: 2px solid var(--color-gold);
-  box-shadow: 0 0 18px var(--color-gold-glow);
+  text-align: left;
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+  color: inherit;
+  border-radius: var(--border-radius-md);
+  border: 1px solid rgba(197, 160, 89, 0.22);
+  background:
+    linear-gradient(
+      120deg,
+      rgba(197, 160, 89, 0.08) 0%,
+      rgba(8, 8, 12, 0.72) 38%,
+      rgba(5, 5, 8, 0.85) 100%
+    );
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.45);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
 }
 
-.login-screen__username {
-  font-size: 1.35rem;
-  font-weight: 700;
-  letter-spacing: 1px;
+.login-realm-row:hover:not(:disabled) {
+  border-color: rgba(197, 160, 89, 0.5);
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.55),
+    inset 0 0 24px rgba(0, 0, 0, 0.45),
+    0 0 18px rgba(197, 160, 89, 0.12);
 }
 
-.login-screen__email {
-  font-size: 0.85rem;
-  margin-top: 4px;
+.login-realm-row--selected {
+  border-color: rgba(197, 160, 89, 0.65);
+  box-shadow:
+    0 0 0 1px rgba(197, 160, 89, 0.2),
+    0 12px 32px rgba(0, 0, 0, 0.55),
+    0 0 28px rgba(197, 160, 89, 0.16),
+    inset 0 0 30px rgba(197, 160, 89, 0.06);
+}
+
+.login-realm-row:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.login-realm-row__signal {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #3a7a45;
+  box-shadow: 0 0 10px rgba(58, 122, 69, 0.75);
+  animation: loginRealmPulse 2.2s ease-in-out infinite;
+}
+
+.login-realm-row--offline .login-realm-row__signal {
+  background: #8b1c1c;
+  box-shadow: 0 0 10px rgba(139, 28, 28, 0.7);
+  animation: none;
+}
+
+@keyframes loginRealmPulse {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+.login-realm-row__body {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.login-realm-row__name {
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.login-realm-row__tagline {
+  font-size: 0.86rem;
+  color: var(--color-text-main);
+}
+
+.login-realm-row__meta {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.login-realm-row__stats {
+  display: grid;
+  gap: 0.25rem;
+  justify-items: end;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.login-realm-row__status--on {
+  color: #7dba86;
+}
+
+.login-realm-row__status--off {
+  color: #fca5a5;
+}
+
+.login-realm-row__load {
+  color: var(--color-text-muted);
 }
 
 .login-screen__form {
@@ -540,11 +1240,6 @@
   accent-color: var(--color-gold);
   width: 1rem;
   height: 1rem;
-}
-
-.login-screen__guest {
-  border-color: rgba(197, 160, 89, 0.4);
-  color: var(--color-gold);
 }
 
 .login-screen__langs {
@@ -645,6 +1340,9 @@
   background: rgba(52, 199, 89, 0.15);
   border: 1px solid rgba(52, 199, 89, 0.4);
   color: #52c41a;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .auth-banner__title {
@@ -743,6 +1441,20 @@
 @media (max-width: 520px) {
   .login-card {
     padding: 22px 18px;
+  }
+
+  .login-card--realm {
+    max-width: 100%;
+  }
+
+  .login-realm-row {
+    grid-template-columns: auto 1fr;
+    gap: 0.7rem;
+  }
+
+  .login-realm-row__stats {
+    grid-column: 2;
+    justify-items: start;
   }
 
   .menu-screen__account {

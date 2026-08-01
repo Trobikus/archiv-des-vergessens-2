@@ -12,58 +12,202 @@ type Props = {
   readonly onContinue: () => void;
   readonly onQuit?: () => void;
   readonly onOptions?: () => void;
-  readonly mode?: "gate" | "convert";
 };
 
 type Tab = "login" | "register";
 
+function LoginRuneMarks() {
+  const ticks = Array.from({ length: 36 }, (_, index) => {
+    const angle = (index * 10 * Math.PI) / 180;
+    const outer = 238;
+    const inner = index % 3 === 0 ? 222 : 230;
+    const x1 = 250 + Math.cos(angle) * outer;
+    const y1 = 250 + Math.sin(angle) * outer;
+    const x2 = 250 + Math.cos(angle) * inner;
+    const y2 = 250 + Math.sin(angle) * inner;
+    return (
+      <line
+        key={`tick-${String(index)}`}
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke={
+          index % 3 === 0
+            ? "rgba(197,160,89,0.42)"
+            : "rgba(197,160,89,0.18)"
+        }
+        stroke-width={index % 3 === 0 ? 1.4 : 0.8}
+      />
+    );
+  });
+
+  const glyphs = [
+    { char: "ᚠ", x: 250, y: 28 },
+    { char: "ᚢ", x: 402, y: 98 },
+    { char: "ᚦ", x: 468, y: 250 },
+    { char: "ᚨ", x: 402, y: 402 },
+    { char: "ᚱ", x: 250, y: 478 },
+    { char: "ᚲ", x: 98, y: 402 },
+    { char: "ᚷ", x: 32, y: 250 },
+    { char: "ᚹ", x: 98, y: 98 },
+  ] as const;
+
+  return (
+    <>
+      <circle
+        cx="250"
+        cy="250"
+        r="242"
+        fill="none"
+        stroke="rgba(197,160,89,0.14)"
+        stroke-width="1"
+      />
+      <circle
+        cx="250"
+        cy="250"
+        r="230"
+        fill="none"
+        stroke="rgba(197,160,89,0.28)"
+        stroke-width="1.6"
+        stroke-dasharray="10 7"
+      />
+      <circle
+        cx="250"
+        cy="250"
+        r="208"
+        fill="none"
+        stroke="rgba(197,160,89,0.16)"
+        stroke-width="1"
+      />
+      <circle
+        cx="250"
+        cy="250"
+        r="188"
+        fill="none"
+        stroke="rgba(197,160,89,0.22)"
+        stroke-width="1"
+        stroke-dasharray="3 9"
+      />
+      <polygon
+        points="250,42 420,145 420,355 250,458 80,355 80,145"
+        fill="none"
+        stroke="rgba(197,160,89,0.12)"
+        stroke-width="1"
+      />
+      <polygon
+        points="250,55 436,357 64,357"
+        fill="none"
+        stroke="rgba(197,160,89,0.14)"
+        stroke-width="1"
+      />
+      <polygon
+        points="250,445 64,143 436,143"
+        fill="none"
+        stroke="rgba(197,160,89,0.12)"
+        stroke-width="1"
+      />
+      <circle
+        cx="250"
+        cy="250"
+        r="148"
+        fill="none"
+        stroke="rgba(197,160,89,0.3)"
+        stroke-width="1.1"
+        stroke-dasharray="14 10"
+      />
+      <circle
+        cx="250"
+        cy="250"
+        r="112"
+        fill="none"
+        stroke="rgba(197,160,89,0.18)"
+        stroke-width="0.9"
+      />
+      {ticks}
+      {glyphs.map((glyph) => (
+        <text
+          key={glyph.char}
+          x={glyph.x}
+          y={glyph.y}
+          text-anchor="middle"
+          dominant-baseline="middle"
+          fill="rgba(197,160,89,0.38)"
+          font-size="15"
+          font-family="Cinzel, serif"
+          class="login-rune-glyph"
+        >
+          {glyph.char}
+        </text>
+      ))}
+      <circle cx="250" cy="28" r="3" fill="rgba(197,160,89,0.45)" />
+      <circle cx="468" cy="250" r="3" fill="rgba(197,160,89,0.35)" />
+      <circle cx="250" cy="472" r="3" fill="rgba(197,160,89,0.45)" />
+      <circle cx="32" cy="250" r="3" fill="rgba(197,160,89,0.35)" />
+    </>
+  );
+}
+
 function LoginPortalBackdrop() {
   return (
     <div class="login-bg-portal" aria-hidden="true">
+      <div class="login-bg-depth" />
+      <div class="login-bg-horizon" />
+      <div class="login-bg-mist login-bg-mist--a" />
+      <div class="login-bg-mist login-bg-mist--b" />
+      <div class="login-god-rays login-god-rays--soft" />
       <div class="login-god-rays" />
+      <div class="login-portal-halo" />
       <div class="login-portal-core" />
-      <div class="login-rune-ring">
+      <div class="login-portal-singularity" />
+      <div class="login-rune-ring login-rune-ring--outer">
+        <svg viewBox="0 0 500 500" class="login-rune-svg">
+          <LoginRuneMarks />
+        </svg>
+      </div>
+      <div class="login-rune-ring login-rune-ring--inner">
         <svg viewBox="0 0 500 500" class="login-rune-svg">
           <circle
             cx="250"
             cy="250"
-            r="230"
+            r="96"
+            fill="none"
+            stroke="rgba(197,160,89,0.35)"
+            stroke-width="1.2"
+            stroke-dasharray="6 8"
+          />
+          <circle
+            cx="250"
+            cy="250"
+            r="72"
+            fill="none"
+            stroke="rgba(197,160,89,0.22)"
+            stroke-width="0.9"
+          />
+          <polygon
+            points="250,170 318,290 182,290"
             fill="none"
             stroke="rgba(197,160,89,0.2)"
-            stroke-width="1.5"
-            stroke-dasharray="8 6"
-          />
-          <circle
-            cx="250"
-            cy="250"
-            r="215"
-            fill="none"
-            stroke="rgba(197,160,89,0.12)"
             stroke-width="1"
           />
           <polygon
-            points="250,35 436,357 64,357"
+            points="250,330 182,210 318,210"
             fill="none"
-            stroke="rgba(197,160,89,0.1)"
+            stroke="rgba(197,160,89,0.16)"
             stroke-width="1"
-          />
-          <polygon
-            points="250,465 64,143 436,143"
-            fill="none"
-            stroke="rgba(197,160,89,0.1)"
-            stroke-width="1"
-          />
-          <circle
-            cx="250"
-            cy="250"
-            r="160"
-            fill="none"
-            stroke="rgba(197,160,89,0.25)"
-            stroke-width="1"
-            stroke-dasharray="12 12"
           />
         </svg>
       </div>
+      <div class="login-embers">
+        {Array.from({ length: 18 }, (_, index) => (
+          <span
+            key={`ember-${String(index)}`}
+            class={`login-ember login-ember--${String((index % 6) + 1)}`}
+          />
+        ))}
+      </div>
+      <div class="login-bg-grain" />
+      <div class="login-bg-vignette" />
     </div>
   );
 }
@@ -75,7 +219,6 @@ export function LoginView({
   onContinue,
   onQuit,
   onOptions,
-  mode = "gate",
 }: Props) {
   const authState = useStore(auth.store);
   const [tab, setTab] = useState<Tab>("login");
@@ -86,6 +229,8 @@ export function LoginView({
   const [busy, setBusy] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [realmSelected, setRealmSelected] = useState(true);
+  const [enteringRealm, setEnteringRealm] = useState(false);
   const [wsOpen, setWsOpen] = useState(
     () => ws === undefined || ws.status() === "open",
   );
@@ -107,7 +252,6 @@ export function LoginView({
 
   const currentUser = authState.user;
   const isLoggedIn =
-    mode === "gate" &&
     currentUser !== null &&
     !currentUser.isGuest &&
     authState.token !== null;
@@ -117,9 +261,7 @@ export function LoginView({
       ? t(authState.lastError as Parameters<I18nService["translate"]>[0])
       : null;
   const offlineText =
-    serverOffline && mode === "gate" && !isLoggedIn
-      ? t("auth.serverOffline")
-      : null;
+    serverOffline && !isLoggedIn ? t("auth.serverOffline") : null;
   const errorText = localError ?? authErrorText ?? offlineText;
 
   useEffect(() => {
@@ -130,11 +272,6 @@ export function LoginView({
   useEffect(() => {
     const onKey = (event: KeyboardEvent): void => {
       if (event.key !== "Escape") {
-        return;
-      }
-      if (mode === "convert") {
-        event.preventDefault();
-        onContinue();
         return;
       }
       if (tab === "register") {
@@ -151,20 +288,29 @@ export function LoginView({
     return () => {
       window.removeEventListener("keydown", onKey);
     };
-  }, [isLoggedIn, mode, onContinue, onQuit, tab]);
+  }, [isLoggedIn, onQuit, tab]);
 
-  const proceedSoon = (message: string): void => {
-    setSuccessMessage(message);
-    setTimeout(() => {
+  const enterRealm = (): void => {
+    if (!realmSelected || enteringRealm || serverOffline) {
+      return;
+    }
+    setEnteringRealm(true);
+    window.setTimeout(() => {
       onContinue();
-    }, 800);
+      setEnteringRealm(false);
+    }, 420);
   };
 
   const submit = async (): Promise<void> => {
     setLocalError(null);
     setSuccessMessage(null);
 
-    const needsEmail = mode === "convert" || tab === "register";
+    if (serverOffline) {
+      setLocalError(t("auth.serverOffline"));
+      return;
+    }
+
+    const needsEmail = tab === "register";
     if (
       username.trim().length === 0 ||
       password.trim().length === 0 ||
@@ -177,19 +323,14 @@ export function LoginView({
     setBusy(true);
     try {
       let ok = false;
-      if (mode === "convert") {
-        ok = await auth.convertGuest({ username, email, password });
-        if (ok) {
-          proceedSoon(t("auth.success.guestConverted"));
-        }
-      } else if (tab === "login") {
+      if (tab === "login") {
         ok = await auth.login({
           usernameOrEmail: username,
           password,
           rememberMe,
         });
         if (ok) {
-          proceedSoon(t("auth.success.login"));
+          setSuccessMessage(t("auth.success.login"));
         }
       } else {
         ok = await auth.register({
@@ -199,7 +340,7 @@ export function LoginView({
           rememberMe,
         });
         if (ok) {
-          proceedSoon(t("auth.success.registered"));
+          setSuccessMessage(t("auth.success.registered"));
         }
       }
     } finally {
@@ -208,7 +349,8 @@ export function LoginView({
   };
 
   const currentLang = i18n.getLocale();
-  const showRegister = mode === "convert" || tab === "register";
+  const showRegister = tab === "register";
+  const formLocked = busy || serverOffline;
 
   return (
     <section
@@ -230,35 +372,104 @@ export function LoginView({
       </header>
 
       <div class="login-screen__center">
-        <div class="login-card">
-          {isLoggedIn && currentUser !== null ? (
-            <div class="login-screen__logged-in">
-              <div class="login-screen__avatar" aria-hidden="true">
-                {currentUser.avatar || "A"}
-              </div>
-              <div>
-                <div class="cinzel text-gold login-screen__username">
-                  {currentUser.username}
+        <div
+          class={
+            isLoggedIn ? "login-card login-card--realm" : "login-card"
+          }
+        >
+          {currentUser !== null &&
+          !currentUser.isGuest &&
+          authState.token !== null ? (
+            <div class="login-screen__realm" data-testid="server-select">
+              <p class="login-screen__form-heading cinzel text-gold">
+                {t("serverSelect.title")}
+              </p>
+              <p class="login-screen__realm-welcome text-muted">
+                {t("serverSelect.welcome")}{" "}
+                <span class="text-gold">{currentUser.username}</span>
+              </p>
+              <p class="login-screen__realm-sub cinzel">
+                {t("serverSelect.subtitle")}
+              </p>
+
+              {successMessage !== null ? (
+                <div class="auth-success-box" data-testid="auth-success">
+                  <div>
+                    <div class="auth-banner__title">{t("common.success")}</div>
+                    <div class="auth-banner__body">{successMessage}</div>
+                  </div>
                 </div>
-                <div class="text-muted login-screen__email">
-                  {currentUser.email ?? t("auth.keeperTitle")}
-                </div>
-              </div>
+              ) : null}
+
+              <button
+                type="button"
+                class={[
+                  "login-realm-row",
+                  realmSelected ? "login-realm-row--selected" : "",
+                  serverOffline ? "login-realm-row--offline" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                data-testid="server-realm-mneme"
+                aria-pressed={realmSelected}
+                disabled={enteringRealm || serverOffline}
+                onClick={() => {
+                  setRealmSelected(true);
+                }}
+              >
+                <span class="login-realm-row__signal" aria-hidden="true" />
+                <span class="login-realm-row__body">
+                  <span class="login-realm-row__name cinzel text-gold">
+                    {t("serverSelect.realmName")}
+                  </span>
+                  <span class="login-realm-row__tagline">
+                    {t("serverSelect.realmTagline")}
+                  </span>
+                  <span class="login-realm-row__meta text-muted">
+                    {t("serverSelect.realmType")}
+                  </span>
+                </span>
+                <span class="login-realm-row__stats">
+                  <span
+                    class={
+                      serverOffline
+                        ? "login-realm-row__status login-realm-row__status--off"
+                        : "login-realm-row__status login-realm-row__status--on"
+                    }
+                  >
+                    {serverOffline
+                      ? t("serverSelect.statusOffline")
+                      : t("serverSelect.statusOnline")}
+                  </span>
+                  <span class="login-realm-row__load">
+                    {t("serverSelect.population")}:{" "}
+                    {t("serverSelect.populationNormal")}
+                  </span>
+                </span>
+              </button>
+
               <button
                 type="button"
                 class="glass-btn primary w-100 login-screen__cta"
                 data-testid="auth-continue"
-                onClick={onContinue}
+                disabled={
+                  !realmSelected || enteringRealm || serverOffline
+                }
+                onClick={enterRealm}
               >
-                {t("menu.continueToMenu")}
+                {enteringRealm
+                  ? t("serverSelect.connecting")
+                  : t("serverSelect.enter")}
               </button>
               <button
                 type="button"
                 class="glass-btn btn-danger w-100"
                 data-testid="auth-logout"
+                disabled={enteringRealm}
                 onClick={() => {
                   auth.logout();
                   setSuccessMessage(null);
+                  setEnteringRealm(false);
                 }}
               >
                 {t("auth.logout")}
@@ -267,11 +478,7 @@ export function LoginView({
           ) : (
             <>
               <p class="login-screen__form-heading cinzel text-gold">
-                {mode === "convert"
-                  ? t("auth.convertTitle")
-                  : showRegister
-                    ? t("auth.register")
-                    : t("auth.login")}
+                {showRegister ? t("auth.register") : t("auth.login")}
               </p>
 
               {errorText !== null ? (
@@ -305,7 +512,7 @@ export function LoginView({
               >
                 <label class="login-screen__field">
                   <span class="cinzel text-gold">
-                    {tab === "login" && mode === "gate"
+                    {tab === "login"
                       ? `${t("auth.email")} / ${t("auth.username")}`
                       : t("auth.username")}
                   </span>
@@ -315,6 +522,7 @@ export function LoginView({
                     required
                     autoFocus
                     autocomplete="username"
+                    disabled={formLocked}
                     value={username}
                     onInput={(event) => {
                       setUsername((event.target as HTMLInputElement).value);
@@ -331,6 +539,7 @@ export function LoginView({
                       type="email"
                       required
                       autocomplete="email"
+                      disabled={formLocked}
                       value={email}
                       onInput={(event) => {
                         setEmail((event.target as HTMLInputElement).value);
@@ -350,6 +559,7 @@ export function LoginView({
                     autocomplete={
                       tab === "login" ? "current-password" : "new-password"
                     }
+                    disabled={formLocked}
                     value={password}
                     onInput={(event) => {
                       setPassword((event.target as HTMLInputElement).value);
@@ -357,12 +567,13 @@ export function LoginView({
                   />
                 </label>
 
-                {mode === "gate" && tab === "login" ? (
+                {tab === "login" ? (
                   <label class="login-screen__remember">
                     <input
                       type="checkbox"
                       data-testid="auth-remember"
                       checked={rememberMe}
+                      disabled={formLocked}
                       onChange={(event) => {
                         setRememberMe(
                           (event.target as HTMLInputElement).checked,
@@ -377,73 +588,58 @@ export function LoginView({
                   type="submit"
                   class="glass-btn primary w-100 login-screen__cta"
                   data-testid="auth-submit"
-                  disabled={busy}
+                  disabled={formLocked}
                 >
                   {busy
                     ? showRegister
                       ? t("auth.registering")
                       : t("auth.authenticating")
-                    : mode === "convert"
-                      ? t("auth.upgradeGuest")
-                      : showRegister
-                        ? t("auth.register")
-                        : t("auth.login")}
+                    : showRegister
+                      ? t("auth.register")
+                      : t("auth.login")}
                 </button>
               </form>
-
-              {mode === "convert" ? (
-                <button
-                  type="button"
-                  class="glass-btn w-100"
-                  data-testid="auth-cancel"
-                  onClick={onContinue}
-                >
-                  {t("common.cancel")}
-                </button>
-              ) : null}
             </>
           )}
         </div>
       </div>
 
-      {mode === "gate" ? (
-        <aside class="login-screen__side-actions" aria-label="Login actions">
-          {onOptions !== undefined ? (
-            <button
-              type="button"
-              class="glass-btn login-screen__side-btn"
-              data-testid="login-options"
-              onClick={onOptions}
-            >
-              {t("menu.options")}
-            </button>
-          ) : null}
-          {!isLoggedIn ? (
-            <button
-              type="button"
-              class="glass-btn login-screen__side-btn"
-              data-testid={
-                tab === "register" ? "auth-tab-login" : "auth-tab-register"
-              }
-              onClick={() => {
-                setTab(tab === "register" ? "login" : "register");
-              }}
-            >
-              {tab === "register" ? t("auth.login") : t("auth.register")}
-            </button>
-          ) : null}
-          {onQuit !== undefined ? (
-            <button
-              type="button"
-              class="glass-btn login-screen__side-btn"
-              data-testid="login-quit"
-              onClick={onQuit}
-            >
-              {t("menu.quit")}
-            </button>
-          ) : null}
-        </aside>
-      ) : null}
+      <aside class="login-screen__side-actions" aria-label="Login actions">
+        {onOptions !== undefined ? (
+          <button
+            type="button"
+            class="glass-btn login-screen__side-btn"
+            data-testid="login-options"
+            onClick={onOptions}
+          >
+            {t("menu.options")}
+          </button>
+        ) : null}
+        {!isLoggedIn ? (
+          <button
+            type="button"
+            class="glass-btn login-screen__side-btn"
+            data-testid={
+              tab === "register" ? "auth-tab-login" : "auth-tab-register"
+            }
+            onClick={() => {
+              setTab(tab === "register" ? "login" : "register");
+            }}
+          >
+            {tab === "register" ? t("auth.login") : t("auth.register")}
+          </button>
+        ) : null}
+        {onQuit !== undefined ? (
+          <button
+            type="button"
+            class="glass-btn login-screen__side-btn"
+            data-testid="login-quit"
+            onClick={onQuit}
+          >
+            {t("menu.quit")}
+          </button>
+        ) : null}
+      </aside>
 
       <footer class="login-screen__footer">
         <span class="login-screen__version text-muted">{t("menu.version")}</span>

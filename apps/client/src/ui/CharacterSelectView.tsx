@@ -1,4 +1,5 @@
 import { HERO_CLASSES, type HeroClassId } from "@adv/content";
+import type { ComponentChildren } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 import type { GameSession } from "../services/game-session";
@@ -6,6 +7,7 @@ import { useStore } from "./useStore";
 
 type Props = {
   readonly session: GameSession;
+  readonly accountSlot?: ComponentChildren;
   readonly onPlay: () => void;
   readonly onBack: () => void;
   readonly onOptions: () => void;
@@ -52,6 +54,7 @@ function PlaceholderFigure({
 
 export function CharacterSelectView({
   session,
+  accountSlot,
   onPlay,
   onBack,
   onOptions,
@@ -70,7 +73,6 @@ export function CharacterSelectView({
   const [classId, setClassId] = useState<HeroClassId>("archive_keeper");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setSelected(hasHero);
@@ -78,15 +80,6 @@ export function CharacterSelectView({
       setMode("roster");
     }
   }, [hasHero]);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setLoading(false);
-    }, 350);
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, []);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent): void => {
@@ -136,31 +129,22 @@ export function CharacterSelectView({
       setBusy(false);
       return;
     }
-    void session.saveNow().then(() => {
-      setBusy(false);
-      setMode("roster");
-      setSelected(true);
-      setName("");
-    });
+    void session
+      .saveNow()
+      .catch(() => {
+        // Hero is already in memory; still leave create mode.
+      })
+      .finally(() => {
+        setBusy(false);
+        setMode("roster");
+        setSelected(true);
+        setName("");
+      });
   };
 
   const canPlay = hasHero && selected && mode === "roster" && !busy;
   const selectedName =
     mode === "roster" && hasHero && selected ? hero.name : null;
-
-  if (loading) {
-    return (
-      <main
-        class="char-select fade-in"
-        data-testid="character-select"
-        aria-busy="true"
-      >
-        <p class="char-select__loading cinzel text-gold">
-          {t("charSelect.loading")}
-        </p>
-      </main>
-    );
-  }
 
   return (
     <main
@@ -184,6 +168,9 @@ export function CharacterSelectView({
           </p>
         </div>
         <nav class="char-select__top-nav" aria-label="Character select menu">
+          {accountSlot !== undefined ? (
+            <div class="char-select__account">{accountSlot}</div>
+          ) : null}
           <button
             type="button"
             class="char-select__top-link"
@@ -225,6 +212,7 @@ export function CharacterSelectView({
                   maxlength={20}
                   required
                   autoFocus
+                  disabled={busy}
                   value={name}
                   onInput={(event) => {
                     setName((event.target as HTMLInputElement).value);
@@ -249,6 +237,7 @@ export function CharacterSelectView({
                         active ? "select__class is-active" : "select__class"
                       }
                       data-testid={`hero-class-${klass.id}`}
+                      disabled={busy}
                       onClick={() => {
                         setClassId(klass.id);
                       }}

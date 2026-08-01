@@ -76,10 +76,6 @@ describe("auth-service register/login", () => {
         type: WS_EVENTS.AUTH_LOGIN_SUCCESS,
         payload: { user, token: "tok_2" },
       },
-      [WS_EVENTS.AUTH]: {
-        type: WS_EVENTS.AUTH_SUCCESS,
-        payload: { userId: "guest_x", username: "Gast" },
-      },
     });
     const auth = createAuthService({ ws, storage: memoryStorage() });
     expect(
