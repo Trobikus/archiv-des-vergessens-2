@@ -320,7 +320,10 @@ Cutover-Runbook: [`docs/cutover-v1.md`](docs/cutover-v1.md)
 
 ## 📜 Lizenz & Projekt
 
-Privates Studio-Projekt des **Mneme-Bunds**.
+Privates Studio-Projekt von **Grimoire Interactive** (Mneme-Bund).
+
+Lizenz: **proprietär — All Rights Reserved** → [`LICENSE`](LICENSE)  
+Offizielle Release-Builds dürfen persönlich und nicht-kommerziell gespielt werden; Source, Assets und Weitergabe sind ohne schriftliche Freigabe nicht gestattet.
 
 Repository: [github.com/Trobikus/archiv-des-vergessens-2](https://github.com/Trobikus/archiv-des-vergessens-2)
 
