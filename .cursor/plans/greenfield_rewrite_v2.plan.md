@@ -28,7 +28,7 @@ todos:
     status: completed
   - id: phase-8
     content: "Phase 8: Härtung und Release 2.0.0"
-    status: pending
+    status: completed
   - id: phase-9
     content: "Phase 9 (optional): v1-Save-Importer"
     status: pending
@@ -38,8 +38,8 @@ todos:
 
 ## Fortschritt (Stand 2026-08-01)
 
-**Fertig:** Phase 0–7.  
-**Als Nächstes:** Phase 8 — Härtung → Release 2.0.0.
+**Fertig:** Phase 0–8.
+**Als Nächstes:** optional Phase 9 — v1-Save-Importer; Tag `v2.0.0`.
 
 | Phase | Status | Nachweis |
 |---|---|---|
@@ -200,7 +200,7 @@ Desktop-Shell ohne lokale Save-DB; Identifier + Updater-Key aus v1; Playwright-S
 Chat, Freunde, Clan, Leaderboard — Client + Servermodule, serverseitige Validierung.
 Protocol-Events/`chat:*`/`leaderboard:*`, SQLite, Jump-Limits, Hub-UI, Save-Slices, Offline-Clan; Client-Error-UX für `chat:error` / `leaderboard:error`.
 
-### Phase 8 — Härtung → Release 2.0.0 (4–6 Tage) ⬜
+### Phase 8 — Härtung → Release 2.0.0 (4–6 Tage) ✅
 Perf-Budgets, Leak-Tests, a11y-Basis, Patch Notes, Updater-Rollout, v1-Cutover.
 
 ### Phase 9 (optional) — v1-Save-Importer ⬜
@@ -240,4 +240,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 7 erledigt. Als Nächstes Phase 8: Härtung → Release 2.0.0.
+Phase 8 erledigt. Als Nächstes: Release-Tag / optional Phase 9.

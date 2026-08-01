@@ -58,7 +58,7 @@ DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei grünem `npm r
 - [x] `quit_app` + Safe-Quit über `app:quit-requested` (Client speichert vor Exit)
 - [x] Playwright-Smoke (`npm run e2e`): Intro ? Login, keine pageerrors
 - [x] `cargo clippy -D warnings` in Gate/CI-Job `desktop`
-- [x] App-Version `2.0.0` (Root/Cloud `2.0.0-phase5`)
+- [x] App-Version `2.0.0` (Root/Cloud später Phase 8 vereinheitlicht)
 - [ ] Manueller Playtest: `npm run tauri:dev` ? Quit-Button + Fenster-X speichern und beenden
 - [ ] Nach Quit: CMD-Meldungen `Chrome_WidgetWin_0` / Vite-Lifecycle sind harmlos (siehe `apps/desktop/README.md`)
 - [ ] Tag `v2-phase5` nach Merge
@@ -79,3 +79,15 @@ DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei grünem `npm r
 - [x] Server-Module + Protocol-Docs; Phase-7-Tests grün
 - [x] Playtest-Abdeckung: 2-Client Chat-Broadcast + registrierter LB-Submit/Jump-Limits; Clan/Freunde offline (inkl. Expedition/Raid/Offline-Produktion)
 - [x] Tag `v2-phase7` nach Freigabe
+
+## Phase 8 ? Härtung ? Release 2.0.0 ?
+
+- [x] Perf-Budgets + Frame-Degradation im Session-Ticker
+- [x] DomPool / ObjectPool + Leak-Tests; FloatingDamage pooled
+- [x] a11y-Basis (`docs/a11y-checklist.md`) + Gate + Playwright
+- [x] CHANGELOG + Patch Notes 2.0.0
+- [x] Updater-Rollout: Artifacts, v2-Endpoint, `release.yml`, Client-Check
+- [x] Cutover-Docs + Versionen `2.0.0`
+- [x] `npm run gate` Schritte `a11y-basis` / `perf-budgets`
+- [ ] Manueller Playtest: lange Session ohne Leak; Update-Check in Desktop
+- [ ] Tag `v2-phase8` / Release-Tag `v2.0.0` nach Freigabe

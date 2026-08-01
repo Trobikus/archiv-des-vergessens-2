@@ -1,4 +1,8 @@
-import type { EventBus, Store } from "@adv/core";
+import {
+  PERFORMANCE_BUDGETS,
+  type EventBus,
+  type Store,
+} from "@adv/core";
 import {
   validateChatErrorPayload,
   validateChatHistoryPayload,
@@ -11,7 +15,7 @@ import type { ClanChatMessage, GameState } from "../state/game-state";
 import { sanitizeClientText } from "./sanitize-client-text";
 import type { WsClient } from "./ws-client";
 
-const MAX_MESSAGES = 100;
+const MAX_MESSAGES = PERFORMANCE_BUDGETS.maxChatMessages;
 const MAX_MESSAGE_LENGTH = 200;
 
 export type ChatSendResult =

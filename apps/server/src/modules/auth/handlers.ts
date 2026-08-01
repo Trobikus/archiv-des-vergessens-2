@@ -212,7 +212,7 @@ export function handleAuthMessage(
             userId,
             creds.username,
             JSON.stringify(null),
-            "2.0.0-phase5",
+            "2.0.0",
             now,
           );
         });
@@ -424,7 +424,7 @@ export function handleAuthMessage(
             deps.stmts.migrateGuestSave.run(
               userId,
               creds.username,
-              guestSave.version || "2.0.0-phase5",
+              guestSave.version || "2.0.0",
               now,
               guestId,
             );
@@ -433,7 +433,7 @@ export function handleAuthMessage(
               userId,
               creds.username,
               JSON.stringify(null),
-              "2.0.0-phase5",
+              "2.0.0",
               now,
             );
           }
