@@ -22,7 +22,7 @@ todos:
     status: completed
   - id: phase-6
     content: "Phase 6: Feature-Parität Wellen A–F"
-    status: pending
+    status: completed
   - id: phase-7
     content: "Phase 7: Social/Live (Chat, Freunde, Clan, Leaderboard)"
     status: pending
@@ -38,8 +38,8 @@ todos:
 
 ## Fortschritt (Stand 2026-08-01)
 
-**Fertig:** Phase 0–5.  
-**Als Nächstes:** Phase 6 — Feature-Parität Wellen A–F.
+**Fertig:** Phase 0–6.
+**Als Nächstes:** Phase 7 — Social/Live.
 
 | Phase | Status | Nachweis |
 |---|---|---|
@@ -49,7 +49,7 @@ todos:
 | **3 Content + Kampf/Story** | ✅ fertig | Content/i18n-Gate, Combat-Sim, Hero/Story-UI; Tag `v2-phase3` ausstehend |
 | **4 Server + Auth + Cloud** | ✅ Code fertig | WS-Server, Auth, Cloud-Envelope, User-Migration; Playtest/Tag offen |
 | **5 Tauri + E2E** | ✅ fertig | Shell, Updater-Config, Playwright-Smoke; Tag `v2-phase5` ausstehend |
-| 6 Parität A–F | ⬜ offen | — |
+| **6 Parität A–F** | ✅ fertig | Hub-UI, Feature-Panels Wellen A–F, Tutorial/Intro/Settings-Parität |
 | 7 Social/Live | ⬜ offen | — |
 | 8 Release 2.0.0 | ⬜ offen | — |
 | 9 v1-Save-Importer | ⬜ optional | — |
@@ -216,13 +216,14 @@ Erledigt:
 - [x] Version: App `2.0.0`, Root/Cloud `2.0.0-phase5`
 - [ ] Manueller `tauri:dev` Playtest + Tag `v2-phase5`
 
-### Phase 6 — Feature-Parität Wellen A–F (12–18 Tage) ⬜
-- A Quests / Achievements / Daily
-- B Forge / Crafting / Gather
-- C Talente / Challenges / Library
-- D Story-Branches / Dialoge / Cinematics / Codex
-- E Relic Hunt / Account-Vault / Combat-Analytics
-- F Tutorial / Intro / Settings
+### Phase 6 — Feature-Parität Wellen A–F ✅
+Erledigt:
+- [x] A Quests / Achievements / Daily
+- [x] B Forge / Crafting / Gather
+- [x] C Talente / Challenges / Library
+- [x] D Story-Branches / Dialoge / Cinematics / Codex
+- [x] E Relic Hunt / Account-Vault / Combat-Analytics
+- [x] F Tutorial / Intro / Settings
 
 ### Phase 7 — Social/Live (5–7 Tage) ⬜
 Chat, Freunde, Clan, Leaderboard — Client + Servermodule, serverseitige Validierung.
@@ -244,7 +245,7 @@ graph LR
   P2 --> P3["P3 Content Kampf DONE"]
   P3 --> P4["P4 Server Auth Cloud WIP"]
   P4 --> P5["P5 Tauri E2E DONE"]
-  P5 --> P6["P6 Paritaet A-F ⬜"]
+  P5 --> P6["P6 Paritaet A-F DONE"]
   P6 --> P7["P7 Social ⬜"]
   P7 --> P8["P8 Release 2.0.0 ⬜"]
   P8 -.optional.-> P9["P9 v1 Importer ⬜"]

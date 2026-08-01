@@ -16,7 +16,7 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | Math / balancing | `js/core/game/math.js` | 1 | [x] + golden snapshot gate |
 | Save manager | `js/core/persistence/save-manager.js` | 2 | [x] SaveStore (IndexedDB cache) |
 | Cloud manager | `js/core/persistence/cloud-manager.js` | 4 | [x] CloudSyncService |
-| Settings | `js/core/settings.js` | 6F | [x] OptionsView (locale/account/reset) |
+| Settings | `js/core/settings.js` | 6F | [x] OptionsView (locale/audio/particles/floatingText/autosave/account/reset) |
 | Security helpers | `js/core/security.js` | 4 | [x] PBKDF2 + sanitize server-side |
 | Object pool | `js/core/pool.js` | 8 | [ ] |
 
@@ -30,21 +30,21 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | hero-service | 3 | [x] create/exp/stats/equip |
 | i18n-service | 3 | [x] DE/EN + key-gate |
 | story-service | 3 | [x] fight/spells/intro slice |
-| story-branch-service | 6D | [ ] |
-| quest-service | 6A | [ ] |
-| achievement-service | 6A | [ ] |
-| daily-reward-service | 6A | [ ] |
-| forge-service | 6B | [ ] |
-| crafting-service | 6B | [ ] |
-| gather-service | 2 / 6B | [x] Click/Upgrade Slice (Zones/Forge später 6B) |
-| talent-service | 6C | [ ] |
-| challenge-service | 6C | [ ] |
-| library-service | 6C | [ ] |
-| codex-service | 6D | [ ] |
-| relic-hunt-service | 6E | [ ] |
-| account-vault-service | 6E | [ ] |
-| combat-analytics-service | 6E | [ ] |
-| tutorial-service | 6F | [ ] |
+| story-branch-service | 6D | [x] |
+| quest-service | 6A | [x] |
+| achievement-service | 6A | [x] |
+| daily-reward-service | 6A | [x] |
+| forge-service | 6B | [x] craft/upgrade/salvage |
+| crafting-service | 6B | [x] |
+| gather-service | 2 / 6B | [x] Click/Upgrade + library gather_boost |
+| talent-service | 6C | [x] |
+| challenge-service | 6C | [x] |
+| library-service | 6C | [x] |
+| codex-service | 6D | [x] |
+| relic-hunt-service | 6E | [x] |
+| account-vault-service | 6E | [x] |
+| combat-analytics-service | 6E | [x] |
+| tutorial-service | 6F | [x] |
 | auth-service | 4 | [x] |
 | network-service | 4 | [x] WsClient |
 | chat-service | 7 | [ ] |
@@ -61,29 +61,30 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | views/CharacterSelectView | 3 | [x] |
 | views/IntroView | 6F | [x] |
 | views/MenuView | 6F | [x] |
-| views/OptionsView | 6F | [x] locale/account/reset slice |
-| views/GameView | 2–3 | [x] Idle + Hero/Story tabs |
-| views/HubView + hub/* | 6 | [ ] |
+| views/OptionsView | 6F | [x] locale/audio/particles/floatingText/autosave/account/reset |
+| views/GameView | 2–3 / 6 | [x] Idle + Hub-Tabs (A–F panels) |
+| views/HubView + hub/* | 6 | [x] Hub-Tabs in GameView (scrollable) |
 | views/MainApp | 2 | [x] App boot + GameView |
 | hero/* | 3 | [x] HeroPanel (slim) |
-| combat/* | 3 / 6E | [x] FloatingDamage; analytics later 6E |
-| quest/QuestUI | 6A | [ ] |
-| achievement/AchievementUI | 6A | [ ] |
-| challenges/ChallengeUI | 6C | [ ] |
-| forge/ForgeUI | 6B | [ ] |
-| crafting/CraftingUI | 6B | [ ] |
-| library/LibraryUI | 6C | [ ] |
-| skilltree/SkillTreeModal | 6C | [ ] |
-| story/* + dialog/DialogUI | 3 / 6D | [x] StoryPanel + Intro; DialogUI/branches 6D |
-| codex/CodexUI | 6D | [ ] |
-| relic/RelicHuntUI | 6E | [ ] |
-| tutorial/TutorialUI | 6F | [ ] |
+| combat/* | 3 / 6E | [x] FloatingDamage + CombatAnalyticsPanel |
+| quest/QuestUI | 6A | [x] QuestPanel |
+| achievement/AchievementUI | 6A | [x] AchievementPanel + daily claim |
+| challenges/ChallengeUI | 6C | [x] ChallengePanel |
+| forge/ForgeUI | 6B | [x] ForgePanel |
+| crafting/CraftingUI | 6B | [x] CraftingPanel |
+| library/LibraryUI | 6C | [x] LibraryPanel |
+| skilltree/SkillTreeModal | 6C | [x] SkillTreePanel |
+| story/* + dialog/DialogUI | 3 / 6D | [x] StoryPanel + StoryBranchPanel + DialogPanel |
+| codex/CodexUI | 6D | [x] CodexPanel |
+| relic/RelicHuntUI | 6E | [x] RelicHuntPanel |
+| tutorial/TutorialUI | 6F | [x] |
 | account/* | 4 | [x] AccountBadge + convertGuest |
 | chat/ChatUI | 7 | [ ] |
 | friends/FriendsUI | 7 | [ ] |
 | clan/ClanUI | 7 | [ ] |
 | leaderboard/LeaderboardUI | 7 | [ ] |
 | shared/* (modals, toasts, offline) | 2+ | [x] Offline-Report Banner (Phase 2) |
+| vault/VaultUI | 6E | [x] VaultPanel |
 
 ## Explicitly dropped vs v1
 

@@ -31,7 +31,10 @@
         "maximized": false,
         "visible": true,
         "fullscreen": true,
-        "center": true
+        "center": true,
+        "dragDropEnabled": false,
+        "zoomHotkeysEnabled": false,
+        "browserExtensionsEnabled": false
       }
     ],
     "security": {

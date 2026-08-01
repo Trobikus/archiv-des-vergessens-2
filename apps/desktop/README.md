@@ -23,6 +23,20 @@ npm run build -w @adv/desktop   # production shell (needs client build)
 Ported from v1: `com.grimoire.archivdesvergessens` + minisign pubkey + GitHub `latest.json` endpoint.
 Signed updater artifacts land in Phase 8 (`createUpdaterArtifacts` stays off until then).
 
+## Desktop feel (browser chrome lockdown)
+
+Release/dev shell configs:
+
+- `dragDropEnabled: false` — no file drops into the webview
+- `zoomHotkeysEnabled: false` — no Ctrl± page zoom
+- `browserExtensionsEnabled: false` — no WebView browser extensions
+- capability deny for `internal-toggle-devtools`
+
+The client installs `installDesktopLockdown()` on boot when `__TAURI__` is present
+(or `?lockdown=1` for browser smoke tests). That blocks context menu, reload,
+zoom wheel, DevTools shortcuts, and back-navigation keys — while leaving Escape
+and text-field editing alone.
+
 ## After quit in `tauri:dev`
 
 Harmless Windows/dev noise you may see in the CMD window:

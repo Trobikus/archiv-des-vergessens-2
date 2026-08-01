@@ -1,5 +1,5 @@
 import { STORY_BOSSES, type StoryBoss } from "@adv/content";
-import { createRng, type Store } from "@adv/core";
+import { createRng, type EventBus, type Store } from "@adv/core";
 import {
   absorbDamage,
   calculateHealAmount,
@@ -16,11 +16,17 @@ import type {
   GameState,
   SpellState,
 } from "../state/game-state";
+import type { CombatAnalyticsService } from "./combat-analytics-service";
 import {
   createHeroService,
   resolveRewardItems,
   type HeroService,
 } from "./hero-service";
+
+export type StoryServiceDeps = {
+  readonly eventBus?: EventBus;
+  readonly combatAnalytics?: CombatAnalyticsService;
+};
 
 export type StoryService = {
   getBosses(): readonly StoryBoss[];
@@ -81,10 +87,16 @@ function pushFloat(
 export function createStoryService(
   store: Store<GameState>,
   heroService: HeroService = createHeroService(store),
+  deps: StoryServiceDeps = {},
   random?: () => number,
 ): StoryService {
   const rng = createRng();
   const nextRandom = random ?? (() => rng.next());
+  const { eventBus, combatAnalytics } = deps;
+
+  const recordHeroHit = (damage: number, isCrit: boolean): void => {
+    combatAnalytics?.recordHit(damage, isCrit, "physical");
+  };
   const getCurrentBoss = (): StoryBoss | null => {
     const progress = store.getState().hero.prestige.bossProgress;
     if (progress >= STORY_BOSSES.length) {
@@ -122,6 +134,8 @@ export function createStoryService(
       },
     }));
     heroService.addExperience(boss.reward.exp);
+    eventBus?.publish("story:bossDefeated", { boss });
+    combatAnalytics?.reset();
   };
 
   return {
@@ -182,6 +196,7 @@ export function createStoryService(
           selectedChapter: boss.chapter,
         },
       }));
+      combatAnalytics?.reset();
       return true;
     },
 
@@ -231,6 +246,7 @@ export function createStoryService(
         bossHp = Math.max(0, bossHp - damage);
         logMessage = `Speer des Bundes: ${String(damage)} Schaden.`;
         floatingTexts = pushFloat(floatingTexts, String(damage), "damage");
+        recordHeroHit(damage, false);
       } else if (spellId === "shield") {
         shieldAmount = calculateShieldAmount(battle.heroMaxHp);
         logMessage = `Schild absorbiert bis zu ${String(shieldAmount)} Schaden.`;
@@ -315,6 +331,7 @@ export function createStoryService(
         String(heroHit.damage),
         heroHit.isCrit ? "crit" : "damage",
       );
+      recordHeroHit(heroHit.damage, heroHit.isCrit);
 
       if (bossHp <= 0) {
         store.setState((prev) => ({

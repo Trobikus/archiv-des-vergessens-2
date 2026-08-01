@@ -93,7 +93,58 @@ describe("auth-service register/login", () => {
       }),
     ).toBe(true);
     expect(auth.store.getState().token).toBe("tok_2");
+    expect(auth.rememberedUsername()).toBe("keeper");
     auth.logout();
+    expect(auth.rememberedUsername()).toBeNull();
     auth.destroy();
+  });
+
+  it("remembers username across boot without restoring the session", async () => {
+    const user = {
+      id: "usr_1",
+      username: "keeper",
+      email: "a@b.co",
+      avatar: "A",
+      createdAt: 1,
+      lastLogin: 2,
+      isGuest: false,
+    };
+    const storage = memoryStorage();
+    const responders = {
+      [WS_EVENTS.AUTH_LOGIN]: {
+        type: WS_EVENTS.AUTH_LOGIN_SUCCESS,
+        payload: { user, token: "tok_live" },
+      },
+      [WS_EVENTS.AUTH]: {
+        type: WS_EVENTS.AUTH_SUCCESS,
+        payload: { userId: "guest_x", username: "Gast" },
+      },
+    };
+    const first = createAuthService({
+      ws: createFakeWs(responders),
+      storage,
+    });
+    await first.boot();
+    expect(first.isRegistered()).toBe(false);
+    expect(
+      await first.login({
+        usernameOrEmail: "keeper",
+        password: "secret12",
+        rememberMe: true,
+      }),
+    ).toBe(true);
+    expect(first.rememberedUsername()).toBe("keeper");
+    first.destroy();
+
+    const second = createAuthService({
+      ws: createFakeWs(responders),
+      storage,
+    });
+    await second.boot();
+    expect(second.isRegistered()).toBe(false);
+    expect(second.store.getState().user?.isGuest).toBe(true);
+    expect(second.rememberedUsername()).toBe("keeper");
+    expect(storage.getItem("adv2_auth_session")).toBeNull();
+    second.destroy();
   });
 });

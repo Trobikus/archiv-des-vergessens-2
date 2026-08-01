@@ -6,6 +6,7 @@ import {
 } from "@adv/sim";
 
 import type { GameState } from "../state/game-state";
+import type { LibraryService } from "./library-service";
 import type { ResourceService } from "./resource-service";
 
 export type GatherService = {
@@ -15,13 +16,30 @@ export type GatherService = {
   upgradeClickPower(): boolean;
 };
 
+export type GatherServiceDeps = {
+  readonly onGather?: () => void;
+};
+
 export function createGatherService(
   store: Store<GameState>,
   resources: ResourceService,
+  library?: LibraryService,
+  deps: GatherServiceDeps = {},
 ): GatherService {
+  const baseGain = (): number =>
+    calculateGatherPower(store.getState().gather.clickPowerLevel);
+
+  const gatherBoost = (): number => {
+    if (!library) {
+      const level = store.getState().library.upgrades.gather_boost;
+      return 1 + level * 0.1;
+    }
+    return 1 + library.getBonus("gather_boost");
+  };
+
   return {
     getClickGain() {
-      return calculateGatherPower(store.getState().gather.clickPowerLevel);
+      return Math.floor(baseGain() * gatherBoost());
     },
 
     getUpgradeCost() {
@@ -33,9 +51,7 @@ export function createGatherService(
       if (now - state.gather.lastClickAt < CONFIG.GATHER.COOLDOWN_MS) {
         return 0;
       }
-      const gain = Math.floor(
-        calculateGatherPower(state.gather.clickPowerLevel),
-      );
+      const gain = Math.floor(baseGain() * gatherBoost());
       if (gain <= 0) {
         return 0;
       }
@@ -44,7 +60,11 @@ export function createGatherService(
         gather: { ...prev.gather, lastClickAt: now },
         meta: { ...prev.meta, lastActiveAt: now },
       }));
-      return resources.addParticles(gain);
+      const added = resources.addParticles(gain);
+      if (added > 0) {
+        deps.onGather?.();
+      }
+      return added;
     },
 
     upgradeClickPower() {

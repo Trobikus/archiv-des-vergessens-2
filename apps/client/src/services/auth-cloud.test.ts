@@ -22,7 +22,7 @@ function memoryStorage() {
 }
 
 describe("auth-service offline boot", () => {
-  it("stays logged out without creating a guest session", async () => {
+  it("starts as a guest without restoring a registered session", async () => {
     const storage = memoryStorage();
     function FailingSocket(): never {
       throw new Error("offline");
@@ -35,7 +35,8 @@ describe("auth-service offline boot", () => {
     const auth = createAuthService({ ws, storage });
     await auth.boot();
     expect(auth.store.getState().ready).toBe(true);
-    expect(auth.store.getState().user).toBeNull();
+    expect(auth.store.getState().user?.isGuest).toBe(true);
+    expect(auth.store.getState().token).toBeNull();
     expect(auth.isRegistered()).toBe(false);
     auth.destroy();
   });

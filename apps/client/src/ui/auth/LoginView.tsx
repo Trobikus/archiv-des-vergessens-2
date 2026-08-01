@@ -222,7 +222,9 @@ export function LoginView({
 }: Props) {
   const authState = useStore(auth.store);
   const [tab, setTab] = useState<Tab>("login");
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(
+    () => auth.rememberedUsername() ?? "",
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(true);
@@ -520,7 +522,7 @@ export function LoginView({
                     class="form-input"
                     data-testid="auth-username"
                     required
-                    autoFocus
+                    autoFocus={username.length === 0}
                     autocomplete="username"
                     disabled={formLocked}
                     value={username}
@@ -556,9 +558,8 @@ export function LoginView({
                     type="password"
                     required
                     minLength={6}
-                    autocomplete={
-                      tab === "login" ? "current-password" : "new-password"
-                    }
+                    autoFocus={username.length > 0}
+                    autocomplete="off"
                     disabled={formLocked}
                     value={password}
                     onInput={(event) => {

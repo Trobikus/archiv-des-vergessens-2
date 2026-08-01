@@ -4,6 +4,7 @@
   "windows": ["*"],
   "permissions": [
     "core:default",
+    "core:webview:deny-internal-toggle-devtools",
     "updater:default",
     "process:allow-restart",
     "opener:default"

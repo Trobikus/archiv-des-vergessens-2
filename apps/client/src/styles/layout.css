@@ -39,6 +39,12 @@ body {
     auto;
 }
 
+/* Desktop / Tauri shell: suppress browser drag affordances */
+html.is-desktop-shell img,
+html.is-desktop-shell a {
+  -webkit-user-drag: none;
+}
+
 /* Fixed 1920×1080 PC frame (letterboxed / scaled) */
 .pc-stage {
   position: fixed;
@@ -57,6 +63,12 @@ body {
   background-color: var(--color-bg);
   background-image: radial-gradient(circle at 50% 0%, #15151c 0%, #050507 80%);
   box-shadow: 0 0 0 1px rgba(197, 160, 89, 0.15), 0 40px 80px rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+}
+
+.pc-frame > * {
+  min-height: 0;
 }
 
 a,
@@ -183,7 +195,8 @@ input[type="submit"],
 .pc-frame .boot,
 .pc-frame .char-select,
 .pc-frame .intro-screen,
-.pc-frame #intro-container {
+.pc-frame #intro-container,
+.pc-frame .game-screen {
   min-height: 100%;
   height: 100%;
 }

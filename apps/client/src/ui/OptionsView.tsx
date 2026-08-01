@@ -97,6 +97,103 @@ export function OptionsView({
             </button>
           </div>
 
+          <h3 class="options-header">{t("options.audio")}</h3>
+          <div class="option-row flex-between">
+            <span class="option-label text-muted">
+              {t("options.particles")}
+            </span>
+            <label class="option-toggle">
+              <input
+                type="checkbox"
+                data-testid="opt-particles"
+                checked={state.settings.particlesEnabled}
+                onChange={(event) => {
+                  const checked = (event.target as HTMLInputElement).checked;
+                  session.store.setState((prev) => ({
+                    ...prev,
+                    settings: { ...prev.settings, particlesEnabled: checked },
+                  }));
+                }}
+              />
+              <span>
+                {state.settings.particlesEnabled
+                  ? t("options.enabled")
+                  : t("options.disabled")}
+              </span>
+            </label>
+          </div>
+          <div class="option-row flex-between">
+            <span class="option-label text-muted">
+              {t("options.floatingText")}
+            </span>
+            <label class="option-toggle">
+              <input
+                type="checkbox"
+                data-testid="opt-floating-text"
+                checked={state.settings.floatingTextEnabled}
+                onChange={(event) => {
+                  const checked = (event.target as HTMLInputElement).checked;
+                  session.store.setState((prev) => ({
+                    ...prev,
+                    settings: {
+                      ...prev.settings,
+                      floatingTextEnabled: checked,
+                    },
+                  }));
+                }}
+              />
+              <span>
+                {state.settings.floatingTextEnabled
+                  ? t("options.enabled")
+                  : t("options.disabled")}
+              </span>
+            </label>
+          </div>
+          <div class="option-row flex-between">
+            <span class="option-label text-muted">{t("options.audio")}</span>
+            <label class="option-toggle">
+              <input
+                type="checkbox"
+                data-testid="opt-audio"
+                checked={state.settings.audioEnabled}
+                onChange={(event) => {
+                  const checked = (event.target as HTMLInputElement).checked;
+                  session.store.setState((prev) => ({
+                    ...prev,
+                    settings: { ...prev.settings, audioEnabled: checked },
+                  }));
+                }}
+              />
+              <span>
+                {state.settings.audioEnabled
+                  ? t("options.enabled")
+                  : t("options.disabled")}
+              </span>
+            </label>
+          </div>
+          <div class="option-row flex-between">
+            <span class="option-label text-muted">{t("options.autosave")}</span>
+            <select
+              class="ui-select"
+              data-testid="opt-autosave"
+              value={String(state.settings.autosaveMs)}
+              onChange={(event) => {
+                const ms = Number(
+                  (event.target as HTMLSelectElement).value,
+                );
+                session.store.setState((prev) => ({
+                  ...prev,
+                  settings: { ...prev.settings, autosaveMs: ms },
+                }));
+              }}
+            >
+              <option value="5000">5s</option>
+              <option value="15000">15s</option>
+              <option value="30000">30s</option>
+              <option value="60000">60s</option>
+            </select>
+          </div>
+
           <h3 class="options-header">System</h3>
           <div class="option-row flex-between option-row--danger">
             <span class="option-label text-danger">
