@@ -3,7 +3,7 @@ import { useState } from "preact/hooks";
 
 import { nextGedankenArchivCost } from "../services/idle-service";
 import type { GameSession } from "../services/game-session";
-import { HeroPanel } from "./hero/HeroPanel";
+import { HeroPanel, type HeroSubTab } from "./hero/HeroPanel";
 import { StoryPanel } from "./story/StoryPanel";
 import { useStore } from "./useStore";
 
@@ -16,6 +16,7 @@ type TabId = "idle" | "hero" | "story";
 export function GameView({ session }: Props) {
   const state = useStore(session.store);
   const [tab, setTab] = useState<TabId>("idle");
+  const [heroSubTab, setHeroSubTab] = useState<HeroSubTab>("stats");
   const yieldPerSec = session.idle.getYieldPerSecond();
   const clickGain = session.gather.getClickGain();
   const clickUpgradeCost = session.gather.getUpgradeCost();
@@ -24,9 +25,8 @@ export function GameView({ session }: Props) {
     clickUpgradeCost > 0 &&
     state.resources.particles >= BigInt(clickUpgradeCost);
   const canBuyArchiv =
-    archivCost > 0 && state.resources.mnemeFragmente >= BigInt(archivCost);
+    archivCost > 0 && state.resources.particles >= BigInt(archivCost);
   const offline = state.meta.offlineReport;
-  const locale = state.settings.locale;
 
   return (
     <main class="game">
@@ -63,17 +63,37 @@ export function GameView({ session }: Props) {
             {label}
           </button>
         ))}
-        <button
-          type="button"
-          class="game__tab"
-          data-testid="locale-toggle"
-          onClick={() => {
-            session.i18n.setLocale(locale === "de" ? "en" : "de");
-          }}
-        >
-          {locale === "de" ? "EN" : "DE"}
-        </button>
       </nav>
+
+      {tab === "hero" ? (
+        <nav
+          class="hero__subtabs"
+          aria-label={session.i18n.translate("hub.hero")}
+        >
+          {(
+            [
+              ["stats", "hero.stats"],
+              ["inventory", "hero.inventory"],
+              ["equipment", "hero.equipment"],
+            ] as const
+          ).map(([id, key]) => (
+            <button
+              key={id}
+              type="button"
+              class={
+                heroSubTab === id ? "hero__subtab is-active" : "hero__subtab"
+              }
+              data-testid={`hero-subtab-${id}`}
+              aria-current={heroSubTab === id ? "page" : undefined}
+              onClick={() => {
+                setHeroSubTab(id);
+              }}
+            >
+              {session.i18n.translate(key)}
+            </button>
+          ))}
+        </nav>
+      ) : null}
 
       {offline !== null && offline.mnemeGained > 0 ? (
         <section class="game__offline" aria-live="polite">
@@ -93,7 +113,9 @@ export function GameView({ session }: Props) {
         </section>
       ) : null}
 
-      {tab === "hero" ? <HeroPanel session={session} /> : null}
+      {tab === "hero" ? (
+        <HeroPanel session={session} subTab={heroSubTab} />
+      ) : null}
       {tab === "story" ? <StoryPanel session={session} /> : null}
 
       {tab === "idle" ? (
@@ -159,7 +181,7 @@ export function GameView({ session }: Props) {
                 title={
                   canBuyArchiv
                     ? undefined
-                    : `Benötigt ${formatAmount(archivCost)} Mneme-Fragmente`
+                    : `Benötigt ${formatAmount(archivCost)} Partikel`
                 }
                 onClick={() => {
                   session.idle.buyLevel(1);

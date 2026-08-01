@@ -64,7 +64,8 @@ export function createIdleService(
       if (totalCost <= 0) {
         return false;
       }
-      if (!resources.removeMnemeFragmente(totalCost)) {
+      // Pay with particles so level 0 can bootstrap (Mneme only comes from idle).
+      if (!resources.removeParticles(totalCost)) {
         return false;
       }
       store.setState((prev) => {

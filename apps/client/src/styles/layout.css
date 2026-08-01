@@ -58,7 +58,8 @@ input[type="submit"],
 .auth__guest,
 .session-chrome__auth,
 .account__badge,
-.account__action {
+.account__action,
+.locale-fab {
   cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='rgba(197,160,89,0.5)' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23ffffff' filter='drop-shadow(0px 0px 4px %23c5a059)'/%3E%3Cpath d='M16 2 L16 6 M16 26 L16 30 M2 16 L6 16 M26 16 L30 16' stroke='%23c5a059' stroke-width='1.5'/%3E%3C/svg%3E")
       16 16,
     pointer !important;

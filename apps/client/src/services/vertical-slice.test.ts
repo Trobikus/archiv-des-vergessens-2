@@ -43,9 +43,10 @@ describe("phase-2 vertical slice", () => {
     const resources = createResourceService(store);
     const idle = createIdleService(store, resources);
 
-    resources.addMnemeFragmente(10);
+    resources.addParticles(10);
     expect(idle.buyLevel(1)).toBe(true);
     expect(store.getState().idleGenerators.gedankenArchiv.level).toBe(1);
+    expect(store.getState().resources.particles).toBe(0n);
     expect(idle.getYieldPerSecond()).toBe(1);
 
     const gained = idle.processTick(1500);
@@ -134,7 +135,7 @@ describe("phase-2 vertical slice", () => {
     sessions.push(first);
 
     await first.boot();
-    first.resources.addMnemeFragmente(10);
+    first.resources.addParticles(10);
     expect(first.idle.buyLevel(1)).toBe(true);
     first.gather.gather(now);
     expect(await first.saveNow()).toBe(true);
@@ -187,7 +188,7 @@ describe("phase-2 vertical slice", () => {
       sessions.push(session);
       await session.boot();
 
-      session.resources.addMnemeFragmente(10);
+      session.resources.addParticles(10);
       expect(session.idle.buyLevel(1)).toBe(true);
       expect(session.idle.getYieldPerSecond()).toBe(1);
 

@@ -83,18 +83,6 @@ export function CharacterSelectView({ session }: Props) {
           >
             {session.i18n.translate("common.confirm")}
           </button>
-          <button
-            type="button"
-            class="game__btn"
-            data-testid="locale-toggle"
-            onClick={() => {
-              session.i18n.setLocale(locale === "de" ? "en" : "de");
-            }}
-          >
-            {locale === "de"
-              ? session.i18n.translate("options.lang_en")
-              : session.i18n.translate("options.lang_de")}
-          </button>
         </div>
       </section>
     </main>

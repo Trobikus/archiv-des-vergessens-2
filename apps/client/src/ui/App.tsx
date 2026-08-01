@@ -18,6 +18,31 @@ function BootShell({ message }: { readonly message: string }) {
   );
 }
 
+function LocaleCorner({ session }: { readonly session: GameSession }) {
+  const state = useStore(session.store);
+  const locale = state.settings.locale;
+  const next = locale === "de" ? "en" : "de";
+
+  return (
+    <button
+      type="button"
+      class="locale-fab"
+      data-testid="locale-toggle"
+      aria-label={session.i18n.translate(
+        next === "en" ? "options.lang_en" : "options.lang_de",
+      )}
+      title={session.i18n.translate(
+        next === "en" ? "options.lang_en" : "options.lang_de",
+      )}
+      onClick={() => {
+        session.i18n.setLocale(next);
+      }}
+    >
+      {next.toUpperCase()}
+    </button>
+  );
+}
+
 function SessionRoot({ session }: { readonly session: GameSession }) {
   const state = useStore(session.store);
   const authState = useStore(session.auth.store);
@@ -28,8 +53,9 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
     return <BootShell message="Verbinde…" />;
   }
 
+  let body;
   if (showAuthGate) {
-    return (
+    body = (
       <LoginView
         auth={session.auth}
         i18n={session.i18n}
@@ -38,10 +64,8 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
         }}
       />
     );
-  }
-
-  if (showConvert) {
-    return (
+  } else if (showConvert) {
+    body = (
       <LoginView
         auth={session.auth}
         i18n={session.i18n}
@@ -52,36 +76,43 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
         }}
       />
     );
+  } else {
+    body = (
+      <>
+        <div class="session-chrome">
+          <AccountBadge
+            auth={session.auth}
+            i18n={session.i18n}
+            ws={session.ws}
+            cloud={session.cloud}
+            onConvertGuest={() => {
+              setShowConvert(true);
+            }}
+          />
+          <button
+            type="button"
+            class="session-chrome__auth"
+            data-testid="open-auth"
+            onClick={() => {
+              setShowAuthGate(true);
+            }}
+          >
+            {session.i18n.translate("auth.login")}
+          </button>
+        </div>
+        {!state.hero.created ? (
+          <CharacterSelectView session={session} />
+        ) : (
+          <GameView session={session} />
+        )}
+      </>
+    );
   }
 
   return (
     <>
-      <div class="session-chrome">
-        <AccountBadge
-          auth={session.auth}
-          i18n={session.i18n}
-          ws={session.ws}
-          cloud={session.cloud}
-          onConvertGuest={() => {
-            setShowConvert(true);
-          }}
-        />
-        <button
-          type="button"
-          class="session-chrome__auth"
-          data-testid="open-auth"
-          onClick={() => {
-            setShowAuthGate(true);
-          }}
-        >
-          {session.i18n.translate("auth.login")}
-        </button>
-      </div>
-      {!state.hero.created ? (
-        <CharacterSelectView session={session} />
-      ) : (
-        <GameView session={session} />
-      )}
+      {body}
+      <LocaleCorner session={session} />
     </>
   );
 }
