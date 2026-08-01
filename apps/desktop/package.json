@@ -1,6 +1,6 @@
 {
   "name": "@adv/desktop",
-  "version": "2.0.0",
+  "version": "0.1.0-alpha",
   "private": true,
   "description": "Tauri 2 desktop shell for Archiv des Vergessens",
   "scripts": {
