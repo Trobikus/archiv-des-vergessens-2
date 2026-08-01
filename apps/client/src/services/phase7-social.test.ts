@@ -40,7 +40,7 @@ function createListenerWs(): WsClient & {
       }
       set.add(handler);
       return () => {
-        set?.delete(handler);
+        set.delete(handler);
       };
     },
     onStatus() {
@@ -218,10 +218,10 @@ describe("phase 7 social services", () => {
     const chatErrors: string[] = [];
     const lbErrors: string[] = [];
     const chatSub = eventBus.subscribe("chat:error", (data) => {
-      chatErrors.push(String((data as { error: string }).error));
+      chatErrors.push((data as { error: string }).error);
     });
     const lbSub = eventBus.subscribe("leaderboard:error", (data) => {
-      lbErrors.push(String((data as { error: string }).error));
+      lbErrors.push((data as { error: string }).error);
     });
 
     ws.emit(WS_EVENTS.CHAT_ERROR, { error: "Nicht authentifiziert." });
