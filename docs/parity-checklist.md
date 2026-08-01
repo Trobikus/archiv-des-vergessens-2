@@ -16,7 +16,7 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | Math / balancing | `js/core/game/math.js` | 1 | [x] + golden snapshot gate |
 | Save manager | `js/core/persistence/save-manager.js` | 2 | [x] SaveStore (IndexedDB cache) |
 | Cloud manager | `js/core/persistence/cloud-manager.js` | 4 | [x] CloudSyncService |
-| Settings | `js/core/settings.js` | 6F | [ ] |
+| Settings | `js/core/settings.js` | 6F | [x] OptionsView (locale/account/reset) |
 | Security helpers | `js/core/security.js` | 4 | [x] PBKDF2 + sanitize server-side |
 | Object pool | `js/core/pool.js` | 8 | [ ] |
 
@@ -59,11 +59,12 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | Boot shell (“Boot OK”) | 0 | [x] |
 | views/LoginView | 4 | [x] |
 | views/CharacterSelectView | 3 | [x] |
-| views/IntroView | 6F | [ ] |
+| views/IntroView | 6F | [x] |
+| views/MenuView | 6F | [x] |
+| views/OptionsView | 6F | [x] locale/account/reset slice |
 | views/GameView | 2–3 | [x] Idle + Hero/Story tabs |
 | views/HubView + hub/* | 6 | [ ] |
 | views/MainApp | 2 | [x] App boot + GameView |
-| views/OptionsView | 6F | [ ] |
 | hero/* | 3 | [x] HeroPanel (slim) |
 | combat/* | 3 / 6E | [x] FloatingDamage; analytics later 6E |
 | quest/QuestUI | 6A | [ ] |

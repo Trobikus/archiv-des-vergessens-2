@@ -1,0 +1,432 @@
+/* ============================================================
+   FILE: css/intro.css – Studio Intro Animation (Mystisch)
+   ============================================================ */
+
+/* ---- Haupt-Container ---- */
+#intro-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    background: radial-gradient(ellipse at 50% 40%, #1a1108 0%, #0a0808 35%, #050507 100%);
+    z-index: 1000;
+    transition: opacity 0.8s ease-out;
+    overflow: hidden;
+    will-change: opacity;
+}
+
+/* ---- Partikel-Canvas (Vollbild im Container) ---- */
+#intro-particle-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeInSimple 2s ease-out 0s forwards;   /* sanftes Einblenden der Partikel */
+    will-change: opacity;
+}
+
+/* ============================================================
+   NEBEL-OVERLAYS
+   ============================================================ */
+.intro-fog-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    border-radius: 50%;
+}
+
+.intro-fog-layer--1 {
+    background: radial-gradient(ellipse 120% 60% at 30% 60%, rgba(197,160,89,0.04) 0%, transparent 70%);
+    animation: fogDrift1 8s ease-in-out infinite alternate;
+}
+
+.intro-fog-layer--2 {
+    background: radial-gradient(ellipse 90% 80% at 70% 40%, rgba(100,60,180,0.05) 0%, transparent 65%);
+    animation: fogDrift2 11s ease-in-out infinite alternate;
+}
+
+.intro-fog-layer--3 {
+    background: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(197,160,89,0.06) 0%, transparent 55%);
+    animation: fogDrift3 6s ease-in-out infinite alternate;
+}
+
+/* ============================================================
+   RUNEN-RING (äußerer dekorativer SVG-Ring)
+   ============================================================ */
+.intro-rune-ring {
+    position: absolute;
+    width: 75vmin;
+    height: 75vmin;
+    min-width: 400px;
+    max-width: 700px;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+    animation: runeRingFadeIn 2.5s ease 1.2s forwards;   /* war 0.3s – Stamps sollen zuerst erscheinen */
+    will-change: transform, opacity;
+}
+
+.intro-rune-svg {
+    width: 100%;
+    height: 100%;
+    animation: rotateCircleReverse 60s linear infinite;
+    will-change: transform;
+}
+
+/* Rune-Glyphen einzeln aufblitzen */
+.intro-rune-glyph {
+    opacity: 0;
+    animation: runeFlicker 3s ease-in-out infinite;
+}
+
+/* ============================================================
+   MAGISCHER KREIS (3 Lagen: Außen, Mitte, Innen)
+   ============================================================ */
+.intro-logo-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 90vw;
+    width: 100%;
+    z-index: 10;
+}
+
+/* Äußerer Kreis */
+.intro-magic-circle {
+    position: absolute;
+    width: 45vmin;
+    height: 45vmin;
+    min-width: 250px;
+    max-width: 480px;
+    border-radius: 50%;
+    border: 2px dashed rgba(197, 160, 89, 0.15);
+    border-top-color: rgba(197, 160, 89, 0.5);
+    border-bottom-color: rgba(197, 160, 89, 0.5);
+    opacity: 0;
+    animation: rotateCircle 12s linear 1.2s infinite,
+               outerCirclePulse 4s ease-in-out 1.2s infinite alternate,
+               fadeInSimple 0.6s ease 1.2s forwards;     /* Delay 1.2s – Stamps erscheinen zuerst */
+    pointer-events: none;
+    z-index: 4;
+    box-shadow: 0 0 30px rgba(197, 160, 89, 0.04) inset;
+    will-change: transform;
+}
+
+/* Zweiter innerer Kreis (Pseudo-Element) */
+.intro-magic-circle::before {
+    content: '';
+    position: absolute;
+    top: 3%;
+    left: 3%;
+    right: 3%;
+    bottom: 3%;
+    border-radius: 50%;
+    border: 1px solid rgba(197, 160, 89, 0.08);
+    border-left-color: rgba(197, 160, 89, 0.35);
+    border-right-color: rgba(197, 160, 89, 0.35);
+    animation: rotateCircleReverse 8s linear infinite;
+}
+
+/* Dritter innerster Kreis (After) */
+.intro-magic-circle::after {
+    content: '';
+    position: absolute;
+    top: 12%;
+    left: 12%;
+    right: 12%;
+    bottom: 12%;
+    border-radius: 50%;
+    border: 1px dotted rgba(197, 160, 89, 0.12);
+    border-top-color: rgba(197, 160, 89, 0.25);
+    animation: rotateCircle 20s linear infinite;
+    box-shadow: 0 0 15px rgba(197, 160, 89, 0.05) inset;
+}
+
+/* ============================================================
+   BUCH-ICON
+   ============================================================ */
+.intro-book-icon {
+    position: relative;
+    width: 24vmin;
+    height: 24vmin;
+    min-width: 130px;
+    max-width: 260px;
+    margin-bottom: 3vmin;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* filter vom Parent entfernt – verhinderte GPU-Compositing des Transforms */
+    animation: bookFloat 4s ease-in-out 2s infinite;
+    will-change: transform;
+}
+
+.intro-svg-book {
+    width: 100%;
+    height: 100%;
+    color: var(--color-gold);
+    /* filter hierher verschoben (war vorher doppelt: Parent + SVG) */
+    filter:
+        drop-shadow(0 0 25px rgba(197, 160, 89, 0.15))
+        drop-shadow(0 0 18px rgba(197, 160, 89, 0.6))
+        drop-shadow(0 0 40px rgba(197, 160, 89, 0.2));
+}
+
+/* Zeichen-Effekt für die Buch-Pfade */
+.intro-svg-book path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawBook 2.5s cubic-bezier(0.4, 0, 0.2, 1) 0.9s forwards; /* war 0s – Stamps zuerst */
+}
+
+.intro-svg-book path:nth-child(2) {
+    animation-delay: 1.2s;   /* war 0.3s */
+}
+.intro-svg-book path:nth-child(3),
+.intro-svg-book path:nth-child(4) {
+    animation-delay: 1.5s;   /* war 0.6s */
+}
+
+/* Sternen-Sparkle Pulsieren */
+.intro-sparkle-star {
+    opacity: 0;
+    transform-box: fill-box;          /* Pivot relativ zur eigenen Bounding-Box */
+    transform-origin: 50% 50%;        /* Zentriert – kein Pixel-Offset nötig */
+    animation:
+        scaleSparkle 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) 2.1s forwards,  /* war 1.2s */
+        starPulse 1.8s ease-in-out 3.6s infinite;                             /* war 2.7s */
+    filter: drop-shadow(0 0 6px rgba(235, 213, 118, 0.9));
+}
+
+/* ============================================================
+   TEXT: GRIMOIRE & INTERACTIVE
+   ============================================================ */
+.intro-title {
+    font-family: var(--font-header);
+    font-size: clamp(2rem, 5.5vmin, 3.6rem);
+    letter-spacing: 0.35em;
+    margin: 0;
+    line-height: 1;
+    background: linear-gradient(to bottom, #ffffff, var(--color-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 12px rgba(197, 160, 89, 0.4)) drop-shadow(0 0 30px rgba(197, 160, 89, 0.15));
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeInText 1.5s cubic-bezier(0.25, 1, 0.5, 1) 0.8s forwards;
+    z-index: 6;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.intro-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(0.75rem, 1.8vmin, 1.1rem);
+    font-weight: 600;
+    letter-spacing: 0.55em;
+    color: rgba(197, 160, 89, 0.55);
+    margin-top: 1.5vmin;
+    margin-bottom: 0px;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInText 1.5s cubic-bezier(0.25, 1, 0.5, 1) 1.1s forwards;
+    z-index: 6;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* ============================================================
+   LADEBALKEN
+   ============================================================ */
+.intro-loading-bar-container {
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 66vw;
+    max-width: 1200px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 2px;
+    overflow: visible;
+    opacity: 0;
+    animation: fadeInSimple 0.8s ease 1s forwards;
+    z-index: 20;
+}
+
+.intro-loading-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(197,160,89,0.4), var(--color-gold), var(--color-gold-hover), var(--color-gold));
+    background-size: 200% 100%;
+    will-change: width;
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow:
+        0 0 6px rgba(197, 160, 89, 0.8),
+        0 0 20px rgba(197, 160, 89, 0.4),
+        0 0 40px rgba(197, 160, 89, 0.15);
+    position: relative;
+}
+
+.intro-loading-bar.manual-progress {
+    animation: none !important;
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Leucht-Punkt am Ende des Ladebalkens */
+.intro-loading-bar::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(235, 213, 118, 1);
+    box-shadow: 0 0 8px rgba(235, 213, 118, 1), 0 0 20px rgba(197, 160, 89, 0.8);
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+
+/* Kreise */
+@keyframes rotateCircle {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes rotateCircleReverse {
+    0%   { transform: rotate(360deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes outerCirclePulse {
+    0%   { opacity: 0.65; }
+    100% { opacity: 1; }
+}
+
+/* Runen-Ring */
+@keyframes runeRingFadeIn {
+    from { opacity: 0; transform: scale(0.92) rotate(-5deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+@keyframes runeFlicker {
+    0%   { opacity: 0; }
+    10%  { opacity: 0.45; }
+    20%  { opacity: 0.15; }
+    35%  { opacity: 0.5; }
+    60%  { opacity: 0.25; }
+    80%  { opacity: 0.4; }
+    100% { opacity: 0.1; }
+}
+
+/* Nebel */
+@keyframes fogDrift1 {
+    0%   { transform: translate(-8%, 5%) scale(1); opacity: 0.7; }
+    100% { transform: translate(8%, -5%) scale(1.1); opacity: 1; }
+}
+@keyframes fogDrift2 {
+    0%   { transform: translate(5%, -8%) scale(1.05); opacity: 0.5; }
+    100% { transform: translate(-5%, 8%) scale(0.95); opacity: 1; }
+}
+@keyframes fogDrift3 {
+    0%   { transform: translate(0%, 0%) scale(1); opacity: 0.6; }
+    100% { transform: translate(3%, -3%) scale(1.08); opacity: 1; }
+}
+
+/* Buch */
+@keyframes drawBook {
+    to { stroke-dashoffset: 0; }
+}
+@keyframes bookFloat {
+    /* Vollständige Sinuswelle – kein alternate nötig, Loop ist nahtlos */
+    0%   { transform: translateY(0px); }
+    50%  { transform: translateY(-8px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Stern */
+@keyframes scaleSparkle {
+    0%   { opacity: 0; transform: scale(0) rotate(-20deg); }
+    80%  { transform: scale(1.2) rotate(5deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+@keyframes starPulse {
+    /* Vollständige Sinuswelle – kein alternate, Loop ist nahtlos */
+    0%   { opacity: 0.85; transform: scale(0.95); }
+    50%  { opacity: 1;    transform: scale(1.06); }
+    100% { opacity: 0.85; transform: scale(0.95); }
+}
+
+/* Text */
+@keyframes fadeInText {
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInSimple {
+    to { opacity: 1; }
+}
+
+.intro-loading-step {
+  opacity: 0.55;
+  letter-spacing: 1px;
+  text-transform: none;
+  font-size: 0.65rem;
+}
+
+.intro-loading-bar-container.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+
+.intro-skip-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.35rem;
+  z-index: 40;
+  appearance: none;
+  margin: 0;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(197, 160, 89, 0.28);
+  border-radius: var(--border-radius-md);
+  background: rgba(5, 5, 8, 0.25);
+  color: rgba(197, 160, 89, 0.55);
+  font-family: var(--font-header);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: introSkipPulse 1.8s ease-in-out infinite;
+  transition:
+    color 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.intro-skip-btn:hover,
+.intro-skip-btn:focus-visible {
+  color: rgba(235, 213, 118, 0.9);
+  border-color: rgba(197, 160, 89, 0.55);
+  background: rgba(5, 5, 8, 0.45);
+  outline: none;
+}
+
+@keyframes introSkipPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}

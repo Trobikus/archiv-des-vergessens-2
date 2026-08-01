@@ -15,6 +15,10 @@ import {
 } from "../state/game-state";
 import { createAuthService, type AuthService } from "./auth-service";
 import {
+  createBootProgressReporter,
+  type BootProgressListener,
+} from "./boot-progress";
+import {
   createCloudSyncService,
   type CloudSyncService,
 } from "./cloud-sync-service";
@@ -51,8 +55,10 @@ export type GameSession = {
   readonly ws: WsClient;
   readonly auth: AuthService;
   readonly cloud: CloudSyncService;
-  boot(): Promise<OfflineReport | null>;
+  boot(onProgress?: BootProgressListener): Promise<OfflineReport | null>;
   saveNow(): Promise<boolean>;
+  resetProgress(): Promise<void>;
+  quitGame(): Promise<void>;
   dismissOfflineReport(): void;
   destroy(): void;
 };
@@ -71,6 +77,14 @@ function defaultStorage(useIndexedDb: boolean): SaveStorage {
     return createIndexedDbSaveStorage();
   }
   return createMemorySaveStorage();
+}
+
+function yieldToUi(): Promise<void> {
+  // Prefer setTimeout over rAF so boot progress works under test rAF mocks
+  // and still lets the UI paint between steps in the browser.
+  return new Promise((resolve) => {
+    setTimeout(resolve, 0);
+  });
 }
 
 export function createGameSession(
@@ -137,11 +151,34 @@ export function createGameSession(
     auth,
     cloud,
 
-    async boot() {
-      if (options.connectNetwork !== false) {
-        await auth.boot();
+    async boot(onProgress) {
+      const progress = createBootProgressReporter(onProgress);
+      const step = async (id: Parameters<typeof progress.report>[0]): Promise<void> => {
+        progress.report(id);
+        await yieldToUi();
+      };
+
+      await step("core");
+
+      await step("fonts");
+      if (typeof document !== "undefined" && document.fonts?.ready) {
+        try {
+          await document.fonts.ready;
+        } catch {
+          // Font loading is best-effort; continue boot.
+        }
       }
 
+      if (options.connectNetwork !== false) {
+        await step("network");
+        await step("auth");
+        await auth.boot();
+      } else {
+        await step("network");
+        await step("auth");
+      }
+
+      await step("save");
       const loaded = await saves.load();
       if (!loaded.ok) {
         log.warn(`load failed, starting fresh: ${loaded.error}`);
@@ -149,6 +186,7 @@ export function createGameSession(
         store.replace(loaded.value);
       }
 
+      await step("cloud");
       if (auth.isRegistered()) {
         const merged = await cloud.pullAndMerge(store.getState());
         if (merged.ok) {
@@ -157,8 +195,10 @@ export function createGameSession(
         await cloud.flushPending();
       }
 
+      await step("offline");
       const report = offline.applyOnBoot(nowFn());
 
+      await step("systems");
       // rAF only schedules frames; timestamps must stay on the same clock as
       // `now` (Date.now). Passing rAF's performance.now values here previously
       // made every slow delta negative, so idle income and autofight never ran.
@@ -200,10 +240,42 @@ export function createGameSession(
         meta: { ...prev.meta, bootstrapped: true },
       }));
 
+      await step("ready");
       return report;
     },
 
     saveNow,
+
+    async resetProgress() {
+      const locale = store.getState().settings.locale;
+      const next = createInitialGameState(nowFn());
+      store.replace({
+        ...next,
+        settings: { ...next.settings, locale },
+      });
+      await saveNow();
+    },
+
+    async quitGame() {
+      await saveNow();
+      const win = window as Window & {
+        __TAURI__?: { core?: { invoke?: (cmd: string) => Promise<unknown> } };
+        electronAPI?: { sendQuitReady?: () => void };
+      };
+      if (win.electronAPI?.sendQuitReady) {
+        win.electronAPI.sendQuitReady();
+        return;
+      }
+      if (win.__TAURI__?.core?.invoke) {
+        try {
+          await win.__TAURI__.core.invoke("quit_app");
+          return;
+        } catch {
+          // fall through to window.close
+        }
+      }
+      window.close();
+    },
 
     dismissOfflineReport() {
       store.setState((prev) => ({

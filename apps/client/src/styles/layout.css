@@ -14,11 +14,18 @@
 html,
 body,
 #app {
+  height: 100%;
   min-height: 100%;
+  overflow: hidden;
+}
+
+#app {
+  position: relative;
+  min-height: 100vh;
 }
 
 body {
-  background-color: var(--color-bg);
+  background-color: #000;
   color: var(--color-text-main);
   font-family: var(--font-body);
   font-size: 15px;
@@ -26,10 +33,30 @@ body {
   min-height: 100vh;
   user-select: none;
   -webkit-font-smoothing: antialiased;
-  background-image: radial-gradient(circle at 50% 0%, #15151c 0%, #050507 80%);
+  background-image: radial-gradient(circle at 50% 50%, #0a0a0c 0%, #000 75%);
   cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M6,4 L24,12 L15,15 L11,24 Z' fill='%23ffffff' stroke='%23c5a059' stroke-width='1.5' filter='drop-shadow(0px 0px 3px rgba(197,160,89,0.8))'/%3E%3C/svg%3E")
       6 4,
     auto;
+}
+
+/* Fixed 1920×1080 PC frame (letterboxed / scaled) */
+.pc-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  background: #000;
+}
+
+.pc-frame {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  overflow: hidden;
+  transform-origin: center center;
+  background-color: var(--color-bg);
+  background-image: radial-gradient(circle at 50% 0%, #15151c 0%, #050507 80%);
+  box-shadow: 0 0 0 1px rgba(197, 160, 89, 0.15), 0 40px 80px rgba(0, 0, 0, 0.9);
 }
 
 a,
@@ -131,11 +158,21 @@ input[type="submit"],
 }
 
 .center-layout {
-  min-height: 100vh;
+  min-height: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 2rem;
   text-align: center;
+}
+
+.pc-frame .center-layout,
+.pc-frame .boot,
+.pc-frame .char-select,
+.pc-frame .intro-screen,
+.pc-frame #intro-container {
+  min-height: 100%;
+  height: 100%;
 }

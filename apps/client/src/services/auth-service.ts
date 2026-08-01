@@ -30,10 +30,12 @@ export type AuthService = {
     username: string;
     email: string;
     password: string;
+    rememberMe?: boolean;
   }): Promise<boolean>;
   login(input: {
     usernameOrEmail: string;
     password: string;
+    rememberMe?: boolean;
   }): Promise<boolean>;
   convertGuest(input: {
     username: string;
@@ -104,8 +106,16 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
   }
   const stableGuestId = guestIdValue;
 
-  const persistSession = (user: AuthUser, token: string): void => {
-    storage.setItem(SESSION_KEY, JSON.stringify({ user, token }));
+  const persistSession = (
+    user: AuthUser,
+    token: string,
+    rememberMe = true,
+  ): void => {
+    if (rememberMe) {
+      storage.setItem(SESSION_KEY, JSON.stringify({ user, token }));
+    } else {
+      storage.removeItem(SESSION_KEY);
+    }
     store.setState((prev) => ({
       ...prev,
       user,
@@ -136,6 +146,7 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
   const applySuccess = (
     type: string,
     payload: Record<string, unknown>,
+    rememberMe = true,
   ): boolean => {
     if (type === WS_EVENTS.AUTH_CONVERT_GUEST_SUCCESS) {
       const parsed = validateAuthConvertGuestSuccessPayload(payload);
@@ -143,7 +154,7 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
         setError(authErrorKey("server_error"));
         return false;
       }
-      persistSession(parsed.value.user, parsed.value.token);
+      persistSession(parsed.value.user, parsed.value.token, rememberMe);
       return true;
     }
     const parsed = validateAuthSessionSuccessPayload(payload);
@@ -151,7 +162,7 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
       setError(authErrorKey("server_error"));
       return false;
     }
-    persistSession(parsed.value.user, parsed.value.token);
+    persistSession(parsed.value.user, parsed.value.token, rememberMe);
     return true;
   };
 
@@ -255,18 +266,23 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
     },
 
     async register(input) {
+      const rememberMe = input.rememberMe !== false;
       try {
         if (options.ws.status() !== "open") {
           await options.ws.connect();
         }
         const response = await options.ws.request(
           WS_EVENTS.AUTH_REGISTER,
-          { ...input },
+          {
+            username: input.username,
+            email: input.email,
+            password: input.password,
+          },
           [WS_EVENTS.AUTH_REGISTER_SUCCESS],
           [WS_EVENTS.AUTH_REGISTER_ERROR],
         );
         if (response.type === WS_EVENTS.AUTH_REGISTER_SUCCESS) {
-          return applySuccess(response.type, response.payload);
+          return applySuccess(response.type, response.payload, rememberMe);
         }
         const error =
           typeof response.payload["error"] === "string"
@@ -281,18 +297,22 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
     },
 
     async login(input) {
+      const rememberMe = input.rememberMe !== false;
       try {
         if (options.ws.status() !== "open") {
           await options.ws.connect();
         }
         const response = await options.ws.request(
           WS_EVENTS.AUTH_LOGIN,
-          { ...input },
+          {
+            usernameOrEmail: input.usernameOrEmail,
+            password: input.password,
+          },
           [WS_EVENTS.AUTH_LOGIN_SUCCESS],
           [WS_EVENTS.AUTH_LOGIN_ERROR],
         );
         if (response.type === WS_EVENTS.AUTH_LOGIN_SUCCESS) {
-          return applySuccess(response.type, response.payload);
+          return applySuccess(response.type, response.payload, rememberMe);
         }
         const error =
           typeof response.payload["error"] === "string"
