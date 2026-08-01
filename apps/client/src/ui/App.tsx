@@ -8,6 +8,7 @@ import { CharacterSelectView } from "./CharacterSelectView";
 import { GameView } from "./GameView";
 import { IntroView } from "./IntroView";
 import { OptionsView } from "./OptionsView";
+import { PauseMenu } from "./PauseMenu";
 import { PcFrame } from "./PcFrame";
 import { TutorialUI } from "./tutorial/TutorialUI";
 import { useStore } from "./useStore";
@@ -110,11 +111,11 @@ function ConfirmModal({
 function SessionRoot({ session }: { readonly session: GameSession }) {
   const state = useStore(session.store);
   const authState = useStore(session.auth.store);
-  const [screen, setScreen] = useState<Screen>(() =>
-    session.auth.isRegistered() ? "characterSelect" : "login",
-  );
+  const [screen, setScreen] = useState<Screen>("login");
   const [returnScreen, setReturnScreen] = useState<Screen>("characterSelect");
   const [confirm, setConfirm] = useState<ConfirmState>(null);
+  const [pauseOpen, setPauseOpen] = useState(false);
+  const [loginFormKey, setLoginFormKey] = useState(0);
 
   const t = session.i18n.translate.bind(session.i18n);
 
@@ -156,14 +157,25 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
   }, [authState.ready, authState.token, authState.user, screen, session.auth]);
 
   useEffect(() => {
-    if (screen !== "options") {
+    if (screen !== "game") {
+      setPauseOpen(false);
+    }
+  }, [screen]);
+
+  useEffect(() => {
+    if (screen !== "options" && screen !== "game") {
       return;
     }
     const onKey = (event: KeyboardEvent): void => {
-      if (event.key === "Escape" && confirm === null) {
-        event.preventDefault();
-        setScreen(returnScreen === "login" ? "login" : "characterSelect");
+      if (event.key !== "Escape" || confirm !== null) {
+        return;
       }
+      event.preventDefault();
+      if (screen === "options") {
+        setScreen(returnScreen);
+        return;
+      }
+      setPauseOpen((open) => !open);
     };
     window.addEventListener("keydown", onKey);
     return () => {
@@ -180,6 +192,7 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
     case "login":
       body = (
         <LoginView
+          key={loginFormKey}
           auth={session.auth}
           i18n={session.i18n}
           ws={session.ws}
@@ -215,9 +228,7 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
         <OptionsView
           session={session}
           onBack={() => {
-            setScreen(
-              returnScreen === "login" ? "login" : "characterSelect",
-            );
+            setScreen(returnScreen);
           }}
           onOpenAccount={() => {
             setReturnScreen("options");
@@ -227,7 +238,7 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
             askConfirm("menu.resetConfirm", () => {
               void session.resetProgress().then(() => {
                 setScreen(
-                  returnScreen === "login" ? "login" : "characterSelect",
+                  returnScreen === "game" ? "characterSelect" : returnScreen,
                 );
               });
             });
@@ -266,6 +277,7 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
               setScreen("login");
             }}
             onOptions={() => {
+              setReturnScreen("characterSelect");
               setScreen("options");
             }}
             onQuit={handleQuit}
@@ -281,32 +293,35 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
     case "game":
       body = (
         <div class="game-screen" data-testid="game-screen">
-          <div class="session-chrome">
-            <AccountBadge
-              auth={session.auth}
-              i18n={session.i18n}
-              ws={session.ws}
-              cloud={session.cloud}
-              onConvertGuest={() => {
-                setReturnScreen("game");
-                setScreen("convert");
-              }}
-            />
-            <button
-              type="button"
-              class="session-chrome__auth glass-btn btn-small"
-              data-testid="game-back-chars"
-              onClick={() => {
-                void session.saveNow().then(() => {
-                  setScreen("characterSelect");
-                });
-              }}
-            >
-              « {t("charSelect.title")}
-            </button>
-          </div>
           <GameView session={session} />
           <TutorialUI session={session} />
+          {pauseOpen ? (
+            <PauseMenu
+              title={t("pause.title")}
+              optionsLabel={t("menu.options")}
+              logOutLabel={t("pause.logOut")}
+              exitLabel={t("pause.exitGame")}
+              resumeLabel={t("pause.resume")}
+              onOptions={() => {
+                setPauseOpen(false);
+                setReturnScreen("game");
+                setScreen("options");
+              }}
+              onLogOut={() => {
+                setPauseOpen(false);
+                void session.saveNow().then(() => {
+                  session.auth.logout();
+                  setReturnScreen("characterSelect");
+                  setLoginFormKey((key) => key + 1);
+                  setScreen("login");
+                });
+              }}
+              onExit={handleQuit}
+              onResume={() => {
+                setPauseOpen(false);
+              }}
+            />
+          ) : null}
         </div>
       );
       break;

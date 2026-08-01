@@ -23,9 +23,19 @@ npm run build -w @adv/desktop   # production shell (needs client build)
 Ported from v1: `com.grimoire.archivdesvergessens` + minisign pubkey + GitHub `latest.json` endpoint.
 Signed updater artifacts land in Phase 8 (`createUpdaterArtifacts` stays off until then).
 
-## After quit in `tauri:dev`
+## Desktop feel (browser chrome lockdown)
 
-Harmless Windows/dev noise you may see in the CMD window:
+Release/dev shell configs:
+
+- `dragDropEnabled: false` — no file drops into the webview
+- `zoomHotkeysEnabled: false` — no Ctrl± page zoom
+- capability deny for `internal-toggle-devtools`
+
+The client installs `installDesktopLockdown()` on boot when `__TAURI__` is present
+(or `?lockdown=1` for browser smoke tests). That blocks context menu, reload,
+zoom wheel, DevTools shortcuts, and back-navigation keys — while leaving Escape
+and text-field editing alone.
+
 
 - `Failed to unregister class Chrome_WidgetWin_0. Error = 1412` — WebView2/Chromium teardown race
 - `npm error … Lifecycle script dev failed` / exit `4294967295` — Tauri stops the Vite `beforeDevCommand`; npm reports that kill as failure

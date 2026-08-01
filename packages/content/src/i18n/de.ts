@@ -13,6 +13,10 @@ export const DE = {
     'menu.newGameConfirm': 'Neues Spiel starten? Dein aktueller Fortschritt wird überschrieben.',
     'menu.resetConfirm': 'Spielstand wirklich unwiderruflich löschen?',
     'menu.skipIntro': '>>Überspringen',
+    'pause.title': 'Spielmenü',
+    'pause.resume': 'Zum Spiel zurück',
+    'pause.logOut': 'Ausloggen',
+    'pause.exitGame': 'Spiel beenden',
 
     // ===== CHARACTER SELECT =====
     'charSelect.title': 'Charakterauswahl',
@@ -155,7 +159,7 @@ export const DE = {
     'auth.keeperTitle': 'Hüter des Archivs',
     'auth.authenticating': 'Authentifizierung...',
     'auth.registering': 'Erstelle Konto...',
-    'auth.rememberMe': 'Angemeldet bleiben',
+    'auth.rememberMe': 'Benutzername speichern',
     'auth.serverOffline': 'Server ist offline. Bitte versuche es später erneut.',
     'auth.online': 'Online',
     'auth.offline': 'Offline',

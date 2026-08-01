@@ -12,7 +12,9 @@ import type { WsClient } from "./ws-client";
 
 const log = createLogger("auth-service");
 
+/** Legacy full-session key — cleared on boot; tokens are never restored. */
 const SESSION_KEY = "adv2_auth_session";
+const REMEMBER_USERNAME_KEY = "adv2_remember_username";
 const GUEST_KEY = "adv2_guest_id";
 
 export type AuthSessionState = {
@@ -44,6 +46,7 @@ export type AuthService = {
   }): Promise<boolean>;
   logout(): void;
   isRegistered(): boolean;
+  rememberedUsername(): string | null;
   guestId(): string;
   destroy(): void;
 };
@@ -59,25 +62,6 @@ function createGuestId(): string {
       ? crypto.randomUUID().replace(/-/g, "").slice(0, 8)
       : Math.random().toString(36).slice(2, 10);
   return `guest_${Date.now().toString(36)}_${rand}`;
-}
-
-function readStoredSession(
-  storage: Pick<Storage, "getItem">,
-): { user: AuthUser; token: string } | null {
-  const raw = storage.getItem(SESSION_KEY);
-  if (raw === null) {
-    return null;
-  }
-  try {
-    const parsed = JSON.parse(raw) as unknown;
-    const validated = validateAuthSessionSuccessPayload(parsed);
-    if (!validated.ok) {
-      return null;
-    }
-    return validated.value;
-  } catch {
-    return null;
-  }
 }
 
 export function createAuthService(options: AuthServiceOptions): AuthService {
@@ -106,15 +90,23 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
   }
   const stableGuestId = guestIdValue;
 
-  const persistSession = (
+  const persistRememberedUsername = (username: string | null): void => {
+    if (username !== null && username.trim().length > 0) {
+      storage.setItem(REMEMBER_USERNAME_KEY, username.trim());
+    } else {
+      storage.removeItem(REMEMBER_USERNAME_KEY);
+    }
+  };
+
+  const applySession = (
     user: AuthUser,
     token: string,
     rememberMe = true,
   ): void => {
-    if (rememberMe) {
-      storage.setItem(SESSION_KEY, JSON.stringify({ user, token }));
-    } else {
-      storage.removeItem(SESSION_KEY);
+    // Never persist tokens across restarts — only optionally remember username.
+    storage.removeItem(SESSION_KEY);
+    if (!user.isGuest) {
+      persistRememberedUsername(rememberMe ? user.username : null);
     }
     store.setState((prev) => ({
       ...prev,
@@ -154,7 +146,7 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
         setError(authErrorKey("server_error"));
         return false;
       }
-      persistSession(parsed.value.user, parsed.value.token, rememberMe);
+      applySession(parsed.value.user, parsed.value.token, rememberMe);
       return true;
     }
     const parsed = validateAuthSessionSuccessPayload(payload);
@@ -162,7 +154,7 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
       setError(authErrorKey("server_error"));
       return false;
     }
-    persistSession(parsed.value.user, parsed.value.token, rememberMe);
+    applySession(parsed.value.user, parsed.value.token, rememberMe);
     return true;
   };
 
@@ -171,6 +163,9 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
     guestId() {
       return stableGuestId;
     },
+    rememberedUsername() {
+      return storage.getItem(REMEMBER_USERNAME_KEY);
+    },
     isRegistered() {
       const state = store.getState();
       return (
@@ -178,6 +173,9 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
       );
     },
     async boot() {
+      // Drop legacy auto-login sessions (token + user).
+      storage.removeItem(SESSION_KEY);
+
       try {
         await options.ws.connect();
       } catch (cause) {
@@ -196,7 +194,7 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
           lastLogin: Date.now(),
           isGuest: true,
         };
-        persistSession(guestUser, "");
+        applySession(guestUser, "");
         store.setState((prev) => ({
           ...prev,
           token: null,
@@ -204,26 +202,6 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
           ready: true,
         }));
         return;
-      }
-
-      const stored = readStoredSession(storage);
-      if (stored !== null) {
-        try {
-          const response = await options.ws.request(
-            WS_EVENTS.AUTH_VERIFY_TOKEN,
-            { userId: stored.user.id, token: stored.token },
-            [WS_EVENTS.AUTH_VERIFY_TOKEN_SUCCESS],
-            [WS_EVENTS.AUTH_VERIFY_TOKEN_ERROR],
-          );
-          if (response.type === WS_EVENTS.AUTH_VERIFY_TOKEN_SUCCESS) {
-            applySuccess(response.type, response.payload);
-            store.setState((prev) => ({ ...prev, ready: true }));
-            return;
-          }
-          clearSession();
-        } catch {
-          clearSession();
-        }
       }
 
       await this.playAsGuest();
@@ -245,7 +223,7 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
         try {
           await options.ws.connect();
         } catch {
-          persistSession(guestUser, "");
+          applySession(guestUser, "");
           store.setState((prev) => ({
             ...prev,
             token: null,
@@ -348,7 +326,7 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
           [WS_EVENTS.AUTH_CONVERT_GUEST_ERROR],
         );
         if (response.type === WS_EVENTS.AUTH_CONVERT_GUEST_SUCCESS) {
-          return applySuccess(response.type, response.payload);
+          return applySuccess(response.type, response.payload, true);
         }
         const error =
           typeof response.payload["error"] === "string"
@@ -364,6 +342,7 @@ export function createAuthService(options: AuthServiceOptions): AuthService {
 
     logout() {
       clearSession();
+      persistRememberedUsername(null);
       void this.playAsGuest();
     },
 

@@ -39,6 +39,12 @@ body {
     auto;
 }
 
+/* Desktop / Tauri shell: suppress browser drag affordances */
+html.is-desktop-shell img,
+html.is-desktop-shell a {
+  -webkit-user-drag: none;
+}
+
 /* Fixed 1920×1080 PC frame (letterboxed / scaled) */
 .pc-stage {
   position: fixed;

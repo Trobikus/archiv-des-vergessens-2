@@ -13,6 +13,10 @@ export const EN = {
     'menu.newGameConfirm': 'Start a new game? Your current progress will be overwritten.',
     'menu.resetConfirm': 'Really delete your savegame permanently?',
     'menu.skipIntro': '>>Skip',
+    'pause.title': 'Game Menu',
+    'pause.resume': 'Return to Game',
+    'pause.logOut': 'Log Out',
+    'pause.exitGame': 'Exit Game',
 
     // ===== CHARACTER SELECT =====
     'charSelect.title': 'Character Select',
@@ -155,7 +159,7 @@ export const EN = {
     'auth.keeperTitle': 'Keeper of the Archive',
     'auth.authenticating': 'Authenticating...',
     'auth.registering': 'Creating account...',
-    'auth.rememberMe': 'Stay signed in',
+    'auth.rememberMe': 'Remember username',
     'auth.serverOffline': 'Server is offline. Please try again later.',
     'auth.online': 'Online',
     'auth.offline': 'Offline',
