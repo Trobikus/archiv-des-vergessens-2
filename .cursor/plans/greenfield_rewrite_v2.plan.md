@@ -13,16 +13,16 @@ todos:
     status: completed
   - id: phase-3
     content: "Phase 3: Content-Pipeline + Combat/Story-Slice + i18n-Gates"
-    status: in_progress
+    status: completed
   - id: phase-4
     content: "Phase 4: Modularer Server + Auth + Cloud-Sync (vorher Freigabe)"
-    status: pending
+    status: completed
   - id: phase-5
     content: "Phase 5: Tauri-Shell + Playwright + Updater 2.0.0"
     status: completed
   - id: phase-6
     content: "Phase 6: Feature-Parität Wellen A–F"
-    status: pending
+    status: completed
   - id: phase-7
     content: "Phase 7: Social/Live (Chat, Freunde, Clan, Leaderboard)"
     status: completed
@@ -38,19 +38,19 @@ todos:
 
 ## Fortschritt (Stand 2026-08-01)
 
-**Fertig:** Phase 0 + Phase 1 + Phase 2.  
-**In Arbeit:** Phase 3 — Content-Pipeline + Combat/Story-Slice + i18n-Gates.
+**Fertig:** Phase 0–7.  
+**Als Nächstes:** Phase 8 — Härtung → Release 2.0.0.
 
 | Phase | Status | Nachweis |
 |---|---|---|
 | **0 Fundament** | ✅ fertig | Tag `v2-phase0`, PR [#1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1) merged |
 | **1 Kernel + Balancing** | ✅ fertig | Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2) merged, Balancing-Snapshot-Gate |
 | **2 Vertical Slice** | ✅ fertig | Tag `v2-phase2` (Direct-Merge auf `main`), Klick/Tick/Save/Offline spielbar |
-| 3 Content + Kampf/Story | 🔄 in Arbeit | Content/i18n-Gate, Combat-Sim, Hero/Story-UI |
-| 4 Server + Auth + Cloud | ⬜ offen (Freigabe nötig) | — |
-| 5 Tauri + E2E | ⬜ offen | — |
-| 6 Parität A–F | ⬜ offen | — |
-| 7 Social/Live | ⬜ offen | — |
+| **3 Content + Kampf/Story** | ✅ fertig | Content/i18n-Gate, Combat-Sim, Hero/Story-UI |
+| **4 Server + Auth + Cloud** | ✅ fertig | Modularer WS-Server, Auth, Cloud-Sync |
+| **5 Tauri + E2E** | ✅ fertig | Tauri 2 Shell, Playwright Smoke, Updater 2.0.0 |
+| **6 Parität A–F** | ✅ fertig | Feature-Wellen A–F + Hub-UI |
+| **7 Social/Live** | ✅ fertig | Tag `v2-phase7`, Chat/LB online, Freunde/Clan lokal |
 | 8 Release 2.0.0 | ⬜ offen | — |
 | 9 v1-Save-Importer | ⬜ optional | — |
 
@@ -188,7 +188,7 @@ Modularer WS-Server, Events in `@adv/protocol`, Auth (Guest/Register/Login/Token
 ### Phase 5 — Tauri-Shell + E2E (3–4 Tage) ⬜
 Desktop-Shell ohne lokale Save-DB; Identifier + Updater-Key aus v1; Playwright-Smoke; Version `2.0.0`.
 
-### Phase 6 — Feature-Parität Wellen A–F (12–18 Tage) ⬜
+### Phase 6 — Feature-Parität Wellen A–F ✅
 - A Quests / Achievements / Daily
 - B Forge / Crafting / Gather
 - C Talente / Challenges / Library
@@ -196,8 +196,9 @@ Desktop-Shell ohne lokale Save-DB; Identifier + Updater-Key aus v1; Playwright-S
 - E Relic Hunt / Account-Vault / Combat-Analytics
 - F Tutorial / Intro / Settings
 
-### Phase 7 — Social/Live (5–7 Tage) ⬜
+### Phase 7 — Social/Live ✅
 Chat, Freunde, Clan, Leaderboard — Client + Servermodule, serverseitige Validierung.
+Protocol-Events/`chat:*`/`leaderboard:*`, SQLite, Jump-Limits, Hub-UI, Save-Slices, Offline-Clan; Client-Error-UX für `chat:error` / `leaderboard:error`.
 
 ### Phase 8 — Härtung → Release 2.0.0 (4–6 Tage) ⬜
 Perf-Budgets, Leak-Tests, a11y-Basis, Patch Notes, Updater-Rollout, v1-Cutover.
@@ -213,11 +214,11 @@ Nach Release: Adapter v1-JSON → v2-Envelope.
 graph LR
   P0["P0 Fundament ✅"] --> P1["P1 Kernel + sim ✅"]
   P1 --> P2["P2 Klick Save Offline ✅"]
-  P2 --> P3["P3 Content Kampf ⬜"]
-  P3 --> P4["P4 Server Auth Cloud ⬜"]
-  P4 --> P5["P5 Tauri E2E ⬜"]
-  P5 --> P6["P6 Paritaet A-F ⬜"]
-  P6 --> P7["P7 Social ⬜"]
+  P2 --> P3["P3 Content Kampf ✅"]
+  P3 --> P4["P4 Server Auth Cloud ✅"]
+  P4 --> P5["P5 Tauri E2E ✅"]
+  P5 --> P6["P6 Paritaet A-F ✅"]
+  P6 --> P7["P7 Social ✅"]
   P7 --> P8["P8 Release 2.0.0 ⬜"]
   P8 -.optional.-> P9["P9 v1 Importer ⬜"]
 ```
@@ -239,4 +240,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 2 erledigt. Als Nächstes Phase 3: Content + Kampf/Story + i18n-Gates.
+Phase 7 erledigt. Als Nächstes Phase 8: Härtung → Release 2.0.0.

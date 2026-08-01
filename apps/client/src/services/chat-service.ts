@@ -1,5 +1,6 @@
 import type { EventBus, Store } from "@adv/core";
 import {
+  validateChatErrorPayload,
   validateChatHistoryPayload,
   validateChatMessage,
   WS_EVENTS,
@@ -23,6 +24,8 @@ export type ChatService = {
   getGlobalMessages(limit?: number): readonly ChatMessage[];
   getClanMessages(limit?: number): readonly ClanChatMessage[];
   getHistory(): boolean;
+  lastError(): string | null;
+  clearError(): void;
   clearGlobal(): void;
   clearClan(): void;
   clearLocal(): void;
@@ -46,6 +49,14 @@ export function createChatService(
   ws: WsClient,
 ): ChatService {
   const unsubs: Array<() => void> = [];
+  let lastError: string | null = null;
+
+  const setError = (message: string | null): void => {
+    lastError = message;
+    if (message !== null) {
+      eventBus.publish("chat:error", { error: message });
+    }
+  };
 
   const appendGlobal = (msg: ChatMessage): void => {
     store.setState((prev) => ({
@@ -85,6 +96,7 @@ export function createChatService(
       if (!parsed.ok) {
         return;
       }
+      setError(null);
       store.setState((prev) => ({
         ...prev,
         chat: {
@@ -96,14 +108,27 @@ export function createChatService(
     }),
   );
 
+  unsubs.push(
+    ws.on(WS_EVENTS.CHAT_ERROR, (payload) => {
+      const parsed = validateChatErrorPayload(payload);
+      if (!parsed.ok) {
+        return;
+      }
+      setError(parsed.value.error);
+    }),
+  );
+
   return {
     sendGlobal(text) {
       const clean = sanitizeClientText(text, MAX_MESSAGE_LENGTH);
       if (!clean) {
-        return { success: false, message: "Nachricht darf nicht leer sein." };
+        const message = "Nachricht darf nicht leer sein.";
+        setError(message);
+        return { success: false, message };
       }
 
       if (ws.status() === "open" && ws.send(WS_EVENTS.CHAT_GLOBAL, { message: clean })) {
+        setError(null);
         return { success: true };
       }
 
@@ -115,13 +140,16 @@ export function createChatService(
         timestamp: Date.now(),
         type: "global",
       });
+      setError(null);
       return { success: true };
     },
 
     sendClan(text) {
       const clean = sanitizeClientText(text, MAX_MESSAGE_LENGTH);
       if (!clean) {
-        return { success: false, message: "Nachricht darf nicht leer sein." };
+        const message = "Nachricht darf nicht leer sein.";
+        setError(message);
+        return { success: false, message };
       }
       const player = store.getState().hero.name || "Gast";
       appendClan({
@@ -131,6 +159,7 @@ export function createChatService(
         timestamp: Date.now(),
         type: "clan",
       });
+      setError(null);
       return { success: true };
     },
 
@@ -147,6 +176,14 @@ export function createChatService(
         return false;
       }
       return ws.send(WS_EVENTS.CHAT_GET_HISTORY, {});
+    },
+
+    lastError() {
+      return lastError;
+    },
+
+    clearError() {
+      setError(null);
     },
 
     clearGlobal() {

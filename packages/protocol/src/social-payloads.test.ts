@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  validateChatErrorPayload,
   validateChatGetHistoryPayload,
   validateChatGlobalPayload,
   validateChatHistoryPayload,
   validateChatMessage,
+  validateLeaderboardErrorPayload,
   validateLeaderboardSubmitPayload,
   validateLeaderboardUpdatePayload,
 } from "./social-payloads";
@@ -60,5 +62,12 @@ describe("social payloads", () => {
         ],
       }).ok,
     ).toBe(true);
+  });
+
+  it("validates chat:error and leaderboard:error", () => {
+    expect(validateChatErrorPayload({ error: "fail" }).ok).toBe(true);
+    expect(validateChatErrorPayload({ error: "" }).ok).toBe(false);
+    expect(validateLeaderboardErrorPayload({ error: "jump" }).ok).toBe(true);
+    expect(validateLeaderboardErrorPayload({}).ok).toBe(false);
   });
 });

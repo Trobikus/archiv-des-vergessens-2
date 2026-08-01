@@ -1,10 +1,65 @@
 import { createEventBus, createStore } from "@adv/core";
+import { WS_EVENTS } from "@adv/protocol";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createInitialGameState } from "../state/game-state";
+import { createAuthService } from "./auth-service";
+import { createChatService } from "./chat-service";
 import { createFriendService } from "./friend-service";
 import { createGameSession } from "./game-session";
+import { createLeaderboardService } from "./leaderboard-service";
 import { createMemorySaveStorage } from "./save-storage";
+import type { WsClient, WsClientStatus } from "./ws-client";
+
+function createListenerWs(): WsClient & {
+  emit(type: string, payload: Record<string, unknown>): void;
+} {
+  let status: WsClientStatus = "open";
+  const handlers = new Map<
+    string,
+    Set<(payload: Record<string, unknown>) => void>
+  >();
+  return {
+    url: "ws://fake",
+    status: () => status,
+    connect() {
+      status = "open";
+      return Promise.resolve();
+    },
+    close() {
+      status = "disconnected";
+    },
+    send() {
+      return true;
+    },
+    on(type, handler) {
+      let set = handlers.get(type);
+      if (set === undefined) {
+        set = new Set();
+        handlers.set(type, set);
+      }
+      set.add(handler);
+      return () => {
+        set.delete(handler);
+      };
+    },
+    onStatus() {
+      return () => undefined;
+    },
+    request() {
+      return Promise.reject(new Error("not used"));
+    },
+    emit(type, payload) {
+      const set = handlers.get(type);
+      if (set === undefined) {
+        return;
+      }
+      for (const handler of set) {
+        handler(payload);
+      }
+    },
+  };
+}
 
 describe("phase 7 social services", () => {
   const sessions: Array<ReturnType<typeof createGameSession>> = [];
@@ -141,5 +196,109 @@ describe("phase 7 social services", () => {
     expect(updated.totalBossesDefeated).toBe(25);
     expect(updated.highestLevel).toBe(20);
     expect(updated.highestChapterReached).toBe(3);
+  });
+
+  it("surfaces chat:error and leaderboard:error from the wire", () => {
+    const store = createStore({ initialState: createInitialGameState() });
+    const eventBus = createEventBus();
+    const ws = createListenerWs();
+    const auth = createAuthService({
+      ws,
+      storage: {
+        getItem: () => null,
+        setItem: () => undefined,
+        removeItem: () => undefined,
+      },
+    });
+    const chat = createChatService(store, eventBus, ws);
+    const leaderboard = createLeaderboardService(store, eventBus, ws, auth, {
+      playTimeIntervalMs: 60_000,
+    });
+
+    const chatErrors: string[] = [];
+    const lbErrors: string[] = [];
+    const chatSub = eventBus.subscribe("chat:error", (data) => {
+      chatErrors.push((data as { error: string }).error);
+    });
+    const lbSub = eventBus.subscribe("leaderboard:error", (data) => {
+      lbErrors.push((data as { error: string }).error);
+    });
+
+    ws.emit(WS_EVENTS.CHAT_ERROR, { error: "Nicht authentifiziert." });
+    ws.emit(WS_EVENTS.LEADERBOARD_ERROR, {
+      error: "Ungültiger Highscore-Sprung.",
+    });
+
+    expect(chat.lastError()).toBe("Nicht authentifiziert.");
+    expect(leaderboard.lastError()).toBe("Ungültiger Highscore-Sprung.");
+    expect(chatErrors).toEqual(["Nicht authentifiziert."]);
+    expect(lbErrors).toEqual(["Ungültiger Highscore-Sprung."]);
+
+    chat.clearError();
+    leaderboard.clearError();
+    expect(chat.lastError()).toBeNull();
+    expect(leaderboard.lastError()).toBeNull();
+
+    eventBus.unsubscribe(chatSub);
+    eventBus.unsubscribe(lbSub);
+    chat.destroy();
+    leaderboard.destroy();
+    auth.destroy();
+    eventBus.destroy();
+    store.destroy();
+  });
+
+  it("clan expedition and raid complete offline", async () => {
+    const session = await bootSession();
+    session.resources.addParticles(100);
+    expect(session.clan.recruitMember("collector")).toBe(true);
+    const memberId = session.clan.getMembers()[0]?.id;
+    expect(memberId).toBeTypeOf("number");
+
+    expect(session.clan.startExpedition(memberId as number, 1)).toBe(true);
+    expect(session.clan.isOnExpedition(memberId as number)).toBe(true);
+    session.clan.processTick(1_500);
+    expect(session.clan.isOnExpedition(memberId as number)).toBe(false);
+
+    const raid = session.clan.startClanRaid([memberId as number]);
+    expect(raid.success).toBe(true);
+    expect(session.store.getState().clan.raid.active).toBe(true);
+    session.clan.processTick(301_000);
+    expect(session.store.getState().clan.raid.durationSeconds).toBe(0);
+    const claim = session.clan.claimRaidReward();
+    expect(claim.success).toBe(true);
+    expect(session.store.getState().clan.raid.active).toBe(false);
+  });
+
+  it("applies clan offline production in boot report", async () => {
+    const storage = createMemorySaveStorage();
+    let now = 100_000;
+    const first = createGameSession({
+      storage,
+      now: () => now,
+      useIndexedDb: false,
+      autosaveMs: 60_000,
+      connectNetwork: false,
+    });
+    sessions.push(first);
+    await first.boot();
+    first.resources.addParticles(100);
+    expect(first.clan.recruitMember("collector")).toBe(true);
+    expect(await first.saveNow()).toBe(true);
+    first.destroy();
+    sessions.pop();
+
+    now = 100_000 + 60_000;
+    const second = createGameSession({
+      storage,
+      now: () => now,
+      useIndexedDb: false,
+      autosaveMs: 60_000,
+      connectNetwork: false,
+    });
+    sessions.push(second);
+    const report = await second.boot();
+    expect(report).not.toBeNull();
+    expect((report?.clanParticlesGained ?? 0) > 0).toBe(true);
   });
 });
