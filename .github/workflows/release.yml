@@ -14,7 +14,7 @@ jobs:
   # workflow_dispatch has no tag push — run gate here so it cannot be skipped.
   gate:
     name: Quality gate (workflow_dispatch only)
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == "workflow_dispatch"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,7 +29,7 @@ jobs:
           SKIP_E2E: "1"
 
   desktop:
-    name: Build signed desktop + portable ZIP
+    name: Build portable game ZIP
     needs: [gate]
     if: always() && (needs.gate.result == 'success' || needs.gate.result == 'skipped')
     runs-on: windows-latest
@@ -54,34 +54,11 @@ jobs:
 
       - run: npm ci
 
-      - name: Build Tauri app + updater artifacts
-        uses: tauri-apps/tauri-action@v0
+      - name: Build portable desktop binary
+        run: npm run build -w @adv/desktop
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
           # Bake live WSS endpoint (TLS via nginx/Let's Encrypt) into the client
           VITE_WS_URL: wss://grimoireinteractive.duckdns.org
-        with:
-          projectPath: apps/desktop
-          tagName: ${{ github.ref_name }}
-          releaseName: "Archiv des Vergessens ${{ github.ref_name }}"
-          releaseBody: |
-            ## Archiv des Vergessens ${{ github.ref_name }}
-
-            ### Installation (empfohlen)
-            1. Lade **`ArchivDesVergessens-Launcher.exe`** herunter und starte sie.
-            2. Der Launcher holt das signierte Portable-Paket, entsiegelt es und startet das Spiel.
-
-            ### Alternativen
-            - Portable: `archiv-des-vergessens.zip` (+ `.sig`)
-            - Installer / In-App-Updater: NSIS-Setup + `latest.json`
-
-            Siehe [CHANGELOG.md](../blob/main/CHANGELOG.md) und
-            [docs/patch-notes-2.0.0.md](../blob/main/docs/patch-notes-2.0.0.md).
-          releaseDraft: true
-          prerelease: false
-          includeUpdaterJson: true
 
       - name: Create portable game ZIP
         shell: pwsh
@@ -107,16 +84,18 @@ jobs:
           node tools/sign_release.mjs apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip
           Remove-Item private.key -Force
 
-      - name: Upload portable assets
-        uses: softprops/action-gh-release@v2
+      - name: Stage portable artifacts
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path release-stage | Out-Null
+          Copy-Item apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip release-stage/ -Force
+          Copy-Item apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip.sig release-stage/ -Force
+
+      - uses: actions/upload-artifact@v4
         with:
-          tag_name: ${{ github.ref_name }}
-          draft: true
-          files: |
-            apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip
-            apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip.sig
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: portable-game
+          path: release-stage/*
+          if-no-files-found: error
 
   launcher:
     name: Build Siegel-Portal launcher
@@ -161,20 +140,45 @@ jobs:
           path: apps/launcher/src-tauri/target/release/ArchivDesVergessens-Launcher.exe
           if-no-files-found: error
 
-  attach-launcher:
-    name: Attach launcher to release
+  publish:
+    name: Publish release assets
     needs: [desktop, launcher]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: launcher-exe
+          path: release-assets
 
-      - name: Upload launcher asset
+      - uses: actions/download-artifact@v4
+        with:
+          name: portable-game
+          path: release-assets
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
+          name: Archiv des Vergessens ${{ github.ref_name }}
           draft: true
-          files: ArchivDesVergessens-Launcher.exe
+          prerelease: false
+          # Launcher first — this is the only player-facing EXE.
+          files: |
+            release-assets/ArchivDesVergessens-Launcher.exe
+            release-assets/archiv-des-vergessens.zip
+            release-assets/archiv-des-vergessens.zip.sig
+          body: |
+            ## Archiv des Vergessens ${{ github.ref_name }}
+
+            ### Installation
+            1. Lade **`ArchivDesVergessens-Launcher.exe`** herunter und starte sie.
+            2. Wähle den Speicherort, entsiegle das Archiv und optional eine Desktop-Verknüpfung.
+            3. Über die Verknüpfung / die Launcher-EXE öffnet sich immer das Siegel-Portal — nicht das Spiel direkt.
+
+            ### Optional
+            - Portable-Paket: `archiv-des-vergessens.zip` (+ `.sig`) für manuelle Installation
+
+            Siehe [CHANGELOG.md](../blob/main/CHANGELOG.md) und
+            [docs/patch-notes-2.0.0.md](../blob/main/docs/patch-notes-2.0.0.md).
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

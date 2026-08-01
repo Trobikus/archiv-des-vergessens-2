@@ -14,7 +14,7 @@
         "label": "main",
         "url": "index.html",
         "width": 1000,
-        "height": 420,
+        "height": 480,
         "resizable": false,
         "maximizable": false,
         "decorations": false,

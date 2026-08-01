@@ -7,7 +7,8 @@ use reqwest::header::{HeaderMap, HeaderValue, USER_AGENT};
 use serde::{Deserialize, Serialize};
 use std::fs::{self, File};
 use std::io::Write;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
+use std::process::Command;
 use tauri::{AppHandle, Emitter};
 
 const GITHUB_REPO: &str = "Trobikus/archiv-des-vergessens-2";
@@ -15,6 +16,7 @@ const USER_AGENT_VALUE: &str = "ArchivDesVergessensLauncher/2.0";
 /// Ed25519 verifying key for portable ZIP signatures (v2 release key).
 const RELEASE_PUBKEY_HEX: &str = "1a8208b9aa60550ff38869657b82d88fdf330bb863ab1f1bf1fa7cd4a0cb55cb";
 const ZIP_ASSET_NAME: &str = "archiv-des-vergessens.zip";
+const CONFIG_FILE_NAME: &str = "launcher-config.json";
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -32,11 +34,69 @@ pub struct ProgressPayload {
     pub status: String,
 }
 
-fn get_game_dir() -> Result<PathBuf, String> {
+#[derive(Serialize, Deserialize, Clone, Debug, Default)]
+#[serde(rename_all = "camelCase")]
+struct LauncherConfig {
+    #[serde(default)]
+    install_dir: Option<String>,
+    #[serde(default)]
+    shortcut_prompt_done: bool,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct InstallPaths {
+    pub install_dir: String,
+    pub default_install_dir: String,
+    pub game_installed: bool,
+    pub shortcut_prompt_done: bool,
+}
+
+fn get_config_dir() -> Result<PathBuf, String> {
     let mut path =
         dirs::data_dir().ok_or_else(|| "Konnte APPDATA-Verzeichnis nicht ermitteln.".to_string())?;
     path.push("ArchivDesVergessens");
-    path.push("app");
+    fs::create_dir_all(&path).map_err(|e| e.to_string())?;
+    Ok(path)
+}
+
+fn get_config_path() -> Result<PathBuf, String> {
+    Ok(get_config_dir()?.join(CONFIG_FILE_NAME))
+}
+
+fn default_install_dir() -> Result<PathBuf, String> {
+    Ok(get_config_dir()?.join("app"))
+}
+
+fn load_config() -> LauncherConfig {
+    let Ok(path) = get_config_path() else {
+        return LauncherConfig::default();
+    };
+    let Ok(raw) = fs::read_to_string(path) else {
+        return LauncherConfig::default();
+    };
+    serde_json::from_str(&raw).unwrap_or_default()
+}
+
+fn save_config(config: &LauncherConfig) -> Result<(), String> {
+    let path = get_config_path()?;
+    let raw = serde_json::to_string_pretty(config).map_err(|e| e.to_string())?;
+    fs::write(path, raw).map_err(|e| e.to_string())
+}
+
+fn resolve_install_dir(config: &LauncherConfig) -> Result<PathBuf, String> {
+    if let Some(custom) = config.install_dir.as_ref() {
+        let trimmed = custom.trim();
+        if !trimmed.is_empty() {
+            return Ok(PathBuf::from(trimmed));
+        }
+    }
+    default_install_dir()
+}
+
+fn get_game_dir() -> Result<PathBuf, String> {
+    let config = load_config();
+    let path = resolve_install_dir(&config)?;
     fs::create_dir_all(&path).map_err(|e| e.to_string())?;
     Ok(path)
 }
@@ -47,7 +107,11 @@ fn get_version_file_path() -> Result<PathBuf, String> {
 
 fn get_executable_path() -> Result<PathBuf, String> {
     let dir = get_game_dir()?;
-    for name in ["ArchivDesVergessens.exe", "adv-desktop.exe", "archiv-des-vergessens.exe"] {
+    for name in [
+        "ArchivDesVergessens.exe",
+        "adv-desktop.exe",
+        "archiv-des-vergessens.exe",
+    ] {
         let candidate = dir.join(name);
         if candidate.exists() {
             return Ok(candidate);
@@ -56,10 +120,142 @@ fn get_executable_path() -> Result<PathBuf, String> {
     Ok(dir.join("ArchivDesVergessens.exe"))
 }
 
+fn game_is_installed() -> bool {
+    get_executable_path()
+        .map(|path| path.exists())
+        .unwrap_or(false)
+}
+
 fn build_headers() -> HeaderMap {
     let mut headers = HeaderMap::new();
     headers.insert(USER_AGENT, HeaderValue::from_static(USER_AGENT_VALUE));
     headers
+}
+
+fn launcher_exe_path() -> Result<PathBuf, String> {
+    std::env::current_exe().map_err(|e| format!("Launcher-Pfad unbekannt: {e}"))
+}
+
+fn desktop_dir() -> Result<PathBuf, String> {
+    dirs::desktop_dir().ok_or_else(|| "Desktop-Verzeichnis nicht gefunden.".to_string())
+}
+
+#[cfg(target_os = "windows")]
+fn create_windows_shortcut(target: &Path, link_path: &Path, working_dir: &Path) -> Result<(), String> {
+    let target_str = target
+        .to_str()
+        .ok_or_else(|| "Ungültiger Zielpfad für Verknüpfung.".to_string())?;
+    let link_str = link_path
+        .to_str()
+        .ok_or_else(|| "Ungültiger Verknüpfungspfad.".to_string())?;
+    let work_str = working_dir
+        .to_str()
+        .ok_or_else(|| "Ungültiger Arbeitsordner.".to_string())?;
+
+    let script = format!(
+        "$s = New-Object -ComObject WScript.Shell; \
+         $l = $s.CreateShortcut('{link}'); \
+         $l.TargetPath = '{target}'; \
+         $l.WorkingDirectory = '{work}'; \
+         $l.Description = 'Archiv des Vergessens — Siegel-Portal'; \
+         $l.Save()",
+        link = link_str.replace('\'', "''"),
+        target = target_str.replace('\'', "''"),
+        work = work_str.replace('\'', "''"),
+    );
+
+    let output = Command::new("powershell")
+        .args([
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            &script,
+        ])
+        .output()
+        .map_err(|e| format!("PowerShell für Verknüpfung fehlgeschlagen: {e}"))?;
+
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(format!("Desktop-Verknüpfung fehlgeschlagen: {stderr}"));
+    }
+    Ok(())
+}
+
+#[tauri::command]
+fn get_install_paths() -> Result<InstallPaths, String> {
+    let config = load_config();
+    let default_dir = default_install_dir()?;
+    let install_dir = resolve_install_dir(&config)?;
+    Ok(InstallPaths {
+        install_dir: install_dir.to_string_lossy().into_owned(),
+        default_install_dir: default_dir.to_string_lossy().into_owned(),
+        game_installed: game_is_installed(),
+        shortcut_prompt_done: config.shortcut_prompt_done,
+    })
+}
+
+#[tauri::command]
+fn set_install_dir(path: String) -> Result<String, String> {
+    let trimmed = path.trim();
+    if trimmed.is_empty() {
+        return Err("Bitte einen gültigen Speicherort wählen.".to_string());
+    }
+    let dir = PathBuf::from(trimmed);
+    fs::create_dir_all(&dir)
+        .map_err(|e| format!("Ordner konnte nicht erstellt werden: {e}"))?;
+
+    let mut config = load_config();
+    config.install_dir = Some(dir.to_string_lossy().into_owned());
+    save_config(&config)?;
+    Ok(dir.to_string_lossy().into_owned())
+}
+
+#[tauri::command]
+fn browse_install_dir() -> Result<Option<String>, String> {
+    let config = load_config();
+    let start = resolve_install_dir(&config).unwrap_or_else(|_| PathBuf::from("."));
+    let picked = rfd::FileDialog::new()
+        .set_title("Speicherort für Archiv des Vergessens")
+        .set_directory(start)
+        .pick_folder();
+    Ok(picked.map(|p| p.to_string_lossy().into_owned()))
+}
+
+#[tauri::command]
+fn create_desktop_shortcut() -> Result<(), String> {
+    let launcher = launcher_exe_path()?;
+    if !launcher.exists() {
+        return Err("Launcher-EXE nicht gefunden.".to_string());
+    }
+    let desktop = desktop_dir()?;
+    let link = desktop.join("Archiv des Vergessens.lnk");
+    let work_dir = launcher
+        .parent()
+        .map(Path::to_path_buf)
+        .unwrap_or_else(|| PathBuf::from("."));
+
+    #[cfg(target_os = "windows")]
+    create_windows_shortcut(&launcher, &link, &work_dir)?;
+
+    #[cfg(not(target_os = "windows"))]
+    {
+        let _ = (launcher, link, work_dir);
+        return Err("Desktop-Verknüpfungen werden nur unter Windows unterstützt.".to_string());
+    }
+
+    let mut config = load_config();
+    config.shortcut_prompt_done = true;
+    save_config(&config)?;
+    Ok(())
+}
+
+#[tauri::command]
+fn dismiss_desktop_shortcut_prompt() -> Result<(), String> {
+    let mut config = load_config();
+    config.shortcut_prompt_done = true;
+    save_config(&config)
 }
 
 #[tauri::command]
@@ -145,10 +341,7 @@ async fn download_and_extract_game(
     version: String,
 ) -> Result<(), String> {
     let game_dir = get_game_dir()?;
-    let temp_zip_path = game_dir
-        .parent()
-        .ok_or_else(|| "Ungültiger Installationspfad.".to_string())?
-        .join("temp_download.zip");
+    let temp_zip_path = get_config_dir()?.join("temp_download.zip");
 
     let _ = app.emit(
         "download_progress",
@@ -412,6 +605,11 @@ fn close_launcher(app: AppHandle) {
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
+            get_install_paths,
+            set_install_dir,
+            browse_install_dir,
+            create_desktop_shortcut,
+            dismiss_desktop_shortcut_prompt,
             get_installed_game_version,
             check_github_release,
             download_and_extract_game,

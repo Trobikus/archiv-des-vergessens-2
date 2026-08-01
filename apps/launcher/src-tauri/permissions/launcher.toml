@@ -2,6 +2,11 @@
 identifier = "allow-launcher"
 description = "Allows Siegel-Portal launcher IPC commands"
 commands.allow = [
+  "get_install_paths",
+  "set_install_dir",
+  "browse_install_dir",
+  "create_desktop_shortcut",
+  "dismiss_desktop_shortcut_prompt",
   "get_installed_game_version",
   "check_github_release",
   "download_and_extract_game",

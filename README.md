@@ -222,8 +222,8 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 | Thema | Detail |
 |---|---|
 | **App-ID** | `com.grimoire.archivdesvergessens` (aus v1 portiert) |
-| **Feed** | `…/archiv-des-vergessens-2/releases/latest/download/latest.json` |
-| **Artifacts** | NSIS + `latest.json` (In-App-Updater) · portable ZIP + `.sig` · `ArchivDesVergessens-Launcher.exe` |
+| **Player-EXE** | **`ArchivDesVergessens-Launcher.exe`** (Siegel-Portal — einziger Download für Spieler) |
+| **Artifacts** | Launcher · portable ZIP + `.sig` (kein NSIS / Windows-Setup) |
 | **Workflow** | [`.github/workflows/release.yml`](.github/workflows/release.yml) |
 | **CI** | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — Gate + Desktop-Job |
 | **Launcher** | [`apps/launcher`](apps/launcher) — lokal: `npm run launcher:dev` / Release: `npm run launcher:build` |
@@ -231,7 +231,7 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 
 > **Cutover-Hinweis:** Cloud-Spielstände aus v1 werden serverseitig **nicht** automatisch übernommen.  
 > Accounts (Benutzername + PBKDF2-Passwort) können migriert werden — Spieler melden sich neu an.  
-> Spieler wechseln über den **v2-Launcher** (`ArchivDesVergessens-Launcher.exe`) oder den NSIS-Installer.  
+> Spieler wechseln über den **v2-Launcher** (`ArchivDesVergessens-Launcher.exe`).  
 > Lokale v1-Spielstände kannst du über den Phase-9-Importer weiternutzen (siehe unten).
 
 Account-Migration: [`tools/migrate-v1-users/`](tools/migrate-v1-users/)

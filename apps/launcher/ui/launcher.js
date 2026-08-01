@@ -39,10 +39,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   const errorMessage = document.getElementById("error-message");
   const retryBtn = document.getElementById("retry-btn");
   const offlineBtn = document.getElementById("offline-btn");
+  const installPanel = document.getElementById("install-panel");
+  const shortcutPanel = document.getElementById("shortcut-panel");
+  const installPathInput = document.getElementById("install-path");
+  const browseBtn = document.getElementById("browse-btn");
+  const confirmInstallBtn = document.getElementById("confirm-install-btn");
+  const cancelInstallBtn = document.getElementById("cancel-install-btn");
+  const shortcutYesBtn = document.getElementById("shortcut-yes-btn");
+  const shortcutNoBtn = document.getElementById("shortcut-no-btn");
 
   let installedVersion = null;
   let latestReleaseInfo = null;
   let launcherState = "checking";
+  let installPaths = null;
 
   const tauri = getTauri();
   const invoke = tauri?.core?.invoke?.bind(tauri.core);
@@ -55,11 +64,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     statusToast.classList.add(tone === "ok" ? "tone-ok" : "tone-info", "show");
   }
 
+  function hideSetupPanels() {
+    if (installPanel) installPanel.hidden = true;
+    if (shortcutPanel) shortcutPanel.hidden = true;
+  }
+
   function setUIState(state, customText = "") {
     launcherState = state;
     if (!actionBtn || !progressContainer || !errorContainer) return;
 
     if (state === "error") {
+      hideSetupPanels();
       actionBtn.hidden = true;
       progressContainer.hidden = true;
       errorContainer.hidden = false;
@@ -70,6 +85,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     errorContainer.hidden = true;
+
+    if (state === "choose-path") {
+      actionBtn.hidden = true;
+      progressContainer.hidden = true;
+      if (shortcutPanel) shortcutPanel.hidden = true;
+      if (installPanel) installPanel.hidden = false;
+      if (installPathInput && installPaths) {
+        installPathInput.value = installPaths.installDir || installPaths.defaultInstallDir || "";
+      }
+      return;
+    }
+
+    if (state === "ask-shortcut") {
+      actionBtn.hidden = true;
+      progressContainer.hidden = true;
+      if (installPanel) installPanel.hidden = true;
+      if (shortcutPanel) shortcutPanel.hidden = false;
+      return;
+    }
+
+    hideSetupPanels();
 
     if (state === "downloading") {
       actionBtn.hidden = true;
@@ -153,6 +189,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  async function refreshInstallPaths() {
+    if (!invoke) return null;
+    installPaths = await invoke("get_install_paths");
+    return installPaths;
+  }
+
+  async function finishAfterInstall() {
+    const paths = await refreshInstallPaths();
+    if (paths && !paths.shortcutPromptDone) {
+      setUIState("ask-shortcut");
+      return;
+    }
+    setUIState("ready-to-play");
+  }
+
   async function launchGame() {
     if (!invoke) {
       setUIState("error", "Tauri-Bridge nicht verfügbar.");
@@ -183,15 +234,106 @@ document.addEventListener("DOMContentLoaded", async () => {
         "",
       );
       showToast(`Fassung v${installedVersion} gebunden.`, "ok");
-      setUIState("ready-to-play");
+      await finishAfterInstall();
     } catch (err) {
       setUIState("error", `Installation fehlgeschlagen: ${err}`);
     }
   }
 
+  async function beginInstallFlow() {
+    try {
+      await refreshInstallPaths();
+    } catch {
+      installPaths = null;
+    }
+    setUIState("choose-path");
+  }
+
+  if (browseBtn) {
+    browseBtn.addEventListener("click", async () => {
+      if (!invoke) return;
+      try {
+        const picked = await invoke("browse_install_dir");
+        if (picked && installPathInput) {
+          installPathInput.value = picked;
+        }
+      } catch (err) {
+        showToast(`Ordnerwahl fehlgeschlagen: ${err}`, "info");
+      }
+    });
+  }
+
+  if (confirmInstallBtn) {
+    confirmInstallBtn.addEventListener("click", async () => {
+      if (!invoke || !installPathInput) return;
+      const path = installPathInput.value.trim();
+      if (!path) {
+        showToast("Bitte einen Speicherort wählen.", "info");
+        return;
+      }
+      confirmInstallBtn.disabled = true;
+      try {
+        await invoke("set_install_dir", { path });
+        await refreshInstallPaths();
+        await installOrUpdate();
+      } catch (err) {
+        setUIState("error", `Speicherort ungültig: ${err}`);
+      } finally {
+        confirmInstallBtn.disabled = false;
+      }
+    });
+  }
+
+  if (cancelInstallBtn) {
+    cancelInstallBtn.addEventListener("click", () => {
+      if (!installedVersion) {
+        setUIState("not-installed");
+      } else {
+        setUIState("update-available");
+      }
+    });
+  }
+
+  if (shortcutYesBtn) {
+    shortcutYesBtn.addEventListener("click", async () => {
+      if (!invoke) return;
+      shortcutYesBtn.disabled = true;
+      try {
+        await invoke("create_desktop_shortcut");
+        showToast("Desktop-Verknüpfung erstellt.", "ok");
+      } catch (err) {
+        showToast(`Verknüpfung fehlgeschlagen: ${err}`, "info");
+        try {
+          await invoke("dismiss_desktop_shortcut_prompt");
+        } catch {
+          /* ignore */
+        }
+      } finally {
+        shortcutYesBtn.disabled = false;
+        setUIState("ready-to-play");
+      }
+    });
+  }
+
+  if (shortcutNoBtn) {
+    shortcutNoBtn.addEventListener("click", async () => {
+      if (invoke) {
+        try {
+          await invoke("dismiss_desktop_shortcut_prompt");
+        } catch {
+          /* ignore */
+        }
+      }
+      setUIState("ready-to-play");
+    });
+  }
+
   if (actionBtn) {
     actionBtn.addEventListener("click", async () => {
-      if (launcherState === "not-installed" || launcherState === "update-available") {
+      if (launcherState === "not-installed") {
+        await beginInstallFlow();
+      } else if (launcherState === "update-available") {
+        // Updates reuse the already chosen install directory.
         await installOrUpdate();
       } else if (launcherState === "ready-to-play") {
         await launchGame();
@@ -217,6 +359,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!invoke) {
       setUIState("error", "Launcher läuft außerhalb von Tauri.");
       return;
+    }
+
+    try {
+      await refreshInstallPaths();
+    } catch {
+      installPaths = null;
     }
 
     try {

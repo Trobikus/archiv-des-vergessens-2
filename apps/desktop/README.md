@@ -21,9 +21,9 @@ npm run build -w @adv/desktop   # production shell (needs client build)
 ## Identifier / updater
 
 Ported from v1: `com.grimoire.archivdesvergessens` + minisign pubkey.
-Updater feed (Phase 8 cutover):
-`https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest/download/latest.json`
-with `bundle.active` + `createUpdaterArtifacts` enabled (NSIS). Release workflow:
+Player distribution is **launcher + portable ZIP** (no NSIS setup EXE).
+`bundle.active` / `createUpdaterArtifacts` stay off — same model as v1.
+Optional in-app updater config may remain for future use; release workflow:
 `.github/workflows/release.yml`.
 
 ## Desktop feel (browser chrome lockdown)
