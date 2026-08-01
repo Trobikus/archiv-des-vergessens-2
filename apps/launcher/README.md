@@ -33,4 +33,4 @@ Release renames it to `ArchivDesVergessens-Launcher.exe`.
 | `archiv-des-vergessens.zip.sig` | Hex Ed25519 signature |
 | `ArchivDesVergessens-Launcher.exe` | This launcher |
 
-Signing uses `tools/sign_release.cjs` + secret `ED25519_PRIVATE_KEY` (same key as v1).
+Signing uses `tools/sign_release.mjs` + secret `ED25519_PRIVATE_KEY` (same key as v1).

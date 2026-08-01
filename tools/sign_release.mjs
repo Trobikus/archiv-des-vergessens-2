@@ -1,16 +1,16 @@
 /**
  * Sign a portable release artifact with the Ed25519 private key in ./private.key (hex).
- * Usage: node tools/sign_release.cjs <path-to-file>
+ * Usage: node tools/sign_release.mjs <path-to-file>
  */
-const crypto = require("node:crypto");
-const fs = require("node:fs");
-const path = require("node:path");
+import crypto from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
 
 const fileToSign = process.argv[2];
 
 if (!fileToSign || !fs.existsSync(fileToSign)) {
   console.error(
-    "Bitte eine gültige Datei übergeben: node tools/sign_release.cjs <pfad-zur-datei>",
+    "Bitte eine gültige Datei übergeben: node tools/sign_release.mjs <pfad-zur-datei>",
   );
   process.exit(1);
 }

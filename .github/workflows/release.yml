@@ -89,7 +89,7 @@ jobs:
             throw "Secret ED25519_PRIVATE_KEY fehlt (Hex-Key für portable ZIP-Signatur)."
           }
           [IO.File]::WriteAllText("private.key", $env:ED25519_PRIVATE_KEY.Trim())
-          node tools/sign_release.cjs apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip
+          node tools/sign_release.mjs apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip
           Remove-Item private.key -Force
 
       - name: Build Siegel-Portal launcher
