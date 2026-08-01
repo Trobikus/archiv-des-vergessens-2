@@ -1,16 +1,16 @@
 ﻿# 📜 Archiv des Vergessens
 
-### *Der Mneme-Bund* — Idle-/Progression-RPG · Release **2.0.0**
+### *Der Mneme-Bund* — Idle-/Progression-RPG
 
 > Atmosphäre. Fortschritt. Archiv.  
 > Ein vollständiger Greenfield-Rewrite — gleiche Welt, neue Grundlage.
 
 | | |
 |---|---|
-| **Version** | `2.0.0` |
+| **Version** | [![release](https://img.shields.io/github/v/release/Trobikus/archiv-des-vergessens-2?include_prereleases&sort=semver&label=release)](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest) [![tag](https://img.shields.io/github/v/tag/Trobikus/archiv-des-vergessens-2?sort=semver&label=tag)](https://github.com/Trobikus/archiv-des-vergessens-2/tags) |
 | **Stand** | Phase **0–9 abgeschlossen** · inkl. v1-Save-Importer |
 | **Stack** | TypeScript strict · Preact · Vite · Tauri 2 · Node WS |
-| **Als Nächstes** | Release-Tag `v2.0.0` / Playtest |
+| **Als Nächstes** | Draft veröffentlichen · Playtest |
 | **Repo** | [Trobikus/archiv-des-vergessens-2](https://github.com/Trobikus/archiv-des-vergessens-2) |
 
 Spieler-Patch Notes → [`docs/patch-notes-2.0.0.md`](docs/patch-notes-2.0.0.md)  
@@ -223,6 +223,7 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 | **Workflow** | [`.github/workflows/release.yml`](.github/workflows/release.yml) |
 | **CI** | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — Gate + Desktop-Job |
 | **Launcher** | [`apps/launcher`](apps/launcher) — lokal: `npm run launcher:dev` / Release: `npm run launcher:build` |
+| **Version im README** | Shields.io-Badges oben (Release + Tag) — kein manueller Versions-Bump nötig |
 
 > **Cutover-Hinweis:** Cloud-Spielstände aus v1 werden serverseitig **nicht** automatisch übernommen.  
 > Accounts (Benutzername + PBKDF2-Passwort) können migriert werden — Spieler melden sich neu an.  
