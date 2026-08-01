@@ -70,8 +70,8 @@ export function defaultWsUrl(): string {
     return fromEnv;
   }
 
-  if (typeof window !== "undefined" && window.location) {
-    const hostname = window.location.hostname || "";
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname;
     const isViteDev = viteEnv.DEV === true;
     const isLocalHost =
       (hostname === "localhost" ||
