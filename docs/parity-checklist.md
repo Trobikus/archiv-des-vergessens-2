@@ -15,9 +15,9 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | Game loop / ticker | `js/core/game/loop.js` | 1–2 | [x] Ticker + GameSession Loop |
 | Math / balancing | `js/core/game/math.js` | 1 | [x] + golden snapshot gate |
 | Save manager | `js/core/persistence/save-manager.js` | 2 | [x] SaveStore (IndexedDB cache) |
-| Cloud manager | `js/core/persistence/cloud-manager.js` | 4 | [ ] |
+| Cloud manager | `js/core/persistence/cloud-manager.js` | 4 | [x] CloudSyncService |
 | Settings | `js/core/settings.js` | 6F | [ ] |
-| Security helpers | `js/core/security.js` | 4 | [ ] |
+| Security helpers | `js/core/security.js` | 4 | [x] PBKDF2 + sanitize server-side |
 | Object pool | `js/core/pool.js` | 8 | [ ] |
 
 ## Services
@@ -45,8 +45,8 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | account-vault-service | 6E | [ ] |
 | combat-analytics-service | 6E | [ ] |
 | tutorial-service | 6F | [ ] |
-| auth-service | 4 | [ ] |
-| network-service | 4 | [ ] |
+| auth-service | 4 | [x] |
+| network-service | 4 | [x] WsClient |
 | chat-service | 7 | [ ] |
 | friend-service | 7 | [ ] |
 | clan-service | 7 | [ ] |
@@ -57,7 +57,7 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | Module | Phase | Status |
 |---|---|---|
 | Boot shell (“Boot OK”) | 0 | [x] |
-| views/LoginView | 4 | [ ] |
+| views/LoginView | 4 | [x] |
 | views/CharacterSelectView | 3 | [x] |
 | views/IntroView | 6F | [ ] |
 | views/GameView | 2–3 | [x] Idle + Hero/Story tabs |
@@ -77,7 +77,7 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | codex/CodexUI | 6D | [ ] |
 | relic/RelicHuntUI | 6E | [ ] |
 | tutorial/TutorialUI | 6F | [ ] |
-| account/* | 4 | [ ] |
+| account/* | 4 | [x] AccountBadge + convertGuest |
 | chat/ChatUI | 7 | [ ] |
 | friends/FriendsUI | 7 | [ ] |
 | clan/ClanUI | 7 | [ ] |

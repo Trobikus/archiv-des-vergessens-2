@@ -27,17 +27,25 @@ DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei grünem `npm 
 - [x] Vertical-Slice-Tests + Coverage-Gates (inkl. Client-Services/State ≥60 %) grün
 - [x] Tag `v2-phase2` auf `main` (Direct-Merge; kein separater PR)
 
-## Phase 3 — Content + Kampf/Story ⬜
+## Phase 3 — Content + Kampf/Story ✅ (`v2-phase3`)
 
-- [ ] Charakter erstellen (Name 2–20, Klasse kosmetisch) und Spiel starten
-- [ ] DE/EN umschalten; Labels aus i18n-Keys; i18n-Key-Gate in `npm run gate` grün
-- [ ] Story-Intro (3 Frames) beim ersten Öffnen der Chronik, danach gespeichert als gesehen
-- [ ] Boss-Kampf starten: Auto-Ticks, Speer/Schild/Heilung, Fliehen
-- [ ] Sieg vergibt EXP (+ Item bei Mid/End-Boss); Held kann Stats verteilen und looten/equippen
-- [ ] Speichern/Laden behält Held, Boss-Fortschritt, Locale und Intro-Flag
-- [ ] Phase-3-Slice-Tests + `npm run gate` grün
-- [ ] Tag `v2-phase3` nach Merge
+- [x] Charakter erstellen (Name 2–20, Klasse kosmetisch) und Spiel starten
+- [x] DE/EN umschalten; Labels aus i18n-Keys; i18n-Key-Gate in `npm run gate` grün
+- [x] Story-Intro (3 Frames) beim ersten Öffnen der Chronik, danach gespeichert als gesehen
+- [x] Boss-Kampf starten: Auto-Ticks, Speer/Schild/Heilung, Fliehen
+- [x] Sieg vergibt EXP (+ Item bei Mid/End-Boss); Held kann Stats verteilen und looten/equippen
+- [x] Speichern/Laden behält Held, Boss-Fortschritt, Locale und Intro-Flag
+- [x] Phase-3-Slice-Tests + `npm run gate` grün
+- [ ] Tag `v2-phase3` (nach Freigabe setzen)
 
-## Phase 4+ — offen
+## Phase 4 — Server + Auth + Cloud 🔄
 
-Playtest-Punkte werden mit der jeweiligen Phase ergänzt.
+- [x] Guest-Handshake (`auth`) und Offline-Spiel mit lokalem Save
+- [x] Register / Login / Token-Verify / Logout
+- [x] convertGuest → registrierter Account; lokaler Fortschritt bleibt, dann Cloud-Push
+- [x] Cloud save/load (Save-Envelope); neueres `savedAt` gewinnt
+- [x] Superseded Token kann nicht cloud-speichern
+- [x] User-Migration Dry-Run Tool (`tools/migrate-v1-users/`)
+- [x] Phase-4-Tests + `npm run gate` grün
+- [ ] Tag `v2-phase4` nach Merge
+- [ ] Manueller Playtest (Guest/Register/Cloud über zwei Sessions)

@@ -1,0 +1,26 @@
+export const WS_EVENTS = {
+  AUTH: "auth",
+  AUTH_SUCCESS: "auth:success",
+  AUTH_ERROR: "auth:error",
+  AUTH_REGISTER: "auth:register",
+  AUTH_REGISTER_SUCCESS: "auth:register:success",
+  AUTH_REGISTER_ERROR: "auth:register:error",
+  AUTH_LOGIN: "auth:login",
+  AUTH_LOGIN_SUCCESS: "auth:login:success",
+  AUTH_LOGIN_ERROR: "auth:login:error",
+  AUTH_VERIFY_TOKEN: "auth:verifyToken",
+  AUTH_VERIFY_TOKEN_SUCCESS: "auth:verifyToken:success",
+  AUTH_VERIFY_TOKEN_ERROR: "auth:verifyToken:error",
+  AUTH_CONVERT_GUEST: "auth:convertGuest",
+  AUTH_CONVERT_GUEST_SUCCESS: "auth:convertGuest:success",
+  AUTH_CONVERT_GUEST_ERROR: "auth:convertGuest:error",
+  CLOUD_SAVE: "cloud:save",
+  CLOUD_SAVE_SUCCESS: "cloud:save:success",
+  CLOUD_SAVE_ERROR: "cloud:save:error",
+  CLOUD_LOAD: "cloud:load",
+  CLOUD_LOAD_SUCCESS: "cloud:load:success",
+  CLOUD_LOAD_ERROR: "cloud:load:error",
+  ERROR: "error",
+} as const;
+
+export type WsEvent = (typeof WS_EVENTS)[keyof typeof WS_EVENTS];

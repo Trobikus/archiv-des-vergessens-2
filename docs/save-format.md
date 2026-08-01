@@ -55,4 +55,7 @@ type Phase2SavePayload = {
 - Migration runner: identity for `schemaVersion === 1` (`migrateSaveEnvelope`)
 - Missing `hero` / `story` / `settings` on older Phase-2 payloads are filled with defaults during validation
 - Battle state is ephemeral (not persisted)
-- Cloud authority: Phase 4
+- Cloud authority (Phase 4): registered sessions upsert the full `SaveEnvelope` JSON in SQLite `saves.saveData`
+- Offline queue: pending envelopes under `cloud_pending_<userId>` until flush
+- Conflict rule: newer `savedAt` wins when merging cloud vs local
+- v1 cloud blobs are discarded; only the users table may migrate (see `tools/migrate-v1-users/`)

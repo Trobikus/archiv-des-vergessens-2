@@ -10,9 +10,13 @@
   },
   "dependencies": {
     "@adv/core": "*",
-    "@adv/protocol": "*"
+    "@adv/protocol": "*",
+    "better-sqlite3": "^11.10.0",
+    "ws": "^8.21.1"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/ws": "^8.18.1",
     "tsx": "^4.20.3"
   }
 }

@@ -13,6 +13,11 @@ import {
   type GameState,
   type OfflineReport,
 } from "../state/game-state";
+import { createAuthService, type AuthService } from "./auth-service";
+import {
+  createCloudSyncService,
+  type CloudSyncService,
+} from "./cloud-sync-service";
 import { createGatherService, type GatherService } from "./gather-service";
 import { createHeroService, type HeroService } from "./hero-service";
 import { createIdleService, type IdleService } from "./idle-service";
@@ -29,6 +34,7 @@ import {
 } from "./save-storage";
 import { createSaveStore, type SaveStore } from "./save-store";
 import { createStoryService, type StoryService } from "./story-service";
+import { createWsClient, type WsClient } from "./ws-client";
 
 const log = createLogger("game-session");
 
@@ -42,6 +48,9 @@ export type GameSession = {
   readonly story: StoryService;
   readonly i18n: I18nService;
   readonly saves: SaveStore;
+  readonly ws: WsClient;
+  readonly auth: AuthService;
+  readonly cloud: CloudSyncService;
   boot(): Promise<OfflineReport | null>;
   saveNow(): Promise<boolean>;
   dismissOfflineReport(): void;
@@ -53,6 +62,8 @@ export type GameSessionOptions = {
   readonly now?: () => number;
   readonly autosaveMs?: number;
   readonly useIndexedDb?: boolean;
+  readonly ws?: WsClient;
+  readonly connectNetwork?: boolean;
 };
 
 function defaultStorage(useIndexedDb: boolean): SaveStorage {
@@ -79,6 +90,9 @@ export function createGameSession(
   const story = createStoryService(store, hero);
   const i18n = createI18nService(store);
   const saves = createSaveStore(storage);
+  const ws = options.ws ?? createWsClient();
+  const auth = createAuthService({ ws });
+  const cloud = createCloudSyncService({ ws, auth, storage });
 
   let ticker: Ticker | null = null;
   let autosaveTimer: ReturnType<typeof setInterval> | null = null;
@@ -105,6 +119,7 @@ export function createGameSession(
       ...prev,
       meta: { ...prev.meta, lastActiveAt: stamp, lastSavedAt: stamp },
     }));
+    void cloud.push(store.getState(), stamp);
     return true;
   };
 
@@ -118,13 +133,28 @@ export function createGameSession(
     story,
     i18n,
     saves,
+    ws,
+    auth,
+    cloud,
 
     async boot() {
+      if (options.connectNetwork !== false) {
+        await auth.boot();
+      }
+
       const loaded = await saves.load();
       if (!loaded.ok) {
         log.warn(`load failed, starting fresh: ${loaded.error}`);
       } else if (loaded.value) {
         store.replace(loaded.value);
+      }
+
+      if (auth.isRegistered()) {
+        const merged = await cloud.pullAndMerge(store.getState());
+        if (merged.ok) {
+          store.replace(merged.value);
+        }
+        await cloud.flushPending();
       }
 
       const report = offline.applyOnBoot(nowFn());
@@ -185,6 +215,9 @@ export function createGameSession(
         clearInterval(autosaveTimer);
         autosaveTimer = null;
       }
+      cloud.destroy();
+      auth.destroy();
+      ws.close();
       store.destroy();
     },
   };

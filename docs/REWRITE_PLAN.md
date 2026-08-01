@@ -13,10 +13,10 @@ todos:
     status: completed
   - id: phase-3
     content: "Phase 3: Content-Pipeline + Combat/Story-Slice + i18n-Gates"
-    status: in_progress
+    status: completed
   - id: phase-4
-    content: "Phase 4: Modularer Server + Auth + Cloud-Sync (vorher Freigabe)"
-    status: pending
+    content: "Phase 4: Modularer Server + Auth + Cloud-Sync (Freigabe erteilt)"
+    status: in_progress
   - id: phase-5
     content: "Phase 5: Tauri-Shell + Playwright + Updater 2.0.0"
     status: pending
@@ -38,16 +38,16 @@ todos:
 
 ## Fortschritt (Stand 2026-08-01)
 
-**Fertig:** Phase 0 + Phase 1 + Phase 2.  
-**In Arbeit:** Phase 3 — Content-Pipeline + Combat/Story-Slice + i18n-Gates.
+**Fertig:** Phase 0–3.  
+**In Arbeit:** Phase 4 — Modularer Server + Auth + Cloud-Sync (Freigabe erteilt).
 
 | Phase | Status | Nachweis |
 |---|---|---|
 | **0 Fundament** | ✅ fertig | Tag `v2-phase0`, PR [#1](https://github.com/Trobikus/archiv-des-vergessens-2/pull/1) merged |
 | **1 Kernel + Balancing** | ✅ fertig | Tag `v2-phase1`, PR [#2](https://github.com/Trobikus/archiv-des-vergessens-2/pull/2) merged, Balancing-Snapshot-Gate |
 | **2 Vertical Slice** | ✅ fertig | Tag `v2-phase2` (Direct-Merge auf `main`), Klick/Tick/Save/Offline spielbar |
-| 3 Content + Kampf/Story | 🔄 in Arbeit | Content/i18n-Gate, Combat-Sim, Hero/Story-UI |
-| 4 Server + Auth + Cloud | ⬜ offen (Freigabe nötig) | — |
+| **3 Content + Kampf/Story** | ✅ fertig | Content/i18n-Gate, Combat-Sim, Hero/Story-UI; Tag `v2-phase3` ausstehend |
+| 4 Server + Auth + Cloud | 🔄 in Arbeit | WS-Server, Auth, Cloud-Envelope, User-Migration |
 | 5 Tauri + E2E | ⬜ offen | — |
 | 6 Parität A–F | ⬜ offen | — |
 | 7 Social/Live | ⬜ offen | — |
@@ -179,19 +179,29 @@ Erledigt:
 - [x] Vitest Vertical-Slice-Tests (inkl. IndexedDB-Adapter) + `npm run gate`
 - [x] Playtest-Checkliste Phase 2 abgehakt
 
-### Phase 3 — Content + Kampf/Story (6–8 Tage) 🔄
+### Phase 3 — Content + Kampf/Story (6–8 Tage) ✅
 `@adv/content` mit typisierten Records aus `js/data/`, i18n DE/EN mit Key-Gate, Combat/Loot in `@adv/sim`, Combat- + Hero-UI.
 
-Umgesetzt in diesem Branch:
+Erledigt:
 - [x] Items (inkl. Chapter-Uniques), Bosse, Story-Fights-Intro, Hero-Klassen
 - [x] i18n DE/EN + `tools/gates/i18n-keys.mjs`
 - [x] Combat-Math/EXP in `@adv/sim`
 - [x] Hero-/Story-/I18n-Services + Save-Felder
 - [x] CharacterSelect + HeroPanel + StoryPanel/Intro + FloatingDamage
-- [ ] Playtest abhaken + Tag `v2-phase3` nach Merge
+- [x] Playtest-Checkliste Phase 3 abgehakt (`npm run gate` grün)
+- [ ] Tag `v2-phase3` setzen
 
-### Phase 4 — Modularer Server + Auth + Cloud (Freigabe nötig) (7–9 Tage) ⬜
+### Phase 4 — Modularer Server + Auth + Cloud (Freigabe erteilt) (7–9 Tage) 🔄
 Modularer WS-Server, Events in `@adv/protocol`, Auth (Guest/Register/Login/Token/convertGuest), Cloud-Save, User-Migration aus v1-Kopie (Dry-Run zuerst).
+
+Umgesetzt:
+- [x] `@adv/protocol` WS-Events + Auth/Cloud-Validatoren
+- [x] Modularer Server (`ws` + `better-sqlite3`): Auth + Cloud-Envelope
+- [x] Client: WsClient, AuthService, CloudSyncService, LoginView, AccountBadge
+- [x] User-Migration Dry-Run Tool `tools/migrate-v1-users/`
+- [x] Docs: protocol.md, save-format, playtest/parity
+- [x] `npm run gate` grün
+- [ ] Manueller Playtest + Tag `v2-phase4`
 
 ### Phase 5 — Tauri-Shell + E2E (3–4 Tage) ⬜
 Desktop-Shell ohne lokale Save-DB; Identifier + Updater-Key aus v1; Playwright-Smoke; Version `2.0.0`.
@@ -221,8 +231,8 @@ Nach Release: Adapter v1-JSON → v2-Envelope.
 graph LR
   P0["P0 Fundament ✅"] --> P1["P1 Kernel + sim ✅"]
   P1 --> P2["P2 Klick Save Offline ✅"]
-  P2 --> P3["P3 Content Kampf ⬜"]
-  P3 --> P4["P4 Server Auth Cloud ⬜"]
+  P2 --> P3["P3 Content Kampf DONE"]
+  P3 --> P4["P4 Server Auth Cloud WIP"]
   P4 --> P5["P5 Tauri E2E ⬜"]
   P5 --> P6["P6 Paritaet A-F ⬜"]
   P6 --> P7["P7 Social ⬜"]
@@ -247,4 +257,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 3 Branch mergen, Playtest abhaken, Tag `v2-phase3`. Danach Phase 4 nur mit Freigabe (Auth + Cloud).
+Phase 4 implementieren (Auth + Cloud + User-Migration). Tag `v2-phase3` bei Gelegenheit setzen.

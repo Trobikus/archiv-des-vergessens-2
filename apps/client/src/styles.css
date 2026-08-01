@@ -422,6 +422,116 @@ body {
   }
 }
 
+.session-chrome {
+  width: min(720px, 100%);
+  margin: 0 auto;
+  padding: 1rem 1.25rem 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.session-chrome__auth,
+.account__badge,
+.account__action,
+.auth__tab,
+.auth__submit,
+.auth__guest {
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--panel) 90%, transparent);
+  color: var(--ink);
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+}
+
+.account {
+  position: relative;
+}
+
+.account__dot {
+  margin-left: 0.55rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.account__dot[data-online="1"] {
+  color: var(--accent-2);
+}
+
+.account__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.4rem);
+  min-width: 12rem;
+  padding: 0.75rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  display: grid;
+  gap: 0.5rem;
+  z-index: 5;
+}
+
+.auth {
+  width: min(480px, 100%);
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.auth__hero {
+  text-align: center;
+}
+
+.auth__brand {
+  margin: 0;
+  letter-spacing: 0.04em;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 650;
+}
+
+.auth__title {
+  margin: 0.35rem 0 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.auth__tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.auth__tab.is-active,
+.auth__submit {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.auth__form,
+.auth__field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.auth__field input {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, #0a1220 70%, transparent);
+  color: var(--ink);
+}
+
+.auth__error {
+  margin: 0;
+  color: #ffb4a8;
+}
+
+.auth__guest {
+  justify-self: start;
+}
+
 @media (max-width: 520px) {
   .game__actions,
   .select__actions {
