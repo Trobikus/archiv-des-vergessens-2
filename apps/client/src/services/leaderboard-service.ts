@@ -1,6 +1,7 @@
 import type { EventBus, Store } from "@adv/core";
 import {
   createDefaultLeaderboardSave,
+  validateLeaderboardErrorPayload,
   validateLeaderboardUpdatePayload,
   WS_EVENTS,
   type LeaderboardEntry,
@@ -20,6 +21,8 @@ export type LeaderboardService = {
   syncFromState(): void;
   submit(): boolean;
   fetch(): boolean;
+  lastError(): string | null;
+  clearError(): void;
   markSessionStart(): void;
   addEntry(data: {
     readonly prestige?: number;
@@ -55,6 +58,7 @@ export function createLeaderboardService(
   const playTimeIntervalMs = options.playTimeIntervalMs ?? 10_000;
   const unsubs: Array<() => void> = [];
   let globalEntries: LeaderboardEntry[] = [];
+  let lastError: string | null = null;
   let isUpdating = false;
   let lastParticles = store.getState().resources.totalParticles;
   let lastRelics = store.getState().resources.totalRelics;
@@ -64,6 +68,13 @@ export function createLeaderboardService(
   let playTimeTimer: ReturnType<typeof setInterval> | null = null;
 
   const getRecords = (): LeaderboardSave => store.getState().leaderboard;
+
+  const setError = (message: string | null): void => {
+    lastError = message;
+    if (message !== null) {
+      eventBus.publish("leaderboard:error", { error: message });
+    }
+  };
 
   const setRecords = (next: LeaderboardSave): void => {
     if (isUpdating) {
@@ -198,8 +209,19 @@ export function createLeaderboardService(
       if (!parsed.ok) {
         return;
       }
+      setError(null);
       globalEntries = [...parsed.value.entries];
       eventBus.publish("leaderboard:globalUpdated", globalEntries);
+    }),
+  );
+
+  unsubs.push(
+    ws.on(WS_EVENTS.LEADERBOARD_ERROR, (payload) => {
+      const parsed = validateLeaderboardErrorPayload(payload);
+      if (!parsed.ok) {
+        return;
+      }
+      setError(parsed.value.error);
     }),
   );
 
@@ -282,6 +304,12 @@ export function createLeaderboardService(
         return false;
       }
       return ws.send(WS_EVENTS.LEADERBOARD_GET, {});
+    },
+    lastError() {
+      return lastError;
+    },
+    clearError() {
+      setError(null);
     },
     markSessionStart() {
       sessionStartTime = nowFn();

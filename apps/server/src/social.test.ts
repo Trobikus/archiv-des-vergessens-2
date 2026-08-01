@@ -204,4 +204,109 @@ describe("phase 7 social server", () => {
 
     ws.close();
   }, 15_000);
+
+  it("broadcasts chat to a second client", async () => {
+    const server = await startServer();
+    const sender = await connect(server);
+    const receiver = await connect(server);
+    const senderInbox = attachInbox(sender);
+    const receiverInbox = attachInbox(receiver);
+
+    sender.send(
+      JSON.stringify({
+        type: WS_EVENTS.AUTH,
+        payload: { userId: "guest_chat_a", username: "Sender" },
+      }),
+    );
+    receiver.send(
+      JSON.stringify({
+        type: WS_EVENTS.AUTH,
+        payload: { userId: "guest_chat_b", username: "Receiver" },
+      }),
+    );
+    await senderInbox.waitFor([WS_EVENTS.AUTH_SUCCESS]);
+    await receiverInbox.waitFor([WS_EVENTS.AUTH_SUCCESS]);
+    await senderInbox.waitFor([WS_EVENTS.LEADERBOARD_UPDATE]);
+    await receiverInbox.waitFor([WS_EVENTS.LEADERBOARD_UPDATE]);
+
+    sender.send(
+      JSON.stringify({
+        type: WS_EVENTS.CHAT_GLOBAL,
+        payload: { message: "Zwei Clients" },
+      }),
+    );
+    const onSender = await senderInbox.waitFor([WS_EVENTS.CHAT_GLOBAL_MESSAGE]);
+    const onReceiver = await receiverInbox.waitFor([
+      WS_EVENTS.CHAT_GLOBAL_MESSAGE,
+    ]);
+    expect(onSender.payload["message"]).toBe("Zwei Clients");
+    expect(onReceiver.payload["message"]).toBe("Zwei Clients");
+    expect(onReceiver.payload["player"]).toBe("Sender");
+
+    sender.close();
+    receiver.close();
+  }, 15_000);
+
+  it("accepts registered leaderboard submit and rejects jump limits", async () => {
+    const server = await startServer();
+    const ws = await connect(server);
+    const inbox = attachInbox(ws);
+    const username = `ranker_${Date.now().toString(36)}`;
+    const email = `${username}@example.com`;
+
+    ws.send(
+      JSON.stringify({
+        type: WS_EVENTS.AUTH_REGISTER,
+        payload: { username, email, password: "secret12" },
+      }),
+    );
+    await inbox.waitFor([WS_EVENTS.AUTH_REGISTER_SUCCESS]);
+    await inbox.waitFor([WS_EVENTS.LEADERBOARD_UPDATE]);
+
+    ws.send(
+      JSON.stringify({
+        type: WS_EVENTS.LEADERBOARD_SUBMIT,
+        payload: { prestige: 3, bosses: 12, level: 20 },
+      }),
+    );
+    const update = await inbox.waitFor([
+      WS_EVENTS.LEADERBOARD_UPDATE,
+      WS_EVENTS.LEADERBOARD_ERROR,
+    ]);
+    expect(update.type).toBe(WS_EVENTS.LEADERBOARD_UPDATE);
+    const entries = update.payload["entries"] as Array<{
+      username: string;
+      prestige: number;
+      bosses: number;
+      level: number;
+    }>;
+    expect(entries.length).toBeGreaterThanOrEqual(1);
+    expect(entries[0]?.username).toBe(username);
+    expect(entries[0]?.prestige).toBe(3);
+    expect(entries[0]?.bosses).toBe(12);
+    expect(entries[0]?.level).toBe(20);
+
+    ws.send(
+      JSON.stringify({
+        type: WS_EVENTS.LEADERBOARD_SUBMIT,
+        payload: { prestige: 3 + 51, bosses: 12, level: 20 },
+      }),
+    );
+    const jumpErr = await inbox.waitFor([WS_EVENTS.LEADERBOARD_ERROR]);
+    expect(String(jumpErr.payload["error"])).toMatch(/Sprung/i);
+
+    ws.send(
+      JSON.stringify({
+        type: WS_EVENTS.LEADERBOARD_GET,
+        payload: {},
+      }),
+    );
+    const afterJump = await inbox.waitFor([WS_EVENTS.LEADERBOARD_UPDATE]);
+    const afterEntries = afterJump.payload["entries"] as Array<{
+      prestige: number;
+    }>;
+    expect(afterEntries[0]?.prestige).toBe(3);
+
+    ws.close();
+  }, 20_000);
 });

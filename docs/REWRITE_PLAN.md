@@ -275,4 +275,4 @@ graph LR
 
 ## Sofort-nächster Schritt
 
-Phase 8 — Härtung → Release 2.0.0. Tag `v2-phase7` bei Gelegenheit setzen; Social-Playtest (Chat/LB online, Clan/Freunde offline).
+Phase 8 — Härtung → Release 2.0.0.

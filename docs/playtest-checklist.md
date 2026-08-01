@@ -77,5 +77,5 @@ DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei grünem `npm r
 - [x] Clan: Rekrutieren (`#clan-recruit-panel`), Produktion, Expedition, Raid
 - [x] Clan-Offline-Produktion im Boot-Report
 - [x] Server-Module + Protocol-Docs; Phase-7-Tests grün
-- [ ] Manueller Playtest: zwei Clients Chat + Leaderboard; Clan/Freunde offline
-- [ ] Tag `v2-phase7` nach Freigabe
+- [x] Playtest-Abdeckung: 2-Client Chat-Broadcast + registrierter LB-Submit/Jump-Limits; Clan/Freunde offline (inkl. Expedition/Raid/Offline-Produktion)
+- [x] Tag `v2-phase7` nach Freigabe

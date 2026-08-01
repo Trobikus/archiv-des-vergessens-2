@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 
 import type { GameSession } from "../../services/game-session";
 import { useStore } from "../useStore";
@@ -13,6 +13,19 @@ export function ChatPanel({ session }: Props) {
   const state = useStore(session.store);
   const [tab, setTab] = useState<ChatTab>("global");
   const [input, setInput] = useState("");
+  const [error, setError] = useState<string | null>(session.chat.lastError());
+
+  useEffect(() => {
+    const sub = session.eventBus.subscribe("chat:error", (data) => {
+      const payload = data as { error?: string };
+      if (typeof payload.error === "string" && payload.error.length > 0) {
+        setError(payload.error);
+      }
+    });
+    return () => {
+      session.eventBus.unsubscribe(sub);
+    };
+  }, [session]);
 
   const messages =
     tab === "global"
@@ -29,6 +42,10 @@ export function ChatPanel({ session }: Props) {
         : session.chat.sendClan(input);
     if (result.success) {
       setInput("");
+      setError(null);
+      session.chat.clearError();
+    } else {
+      setError(result.message);
     }
   };
 
@@ -58,6 +75,12 @@ export function ChatPanel({ session }: Props) {
           Clan
         </button>
       </div>
+
+      {error !== null ? (
+        <p class="game__meta" role="alert" data-testid="chat-error">
+          {error}
+        </p>
+      ) : null}
 
       <ul class="hub-list" data-testid="chat-messages">
         {messages.length === 0 ? (
