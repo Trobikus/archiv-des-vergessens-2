@@ -33,6 +33,11 @@ export function TutorialUI({ session }: Props) {
     const endSub = session.eventBus.subscribe("tutorial:end", onEnd);
     if (!tutorialState.finished && tutorialState.step >= 0) {
       session.tutorial.maybeAutoStart();
+      const current = session.tutorial.getCurrentStep();
+      const index = session.store.getState().tutorial.step;
+      if (current && index >= 0) {
+        setActive({ index, step: current });
+      }
     }
     return () => {
       session.eventBus.unsubscribe(stepSub);

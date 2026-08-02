@@ -37,6 +37,20 @@ describe("phase-3 content combat story slice", () => {
     ).toBe(true);
     expect(session.store.getState().hero.created).toBe(true);
     expect(session.store.getState().hero.name).toBe("Mneme");
+    expect(session.store.getState().tutorial).toEqual({
+      step: 0,
+      finished: false,
+    });
+
+    session.tutorial.finish();
+    expect(session.store.getState().tutorial.finished).toBe(true);
+    expect(
+      session.hero.createHero({ name: "Nova", classId: "light_warrior" }),
+    ).toBe(true);
+    expect(session.store.getState().tutorial).toEqual({
+      step: 0,
+      finished: false,
+    });
 
     expect(session.i18n.translate("hero.level")).toBe("Stufe");
     session.i18n.setLocale("en");

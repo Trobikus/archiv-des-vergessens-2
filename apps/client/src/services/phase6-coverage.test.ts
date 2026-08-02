@@ -191,6 +191,27 @@ describe("phase 6 service coverage smoke tests", () => {
     expect(session.tutorial.isActive()).toBe(false);
   });
 
+  it("tutorial maybeAutoStart re-emits current step for late UI", async () => {
+    const session = bootSession();
+    await session.boot();
+
+    session.tutorial.startStep(0);
+    expect(session.tutorial.isActive()).toBe(true);
+
+    let seenIndex: number | null = null;
+    const sub = session.eventBus.subscribe("tutorial:step", (data) => {
+      const payload = data as { index?: number };
+      if (typeof payload.index === "number") {
+        seenIndex = payload.index;
+      }
+    });
+    session.tutorial.maybeAutoStart();
+    session.eventBus.unsubscribe(sub);
+
+    expect(seenIndex).toBe(0);
+    expect(session.tutorial.getCurrentStep()?.title).toBe("Das Erwachen");
+  });
+
   it("combat analytics recordHit, getStats, and reset", async () => {
     const session = bootSession();
     await session.boot();

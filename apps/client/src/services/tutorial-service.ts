@@ -168,8 +168,16 @@ export function createTutorialService(
       if (tutorial.finished || tutorial.step < 0) {
         return;
       }
-      if (!active || currentIndex !== tutorial.step) {
-        this.startStep(Math.max(0, tutorial.step));
+      const index = Math.max(0, tutorial.step);
+      if (!active || currentIndex !== index) {
+        this.startStep(index);
+        return;
+      }
+      // Session/boot may start the tutorial before TutorialUI mounts.
+      // Re-emit so late subscribers still receive the current step.
+      const step = getSteps()[currentIndex];
+      if (step) {
+        publishStep(currentIndex);
       }
     },
 

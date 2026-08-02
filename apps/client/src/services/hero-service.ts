@@ -5,6 +5,7 @@ import {
   type ItemTemplate,
 } from "@adv/content";
 import type { Store } from "@adv/core";
+import { createDefaultTutorialSave } from "@adv/protocol";
 import { CONFIG } from "@adv/sim";
 import {
   applyExperience,
@@ -103,6 +104,8 @@ export function createHeroService(store: Store<GameState>): HeroService {
           avatar: klass.avatar,
           created: true,
         },
+        // First enter per new character starts the onboarding tutorial.
+        tutorial: createDefaultTutorialSave(),
       }));
       return true;
     },
