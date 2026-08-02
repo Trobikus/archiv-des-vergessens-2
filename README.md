@@ -15,10 +15,10 @@
 | **Studio** | [Grimoire Interactive](https://grimoire-interactive.de/) |
 | **Version** | `0.3.0-alpha` · [![release](https://img.shields.io/github/v/release/Trobikus/archiv-des-vergessens-2?include_prereleases&sort=semver&label=release)](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest) [![tag](https://img.shields.io/github/v/tag/Trobikus/archiv-des-vergessens-2?sort=semver&label=tag)](https://github.com/Trobikus/archiv-des-vergessens-2/tags) |
 | **Stand** | Rewrite-Phasen **0–9** code-seitig fertig · öffentlich **frühe Alpha** |
-| **Stack** | TypeScript strict · Preact · Vite · Tauri 2 · Node WebSocket · SQLite |
+| **Stack** | TypeScript strict · Preact · Vite 7 · Tauri 2 · Node WebSocket · SQLite (`better-sqlite3`) |
 | **Live-Server** | `wss://archiv.grimoire-interactive.de` |
 | **Spieler-Download** | [`ArchivDesVergessens2-Launcher.exe`](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest/download/ArchivDesVergessens2-Launcher.exe) (Windows, portabel) |
-| **Repo** | [Trobikus/archiv-des-vergessens-2](https://github.com/Trobikus/archiv-des-vergessens-2) |
+| **Repo** | [Trobikus/archiv-des-vergessens-2](https://github.com/Trobikus/archiv-des-vergessens-2) · öffentlich (Launcher braucht `/releases/latest`) |
 
 Spieler-Patch Notes (Rewrite-Meilenstein) → [`docs/patch-notes-2.0.0.md`](docs/patch-notes-2.0.0.md)  
 Changelog → [`CHANGELOG.md`](CHANGELOG.md)  
@@ -43,10 +43,11 @@ Der Client organisiert den Hub in sieben Bereiche: **Archiv** · **Held** · **S
 | **Idle & Fortschritt** | Klick / Tick, Gather-Upgrades, Offline-Produktion, Autosave, Cloud-Envelope |
 | **Kampf & Held** | Combat-Sim, Floating Damage, Hero-Stats, Equip, Skilltree, Analytics |
 | **Missionen & Craft** | Quests, Achievements, Daily, Schmiede, Crafting, Bibliothek |
-| **Wissen & Macht** | Talente, Challenges, Codex, Reliktjagd, Account-Tresor |
+| **Wissen & Macht** | Talente (Hover-Tooltips), Challenges, Codex, Reliktjagd, Account-Tresor |
 | **Story** | Story-Kämpfe, Branches, Dialoge, Intro / Tutorial |
 | **Social** | Globaler Chat, Freunde, Gilde/Gilden-Chat & Bestenliste **live** (Server); NPC-Clan (Idle / Raid / Expedition) **lokal im Client** |
-| **Desktop** | Tauri-2-Shell, Siegel-Portal-Launcher, signierte portable ZIP, Chrome-Lockdown |
+| **Hub-UI** | Cinematic Chrome (Top-Bar, Rails, Footer) pixel-matched zu Design-Mocks; erklärende Hover-Tooltips |
+| **Desktop** | Tauri-2-Shell, Siegel-Portal-Launcher, signierte portable ZIP, Chrome-Lockdown, v2-isoliertes AppData |
 
 ---
 
@@ -67,7 +68,8 @@ Eine Persistenzstrategie. Eine Protokollschicht. Klare Grenzen.
           ▼                                                ▼
    packages/core · sim · content              apps/server (WS :8080)
    DI · Events · Ticker · Math                Auth · Cloud-Save · Chat
-   i18n DE/EN · Balancing                     Leaderboard · SQLite
+   i18n DE/EN · Balancing                     Freunde · Gilde · Leaderboard
+                                              SQLite (better-sqlite3)
 ```
 
 ### Design-Prinzipien
@@ -91,7 +93,7 @@ Details: [`docs/REWRITE_PLAN.md`](docs/REWRITE_PLAN.md) · [`docs/adr/`](docs/ad
 | Fläche | Paket | Rolle |
 |---|---|---|
 | Spiel-Client | `@adv/client` | Preact-UI, Game-Session, Save / Offline |
-| Live-Server | `@adv/server` | Auth, Cloud-Sync, Chat, Leaderboard, SQLite |
+| Live-Server | `@adv/server` | Auth, Cloud-Sync, Chat, Freunde, Gilde, Leaderboard, SQLite |
 | Desktop-Shell | `@adv/desktop` | Tauri 2, Quit, Lockdown |
 | Launcher | `@adv/launcher` | Siegel-Portal, portable ZIP, Ed25519-Verify |
 | Simulation | `@adv/sim` | Balancing, Combat- / Idle-Mathe |
@@ -106,8 +108,8 @@ Details: [`docs/REWRITE_PLAN.md`](docs/REWRITE_PLAN.md) · [`docs/adr/`](docs/ad
 ```text
 archiv-des-vergessens-2/
 ├─ apps/
-│  ├─ client/            Preact-Spielclient (Vite)
-│  ├─ server/            WebSocket-Server (Auth / Cloud / Chat / Leaderboard)
+│  ├─ client/            Preact-Spielclient (Vite 7)
+│  ├─ server/            WS-Server (Auth / Cloud / Chat / Freunde / Gilde / LB)
 │  ├─ desktop/           Tauri-2-Spielshell
 │  └─ launcher/          Siegel-Portal (Spieler-EXE)
 ├─ packages/
@@ -118,6 +120,8 @@ archiv-des-vergessens-2/
 ├─ tools/
 │  ├─ gates/             CI- / DoD-Gate (`npm run gate`)
 │  ├─ e2e/               Playwright-Smoke
+│  ├─ content/           Content-Import-Hilfen
+│  ├─ site-assets/       Studio-Site Asset-/Seiten-Pipeline
 │  ├─ migrate-v1-saves/  Spielstand-Migration v1 → v2
 │  ├─ migrate-v1-users/  Account-Migration v1 → v2
 │  └─ sign_release.mjs   Ed25519-Signatur portable ZIP
@@ -125,9 +129,10 @@ archiv-des-vergessens-2/
 │  ├─ nginx/             TLS + WSS Reverse-Proxy
 │  └─ caddy/             Alternative Proxy-Config
 ├─ site/                 Studio-Website (Cloudflare Pages)
+├─ functions/            Pages Function (www → apex 301)
 ├─ workers/
 │  └─ contact/           Kontaktformular → kontakt@grimoire-interactive.de
-├─ design/               Design-Referenzen / Szenen
+├─ design/               Design-Referenzen / Hub-Mocks / Szenen
 ├─ docs/                 Plan, ADRs, Legal, Checklisten
 ├─ .env.example
 ├─ wrangler.toml         Cloudflare Pages → ./site
@@ -154,7 +159,13 @@ npm run dev:client    # → http://localhost:5173
 npm run dev:server    # WS-Server auf Port 8080
 ```
 
-Client (inkl. GitHub-EXE) verbindet auf `wss://archiv.grimoire-interactive.de` (siehe `.env.example`, `VITE_WS_URL`; im Release-Workflow fest gebacken).
+Release- / GitHub-EXE verbinden fest auf `wss://archiv.grimoire-interactive.de` (`VITE_WS_URL` im Release-Workflow gebacken; Fallback `RELEASE_WS_URL` im Client).
+
+Lokal gegen den Dev-Server:
+
+```bash
+VITE_WS_URL=ws://localhost:8080 npm run dev:client
+```
 
 ### Desktop & Launcher
 
@@ -209,13 +220,14 @@ npm run clippy:launcher # Rust-Lint Launcher
 | **Öffentliche WSS-URL** | `wss://archiv.grimoire-interactive.de` |
 | **Server-Listen** | `PORT` (Default `8080`, hinter Proxy typisch `127.0.0.1`) |
 | **Build-Zeit** | `VITE_WS_URL` (siehe `.env.example`; in Releases fest gebacken) |
+| **Lokaler Dev** | `VITE_WS_URL=ws://localhost:8080` vor `npm run dev:client` |
 | **Upstream** | Node lauscht auf `127.0.0.1:8080`; Nginx/Caddy terminieren TLS auf 443 |
 | **Proxy-Vorlagen** | [`deploy/nginx/nginx.conf`](deploy/nginx/nginx.conf) · [`deploy/caddy/Caddyfile`](deploy/caddy/Caddyfile) |
-| **Server-Env** | `PORT`, `DATA_DIR`, `ALLOWED_ORIGINS`, `TRUST_PROXY=true` (hinter Proxy), `CLOUD_SAVE_VERSION` (Default `2.0.0`) |
+| **Server-Env** | `PORT`, `DATA_DIR`, `ALLOWED_ORIGINS` (inkl. Tauri `http(s)://tauri.localhost`), `TRUST_PROXY=true` (hinter Proxy), `CLOUD_SAVE_VERSION` (Default `2.0.0`) |
 | **Daten** | SQLite `database.db` unter `DATA_DIR` (Default `apps/server/data`) |
 | **HTTP-Banner** | `GET /` → Klartext „Multiplayer-Server läuft“ (kein separates Health-API) |
 
-Server-Module: **Auth**, **Cloud-Save**, **Chat**, **Leaderboard**.  
+Server-Module: **Auth**, **Cloud-Save**, **Chat**, **Freunde**, **Gilde**, **Leaderboard**.  
 NPC-Clan bleibt clientseitiges Idle-Gameplay. Freunde, Gilde und Chat laufen ausschließlich über WebSocket (registrierte Konten) — ohne Client-Simulation.
 
 Produktionsstart (Beispiel):
@@ -266,19 +278,23 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 
 | Thema | Detail |
 |---|---|
-| **App-ID** | `com.grimoire.archivdesvergessens2` |
+| **App-ID** | `com.grimoire.archivdesvergessens2` (Desktop) · `com.grimoire.archivdesvergessens2.launcher` |
 | **Spieler-EXE** | **`ArchivDesVergessens2-Launcher.exe`** — einziger Download für Spieler |
 | **Artifacts** | Launcher · `archiv-des-vergessens-2.zip` · `.sig` — **kein** NSIS / Windows-Setup |
-| **Installationspfad** | Standard `%APPDATA%\ArchivDesVergessens2\app\` (im Launcher wählbar) |
+| **Portable-Spiel** | ZIP enthält `ArchivDesVergessens2.exe` |
+| **Installationspfad** | Standard `%APPDATA%\ArchivDesVergessens2\app\` (im Launcher wählbar; v1-Pfade werden abgelehnt) |
+| **Deinstallation** | Launcher schreibt `Deinstallieren.cmd` ins Installationsverzeichnis (nur v2; v1 bleibt unberührt) |
 | **Updates** | Über den Launcher (GitHub Releases, Ed25519-Verify) — nicht über einen NSIS/`latest.json`-Setup-Pfad |
 | **Workflow** | [`.github/workflows/release.yml`](.github/workflows/release.yml) — Tag `v*` oder `workflow_dispatch` |
-| **CI** | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — Gate + Desktop + E2E |
+| **CI** | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — Gate + Desktop-Clippy + E2E |
 | **Signatur** | `tools/sign_release.mjs` + Secret `ED25519_PRIVATE_KEY` |
-| **Release-Draft** | Workflow veröffentlicht Releases als **Draft** — danach manuell publishen |
+| **Release-Status** | Workflow veröffentlicht Releases **sofort** (`draft: false`) — der Launcher braucht `/releases/latest` |
+| **Repo** | Muss **öffentlich** sein (Launcher ruft Releases ohne Token ab) |
 
 > **Cutover-Hinweis:** Cloud-Spielstände aus v1 werden serverseitig **nicht** automatisch übernommen.  
 > Accounts (Benutzername + PBKDF2-Passwort) können migriert werden — Spieler melden sich neu an.  
-> Spieler wechseln über den **v2-Launcher**. Lokale v1-Spielstände: Phase-9-Importer (unten).
+> Spieler wechseln über den **v2-Launcher**. Lokale v1-Spielstände: Phase-9-Importer (unten).  
+> v2 ist vollständig von v1 isoliert (AppData, Binary-Namen, Tauri-IDs).
 
 Account-Migration: [`tools/migrate-v1-users/`](tools/migrate-v1-users/)
 
@@ -290,6 +306,7 @@ Account-Migration: [`tools/migrate-v1-users/`](tools/migrate-v1-users/)
 |---|---|
 | **Site** | [`site/`](site/) — static HTML, Deploy per Cloudflare Pages (`wrangler.toml`) |
 | **Domain** | [https://grimoire-interactive.de/](https://grimoire-interactive.de/) |
+| **www → apex** | [`functions/_middleware.js`](functions/_middleware.js) — 301-Redirect |
 | **Kontakt-API** | [`workers/contact/`](workers/contact/) → `kontakt@grimoire-interactive.de` |
 | **Rechtliches (Docs)** | `grimoire.interactive@gmail.com` |
 
