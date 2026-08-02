@@ -39,7 +39,11 @@ export function Tip({
   return (
     <span class={classes}>
       {children}
-      <TipBubble title={title}>{text}</TipBubble>
+      {title !== undefined ? (
+        <TipBubble title={title}>{text}</TipBubble>
+      ) : (
+        <TipBubble>{text}</TipBubble>
+      )}
     </span>
   );
 }
