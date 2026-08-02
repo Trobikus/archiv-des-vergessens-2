@@ -130,7 +130,6 @@ function shell({
   rss,
 }) {
   const p = pagePrefix(depth);
-  const a = assetPrefix(depth);
   const robotsLine = robots ? `  <meta name="robots" content="${robots}" />\n` : "";
   const rssLine = rss
     ? `  <link rel="alternate" type="application/rss+xml" title="Grimoire Interactive Devlog" href="${p}feed.xml" />\n`

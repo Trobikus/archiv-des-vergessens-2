@@ -15,6 +15,8 @@ export default tsConfig(
       "apps/desktop/**",
       "apps/launcher/**",
       "tools/e2e/**",
+      /* Offline image/page tooling; deps installed locally via npm --prefix. */
+      "tools/site-assets/**",
     ],
   },
   js.configs.recommended,
