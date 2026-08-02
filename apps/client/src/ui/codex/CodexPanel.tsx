@@ -2,6 +2,7 @@ import { LORE_NODES } from "@adv/content";
 import { formatAmount } from "@adv/core";
 
 import type { GameSession } from "../../services/game-session";
+import { Tip } from "../Tip";
 import { useStore } from "../useStore";
 
 type Props = {
@@ -62,19 +63,23 @@ export function CodexPanel({ session }: Props) {
               {!decrypted ? (
                 <div class="game__actions">
                   {node.choices.map((choice) => (
-                    <button
+                    <Tip
                       key={choice.id}
-                      type="button"
-                      class="game__btn"
-                      data-testid={`lore-decrypt-${node.id}-${choice.id}`}
-                      disabled={!canDecrypt}
-                      title={`${formatAmount(node.cost)} Partikel`}
-                      onClick={() => {
-                        session.codex.decryptNode(node.id, choice.id);
-                      }}
+                      title={choice.title}
+                      text={`${session.i18n.translate("codex.decryptTip")} ${formatAmount(node.cost)} Partikel · Boss ${String(node.requiredBoss)}.`}
                     >
-                      {choice.title}
-                    </button>
+                      <button
+                        type="button"
+                        class="game__btn"
+                        data-testid={`lore-decrypt-${node.id}-${choice.id}`}
+                        disabled={!canDecrypt}
+                        onClick={() => {
+                          session.codex.decryptNode(node.id, choice.id);
+                        }}
+                      >
+                        {choice.title}
+                      </button>
+                    </Tip>
                   ))}
                 </div>
               ) : null}

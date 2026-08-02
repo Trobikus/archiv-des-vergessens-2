@@ -1,6 +1,7 @@
 import { formatAmount } from "@adv/core";
 
 import type { GameSession } from "../../services/game-session";
+import { Tip } from "../Tip";
 import { useStore } from "../useStore";
 
 type Props = {
@@ -22,7 +23,13 @@ export function AchievementPanel({ session }: Props) {
       <article class="hub-card hub-card--daily">
         <p class="hub-card__title">{session.i18n.translate("hub.daily")}</p>
         <p class="game__meta">
-          Streak: {String(streak)} · Particles:{" "}
+          <Tip
+            title="Streak"
+            text={session.i18n.translate("achievements.streakTip")}
+          >
+            Streak: {String(streak)}
+          </Tip>
+          {" · Particles: "}
           {formatAmount(state.resources.particles)}
         </p>
         <button

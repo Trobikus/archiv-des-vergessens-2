@@ -1,11 +1,19 @@
+import type { I18nKey } from "@adv/content";
 import { useState } from "preact/hooks";
 
 import type { GameSession } from "../../services/game-session";
 import { FloatingDamageOverlay } from "../combat/FloatingDamageOverlay";
-import { useStore } from "../useStore";
-import { StoryFightsIntro } from "./StoryFightsIntro";
-import { StoryBranchPanel } from "./StoryBranchPanel";
 import { DialogPanel } from "../dialog/DialogPanel";
+import { Tip } from "../Tip";
+import { useStore } from "../useStore";
+import { StoryBranchPanel } from "./StoryBranchPanel";
+import { StoryFightsIntro } from "./StoryFightsIntro";
+
+const SPELL_TIP_KEY: Record<"spear" | "shield" | "heal", I18nKey> = {
+  spear: "combat.spellTip.spear",
+  shield: "combat.spellTip.shield",
+  heal: "combat.spellTip.heal",
+};
 
 type Props = {
   readonly session: GameSession;
@@ -172,21 +180,26 @@ export function StoryPanel({ session }: Props) {
           </div>
           <div class="game__actions">
             {battle.spells.map((spell) => (
-              <button
+              <Tip
                 key={spell.id}
-                type="button"
-                class="game__btn"
-                data-testid={`spell-${spell.id}`}
-                disabled={spell.cooldown > 0}
-                onClick={() => {
-                  session.story.castSpell(spell.id);
-                }}
+                title={spell.name}
+                text={session.i18n.translate(SPELL_TIP_KEY[spell.id])}
               >
-                {spell.name}
-                {spell.cooldown > 0
-                  ? ` (${String(Math.ceil(spell.cooldown / 1000))}s)`
-                  : ""}
-              </button>
+                <button
+                  type="button"
+                  class="game__btn"
+                  data-testid={`spell-${spell.id}`}
+                  disabled={spell.cooldown > 0}
+                  onClick={() => {
+                    session.story.castSpell(spell.id);
+                  }}
+                >
+                  {spell.name}
+                  {spell.cooldown > 0
+                    ? ` (${String(Math.ceil(spell.cooldown / 1000))}s)`
+                    : ""}
+                </button>
+              </Tip>
             ))}
           </div>
           <ul class="panel__list battle__log" data-testid="combat-log">

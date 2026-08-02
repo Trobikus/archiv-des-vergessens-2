@@ -1,6 +1,7 @@
 import { TALENT_NODES } from "@adv/content";
 
 import type { GameSession } from "../../services/game-session";
+import { Tip } from "../Tip";
 import { useStore } from "../useStore";
 
 type Props = {
@@ -16,7 +17,10 @@ export function SkillTreePanel({ session }: Props) {
     <section class="hub-panel" data-testid="skilltree-panel">
       <h2 class="game__heading">{session.i18n.translate("hub.skilltree")}</h2>
       <p class="game__meta">
-        Points: {String(state.talents.points)} · Nodes:{" "}
+        <Tip text={session.i18n.translate("skilltree.pointsTip")}>
+          Points: {String(state.talents.points)}
+        </Tip>
+        {" · Nodes: "}
         {String(allocated.size)}
       </p>
 
@@ -73,15 +77,17 @@ export function SkillTreePanel({ session }: Props) {
         })}
       </div>
 
-      <button
-        type="button"
-        class="game__btn game__btn--ghost"
-        onClick={() => {
-          session.talents.resetTalents();
-        }}
-      >
-        Reset tree
-      </button>
+      <Tip text={session.i18n.translate("skilltree.resetTip")}>
+        <button
+          type="button"
+          class="game__btn game__btn--ghost"
+          onClick={() => {
+            session.talents.resetTalents();
+          }}
+        >
+          Reset tree
+        </button>
+      </Tip>
     </section>
   );
 }

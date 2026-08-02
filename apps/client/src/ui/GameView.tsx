@@ -21,6 +21,7 @@ import { QuestPanel } from "./quest/QuestPanel";
 import { RelicHuntPanel } from "./relic-hunt/RelicHuntPanel";
 import { SkillTreePanel } from "./skilltree/SkillTreePanel";
 import { StoryPanel } from "./story/StoryPanel";
+import { Tip, TipBubble } from "./Tip";
 import { useStore } from "./useStore";
 import { VaultPanel } from "./vault/VaultPanel";
 
@@ -123,18 +124,26 @@ export function GameView({ session }: Props) {
         </nav>
 
         <div class="game__topbar-resources" aria-label="Resources">
-          <span class="game__resource">
-            <span class="game__resource-label">Partikel</span>
+          <Tip
+            className="game__resource"
+            title={t("resource.particles")}
+            text={t("resource.tip.particles")}
+          >
+            <span class="game__resource-label">{t("resource.particles")}</span>
             <span class="game__resource-value">
               {formatAmount(state.resources.particles)}
             </span>
-          </span>
-          <span class="game__resource">
-            <span class="game__resource-label">Mneme</span>
+          </Tip>
+          <Tip
+            className="game__resource"
+            title={t("resource.mneme")}
+            text={t("resource.tip.mneme")}
+          >
+            <span class="game__resource-label">{t("resource.mneme")}</span>
             <span class="game__resource-value">
               {formatAmount(state.resources.mnemeFragmente)}
             </span>
-          </span>
+          </Tip>
           <span class="game__resource game__resource--level">
             <span class="game__resource-label">{t("hero.level")}</span>
             <span class="game__resource-value">{String(state.hero.level)}</span>
@@ -146,28 +155,51 @@ export function GameView({ session }: Props) {
         <nav class="game__subtabs" aria-label={t("hub.hero")}>
           {(
             [
-              ["stats", "hero.stats", "hero-subtab-stats"],
-              ["inventory", "hero.inventory", "hero-subtab-inventory"],
-              ["equipment", "hero.equipment", "hero-subtab-equipment"],
-              ["skilltree", "hub.skilltree", "tab-skilltree"],
-              ["vault", "hub.vault", "tab-vault"],
+              ["stats", "hero.stats", "hero-subtab-stats", null],
+              ["inventory", "hero.inventory", "hero-subtab-inventory", null],
+              ["equipment", "hero.equipment", "hero-subtab-equipment", null],
+              [
+                "skilltree",
+                "hub.skilltree",
+                "tab-skilltree",
+                "skilltree.pointsTip",
+              ],
+              ["vault", "hub.vault", "tab-vault", "hub.vaultDesc"],
             ] as const
-          ).map(([id, key, testId]) => (
-            <button
-              key={id}
-              type="button"
-              class={
-                heroNav === id ? "game__subtab is-active" : "game__subtab"
-              }
-              data-testid={testId}
-              aria-current={heroNav === id ? "page" : undefined}
-              onClick={() => {
-                setHeroNav(id);
-              }}
-            >
-              {t(key)}
-            </button>
-          ))}
+          ).map(([id, key, testId, tipKey]) =>
+            tipKey === null ? (
+              <button
+                key={id}
+                type="button"
+                class={
+                  heroNav === id ? "game__subtab is-active" : "game__subtab"
+                }
+                data-testid={testId}
+                aria-current={heroNav === id ? "page" : undefined}
+                onClick={() => {
+                  setHeroNav(id);
+                }}
+              >
+                {t(key)}
+              </button>
+            ) : (
+              <Tip key={id} className="game__subtab-tip" text={t(tipKey)}>
+                <button
+                  type="button"
+                  class={
+                    heroNav === id ? "game__subtab is-active" : "game__subtab"
+                  }
+                  data-testid={testId}
+                  aria-current={heroNav === id ? "page" : undefined}
+                  onClick={() => {
+                    setHeroNav(id);
+                  }}
+                >
+                  {t(key)}
+                </button>
+              </Tip>
+            ),
+          )}
         </nav>
       ) : null}
 
@@ -175,26 +207,49 @@ export function GameView({ session }: Props) {
         <nav class="game__subtabs" aria-label={t("hub.story")}>
           {(
             [
-              ["fights", "hub.battles", "tab-story-fights"],
-              ["challenges", "hub.challenges", "tab-challenges"],
-              ["analytics", "hub.analytics", "tab-analytics"],
+              ["fights", "hub.battles", "tab-story-fights", null],
+              [
+                "challenges",
+                "hub.challenges",
+                "tab-challenges",
+                "hub.challengesDesc",
+              ],
+              ["analytics", "hub.analytics", "tab-analytics", "hub.analyticsDesc"],
             ] as const
-          ).map(([id, key, testId]) => (
-            <button
-              key={id}
-              type="button"
-              class={
-                storyNav === id ? "game__subtab is-active" : "game__subtab"
-              }
-              data-testid={testId}
-              aria-current={storyNav === id ? "page" : undefined}
-              onClick={() => {
-                setStoryNav(id);
-              }}
-            >
-              {t(key)}
-            </button>
-          ))}
+          ).map(([id, key, testId, tipKey]) =>
+            tipKey === null ? (
+              <button
+                key={id}
+                type="button"
+                class={
+                  storyNav === id ? "game__subtab is-active" : "game__subtab"
+                }
+                data-testid={testId}
+                aria-current={storyNav === id ? "page" : undefined}
+                onClick={() => {
+                  setStoryNav(id);
+                }}
+              >
+                {t(key)}
+              </button>
+            ) : (
+              <Tip key={id} className="game__subtab-tip" text={t(tipKey)}>
+                <button
+                  type="button"
+                  class={
+                    storyNav === id ? "game__subtab is-active" : "game__subtab"
+                  }
+                  data-testid={testId}
+                  aria-current={storyNav === id ? "page" : undefined}
+                  onClick={() => {
+                    setStoryNav(id);
+                  }}
+                >
+                  {t(key)}
+                </button>
+              </Tip>
+            ),
+          )}
         </nav>
       ) : null}
 
@@ -419,20 +474,32 @@ export function GameView({ session }: Props) {
                 <p class="game__focus-panel__flavor">
                   Alpha — Mneme sammelt sich, sobald das Archiv steht.
                 </p>
-                <p class="game__stat" data-testid="mneme">
-                  {formatAmount(state.resources.mnemeFragmente)}
-                  <span class="game__unit"> Mneme</span>
-                </p>
+                <Tip
+                  className="game__stat-tip"
+                  title={t("resource.mneme")}
+                  text={t("resource.tip.mneme")}
+                >
+                  <p class="game__stat" data-testid="mneme">
+                    {formatAmount(state.resources.mnemeFragmente)}
+                    <span class="game__unit"> {t("resource.mneme")}</span>
+                  </p>
+                </Tip>
                 <dl class="game__focus-panel__stats">
-                  <div>
+                  <div class="tip tip--below">
                     <dt>Idle-Stufe</dt>
                     <dd>
                       {String(state.idleGenerators.gedankenArchiv.level)}
                     </dd>
+                    <TipBubble title="Idle-Stufe">
+                      {t("archiv.idleLevelTip")}
+                    </TipBubble>
                   </div>
-                  <div>
+                  <div class="tip tip--below">
                     <dt>Yield / s</dt>
                     <dd>{formatAmount(yieldPerSec)}</dd>
+                    <TipBubble title="Yield / s">
+                      {t("archiv.yieldTip")}
+                    </TipBubble>
                   </div>
                 </dl>
                 <div class="game__actions game__actions--stack">
@@ -470,7 +537,13 @@ export function GameView({ session }: Props) {
 
             <aside class="game__rail game__rail--right" aria-label="Status">
               <section class="game__status-card">
-                <h3 class="game__status-card__title">Klickkraft</h3>
+                <Tip
+                  className="game__status-card__tip"
+                  title="Klickkraft"
+                  text={t("archiv.clickPowerTip")}
+                >
+                  <h3 class="game__status-card__title">Klickkraft</h3>
+                </Tip>
                 <p class="game__status-card__value">
                   Stufe {String(state.gather.clickPowerLevel)}
                 </p>
@@ -498,7 +571,15 @@ export function GameView({ session }: Props) {
               </section>
 
               <section class="game__status-card">
-                <h3 class="game__status-card__title">Partikel</h3>
+                <Tip
+                  className="game__status-card__tip"
+                  title={t("resource.particles")}
+                  text={t("resource.tip.particles")}
+                >
+                  <h3 class="game__status-card__title">
+                    {t("resource.particles")}
+                  </h3>
+                </Tip>
                 <p class="game__status-card__value" data-testid="particles">
                   {formatAmount(state.resources.particles)}
                 </p>

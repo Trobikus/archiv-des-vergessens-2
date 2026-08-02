@@ -3,6 +3,7 @@ import type { StatKey } from "@adv/sim";
 
 import type { GameSession } from "../../services/game-session";
 import type { EquipmentState, InventoryItem } from "../../state/game-state";
+import { TipBubble } from "../Tip";
 import { useStore } from "../useStore";
 
 export type HeroSubTab = "stats" | "inventory" | "equipment";
@@ -249,10 +250,15 @@ export function HeroPanel({ session, subTab }: Props) {
           <ul class="hero__item-list">
             {EQUIPMENT_SLOTS.map((slot) => {
               const item = hero.equipment[slot];
+              const emptyRing2Tip = slot === "ring2" && item === null;
               return (
                 <li
                   key={slot}
-                  class={item === null ? "hero__item" : "hero__item tip"}
+                  class={
+                    item !== null || emptyRing2Tip
+                      ? "hero__item tip"
+                      : "hero__item"
+                  }
                   data-testid={`equip-slot-${slot}`}
                 >
                   <div class="hero__item-main">
@@ -279,6 +285,11 @@ export function HeroPanel({ session, subTab }: Props) {
                       </button>
                       <ItemTooltip item={item} t={t} />
                     </>
+                  ) : null}
+                  {emptyRing2Tip ? (
+                    <TipBubble title={t("hero.slot.ring2")}>
+                      {t("hero.slotTip.ring2")}
+                    </TipBubble>
                   ) : null}
                 </li>
               );
