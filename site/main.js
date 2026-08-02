@@ -12,6 +12,68 @@
   var legacyYear = document.getElementById("year");
   if (legacyYear) legacyYear.textContent = String(new Date().getFullYear());
 
+  /* Latest GitHub release tag → [data-release-version] (fallback: HTML text). */
+  (function hydrateReleaseVersion() {
+    var nodes = document.querySelectorAll("[data-release-version]");
+    if (!nodes.length) return;
+
+    var api =
+      "https://api.github.com/repos/Trobikus/archiv-des-vergessens-2/releases/latest";
+    var cacheKey = "gi_latest_release_tag";
+    var cacheMs = 60 * 60 * 1000;
+
+    var apply = function (tag) {
+      if (!tag) return;
+      var label = String(tag).replace(/^v/i, "");
+      if (!label) return;
+      nodes.forEach(function (el) {
+        el.textContent = label;
+      });
+    };
+
+    try {
+      var cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        var parsed = JSON.parse(cached);
+        if (
+          parsed &&
+          parsed.tag &&
+          typeof parsed.at === "number" &&
+          Date.now() - parsed.at < cacheMs
+        ) {
+          apply(parsed.tag);
+          return;
+        }
+      }
+    } catch (_e) {
+      /* ignore storage errors */
+    }
+
+    fetch(api, {
+      headers: { Accept: "application/vnd.github+json" },
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("release " + res.status);
+        return res.json();
+      })
+      .then(function (body) {
+        var tag = body && body.tag_name;
+        if (!tag) return;
+        apply(tag);
+        try {
+          sessionStorage.setItem(
+            cacheKey,
+            JSON.stringify({ tag: tag, at: Date.now() })
+          );
+        } catch (_e2) {
+          /* ignore */
+        }
+      })
+      .catch(function () {
+        /* keep static fallback text */
+      });
+  })();
+
   var siteNav = document.querySelector("[data-site-nav]") || document.querySelector(".site-nav");
   if (siteNav && "IntersectionObserver" in window === false) {
     /* no-op fallback */
