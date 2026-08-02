@@ -34,23 +34,37 @@
     --border-radius-md: 2px;
     --border-radius-sm: 0px;
 
-    /* Shell panel chrome (Archiv rails + hub overlays) */
+    /* Shell panel chrome (Archiv rails + hub overlays — mock HUD) */
     --shell-glass-bg: linear-gradient(
-      155deg,
-      rgba(12, 12, 18, 0.78) 0%,
-      rgba(6, 6, 10, 0.58) 100%
+      165deg,
+      rgba(10, 10, 14, 0.88) 0%,
+      rgba(6, 6, 9, 0.78) 48%,
+      rgba(4, 4, 7, 0.72) 100%
     );
     --shell-glass-bg-soft: linear-gradient(
-      155deg,
-      rgba(12, 12, 18, 0.62) 0%,
-      rgba(6, 6, 10, 0.42) 100%
+      165deg,
+      rgba(12, 12, 16, 0.72) 0%,
+      rgba(6, 6, 10, 0.52) 100%
     );
-    --shell-glass-border: 1px solid rgba(197, 160, 89, 0.32);
-    --shell-glass-border-soft: 1px solid rgba(197, 160, 89, 0.22);
+    --shell-glass-border: 1px solid rgba(197, 160, 89, 0.48);
+    --shell-glass-border-soft: 1px solid rgba(197, 160, 89, 0.28);
+    --shell-glass-inner: inset 0 0 0 1px rgba(197, 160, 89, 0.16);
     --shell-glass-shadow:
-      0 14px 36px rgba(0, 0, 0, 0.72),
-      inset 0 0 22px rgba(0, 0, 0, 0.55);
-    --shell-glass-blur: blur(10px);
+      0 16px 42px rgba(0, 0, 0, 0.78),
+      var(--shell-glass-inner),
+      inset 0 0 28px rgba(0, 0, 0, 0.58);
+    --shell-glass-blur: blur(12px);
+    --shell-corner-size: 0.92rem;
+    --shell-corner-stroke: 1.5px;
+    --shell-gold-line: rgba(197, 160, 89, 0.55);
+    --shell-gold-bright: rgba(235, 213, 118, 0.92);
+    --shell-rail-track: rgba(197, 160, 89, 0.22);
+    --shell-rail-fill: linear-gradient(
+      90deg,
+      rgba(139, 110, 46, 0.55) 0%,
+      rgba(197, 160, 89, 0.95) 55%,
+      rgba(240, 223, 154, 1) 100%
+    );
 
     /* Fonts */
     --font-body: 'Inter', sans-serif;

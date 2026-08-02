@@ -212,6 +212,30 @@ export function GameView({ session }: Props) {
     state.resources.particles >= BigInt(clickUpgradeCost);
   const canBuyArchiv =
     archivCost > 0 && state.resources.particles >= BigInt(archivCost);
+  const archivProgressPct =
+    archivCost > 0
+      ? Math.min(
+          100,
+          Math.floor(
+            Number(
+              (state.resources.particles * 100n) /
+                BigInt(Math.max(1, archivCost)),
+            ),
+          ),
+        )
+      : 0;
+  const gatherUpgradeProgressPct =
+    clickUpgradeCost > 0
+      ? Math.min(
+          100,
+          Math.floor(
+            Number(
+              (state.resources.particles * 100n) /
+                BigInt(Math.max(1, clickUpgradeCost)),
+            ),
+          ),
+        )
+      : 0;
   const offline = state.meta.offlineReport;
   const sceneId = SCENE_BY_CATEGORY[category];
 
@@ -613,8 +637,11 @@ export function GameView({ session }: Props) {
         {category === "archiv" ? (
           <div class="game__archiv" key="stage-archiv" data-testid="archiv-layout">
             <aside class="game__rail game__rail--left" aria-label="GedankenArchiv">
-              <section class="game__focus-panel">
-                <h2 class="game__focus-panel__title">GedankenArchiv</h2>
+              <section class="game__focus-panel shell-frame">
+                <span class="shell-frame__corners" aria-hidden="true" />
+                <h2 class="game__focus-panel__title shell-heading">
+                  GedankenArchiv
+                </h2>
                 <p class="game__focus-panel__flavor">
                   Alpha — Mneme sammelt sich, sobald das Archiv steht.
                 </p>
@@ -622,6 +649,17 @@ export function GameView({ session }: Props) {
                   {formatAmount(state.resources.mnemeFragmente)}
                   <span class="game__unit"> Mneme</span>
                 </p>
+                <div
+                  class="shell-progress-rail"
+                  aria-hidden="true"
+                  style={{
+                    "--shell-progress": `${String(archivProgressPct)}%`,
+                  }}
+                >
+                  <span class="shell-progress-rail__track" />
+                  <span class="shell-progress-rail__fill" />
+                  <span class="shell-progress-rail__diamond" />
+                </div>
                 <dl class="game__focus-panel__stats">
                   <div>
                     <dt>Idle-Stufe</dt>
@@ -637,7 +675,7 @@ export function GameView({ session }: Props) {
                 <div class="game__actions game__actions--stack">
                   <button
                     type="button"
-                    class="game__btn game__btn--primary"
+                    class="game__btn game__btn--primary game__btn--framed"
                     data-testid="archiv-buy"
                     disabled={!canBuyArchiv}
                     title={
@@ -653,7 +691,7 @@ export function GameView({ session }: Props) {
                   </button>
                   <button
                     type="button"
-                    class="game__btn game__btn--primary"
+                    class="game__btn game__btn--primary game__btn--framed"
                     data-testid="gather-click"
                     onClick={() => {
                       session.gather.gather();
@@ -663,73 +701,109 @@ export function GameView({ session }: Props) {
                   </button>
                 </div>
               </section>
+
+              <section class="game__status-card shell-frame">
+                <span class="shell-frame__corners" aria-hidden="true" />
+                <h3 class="game__status-card__title shell-heading">Partikel</h3>
+                <ul class="game__resource-rows">
+                  <li>
+                    <span class="game__resource-rows__label">Partikel</span>
+                    <span
+                      class="game__resource-rows__value"
+                      data-testid="particles"
+                    >
+                      {formatAmount(state.resources.particles)}
+                    </span>
+                  </li>
+                  <li>
+                    <span class="game__resource-rows__label">Mneme</span>
+                    <span class="game__resource-rows__value">
+                      {formatAmount(state.resources.mnemeFragmente)}
+                    </span>
+                  </li>
+                </ul>
+              </section>
             </aside>
 
             <div class="game__archiv-center" aria-hidden="true" />
 
             <aside class="game__rail game__rail--right" aria-label="Status">
-              <section class="game__status-card">
-                <h3 class="game__status-card__title">Klickkraft</h3>
-                <p class="game__status-card__value">
-                  Stufe {String(state.gather.clickPowerLevel)}
-                </p>
-                <p class="game__meta">
-                  +{formatAmount(clickGain)} / Klick
-                </p>
-                <div class="game__actions">
-                  <button
-                    type="button"
-                    class="game__btn"
-                    data-testid="gather-upgrade"
-                    disabled={!canUpgradeGather}
-                    title={
-                      canUpgradeGather
-                        ? undefined
-                        : `Benötigt ${formatAmount(clickUpgradeCost)} Partikel`
-                    }
-                    onClick={() => {
-                      session.gather.upgradeClickPower();
+              <section class="game__rail-panel shell-frame">
+                <span class="shell-frame__corners" aria-hidden="true" />
+
+                <div class="game__rail-section">
+                  <h3 class="game__status-card__title shell-heading">
+                    Klickkraft
+                  </h3>
+                  <p class="game__status-card__value">
+                    Stufe {String(state.gather.clickPowerLevel)}
+                  </p>
+                  <p class="game__meta">
+                    +{formatAmount(clickGain)} / Klick
+                  </p>
+                  <div
+                    class="shell-progress-rail"
+                    aria-hidden="true"
+                    style={{
+                      "--shell-progress": `${String(gatherUpgradeProgressPct)}%`,
                     }}
                   >
-                    Upgrade ({formatAmount(clickUpgradeCost)})
-                  </button>
+                    <span class="shell-progress-rail__track" />
+                    <span class="shell-progress-rail__fill" />
+                    <span class="shell-progress-rail__diamond" />
+                  </div>
+                  <div class="game__actions">
+                    <button
+                      type="button"
+                      class="game__btn game__btn--framed"
+                      data-testid="gather-upgrade"
+                      disabled={!canUpgradeGather}
+                      title={
+                        canUpgradeGather
+                          ? undefined
+                          : `Benötigt ${formatAmount(clickUpgradeCost)} Partikel`
+                      }
+                      onClick={() => {
+                        session.gather.upgradeClickPower();
+                      }}
+                    >
+                      Upgrade ({formatAmount(clickUpgradeCost)})
+                    </button>
+                  </div>
                 </div>
-              </section>
 
-              <section class="game__status-card">
-                <h3 class="game__status-card__title">Partikel</h3>
-                <p class="game__status-card__value" data-testid="particles">
-                  {formatAmount(state.resources.particles)}
-                </p>
-              </section>
+                <div class="game__rail-section">
+                  <h3 class="game__status-card__title shell-heading">
+                    Idle-Status
+                  </h3>
+                  <p class="game__meta">
+                    {state.idleGenerators.gedankenArchiv.level === 0
+                      ? "Wartet auf ersten Ausbau"
+                      : `Läuft · ${formatAmount(yieldPerSec)} Mneme / s`}
+                  </p>
+                </div>
 
-              <section class="game__status-card">
-                <h3 class="game__status-card__title">Idle-Status</h3>
-                <p class="game__meta">
-                  {state.idleGenerators.gedankenArchiv.level === 0
-                    ? "Wartet auf ersten Ausbau"
-                    : `Läuft · ${formatAmount(yieldPerSec)} Mneme / s`}
-                </p>
-              </section>
-
-              <section class="game__status-card">
-                <h3 class="game__status-card__title">Save-Status</h3>
-                <p class="game__save" data-testid="save-status">
-                  {state.meta.lastSavedAt === null
-                    ? "Noch nicht gespeichert"
-                    : `Gespeichert ${new Date(state.meta.lastSavedAt).toLocaleTimeString()}`}
-                </p>
-                <div class="game__actions">
-                  <button
-                    type="button"
-                    class="game__btn"
-                    data-testid="manual-save"
-                    onClick={() => {
-                      void session.saveNow();
-                    }}
-                  >
-                    {t("common.save")}
-                  </button>
+                <div class="game__rail-section">
+                  <h3 class="game__status-card__title shell-heading">
+                    Save-Status
+                  </h3>
+                  <p class="game__save" data-testid="save-status">
+                    {state.meta.lastSavedAt === null
+                      ? "Noch nicht gespeichert"
+                      : `Gespeichert ${new Date(state.meta.lastSavedAt).toLocaleTimeString()}`}
+                  </p>
+                  <div class="game__actions">
+                    <button
+                      type="button"
+                      class="game__btn game__btn--framed"
+                      data-testid="manual-save"
+                      onClick={() => {
+                        void session.saveNow();
+                      }}
+                    >
+                      {t("common.save")}
+                    </button>
+                  </div>
                 </div>
               </section>
             </aside>
@@ -738,6 +812,10 @@ export function GameView({ session }: Props) {
       </div>
 
       <footer class="game__hotkeys" aria-label={t("pause.title")}>
+        <span class="game__hotkeys-rule" aria-hidden="true">
+          <span class="game__hotkeys-rule__line" />
+          <span class="game__hotkeys-rule__diamond" />
+        </span>
         <span class="game__hotkey">
           <kbd>Esc</kbd>
           <span>{t("pause.escHint")}</span>
