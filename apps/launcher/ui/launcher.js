@@ -18,19 +18,6 @@ function isLegacyV1Install(ver) {
   return major >= 1;
 }
 
-function isNewerVersion(currentVer, latestVer) {
-  if (!currentVer) return true;
-  const current = parseVersion(currentVer);
-  const latest = parseVersion(latestVer);
-  const len = Math.max(current.length, latest.length);
-  for (let i = 0; i < len; i += 1) {
-    const c = current[i] || 0;
-    const l = latest[i] || 0;
-    if (l > c) return true;
-    if (l < c) return false;
-  }
-  return false;
-}
 
 /** True when the bound install should be replaced by the GitHub latest release. */
 function needsUpdate(currentVer, latestVer) {

@@ -45,7 +45,7 @@
           return;
         }
       }
-    } catch (_e) {
+    } catch {
       /* ignore storage errors */
     }
 
@@ -65,7 +65,7 @@
             cacheKey,
             JSON.stringify({ tag: tag, at: Date.now() })
           );
-        } catch (_e2) {
+        } catch {
           /* ignore */
         }
       })
