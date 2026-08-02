@@ -11,12 +11,12 @@ type Props = {
   readonly session: GameSession;
 };
 
-const ROLE_LABELS: Record<ClanRole, string> = {
-  collector: "Sammler",
-  weaver: "Weber",
-  guardian: "Wächter",
-  archivist: "Archivar",
-  elder: "Ältester",
+const ROLE_LABEL_KEY: Record<ClanRole, I18nKey> = {
+  collector: "clan.role.collector",
+  weaver: "clan.role.weaver",
+  guardian: "clan.role.guardian",
+  archivist: "clan.role.archivist",
+  elder: "clan.role.elder",
 };
 
 const ROLE_TIP_KEY: Record<ClanRole, I18nKey> = {
@@ -73,10 +73,10 @@ export function ClanPanel({ session }: Props) {
                 </button>
                 <p class="game__meta">
                   <Tip
-                    title={ROLE_LABELS[member.role]}
+                    title={t(ROLE_LABEL_KEY[member.role])}
                     text={t(ROLE_TIP_KEY[member.role])}
                   >
-                    {ROLE_LABELS[member.role]}
+                    {t(ROLE_LABEL_KEY[member.role])}
                   </Tip>
                   {" · Lv "}
                   {String(member.level)} · {String(Math.floor(member.progress))}
@@ -106,7 +106,7 @@ export function ClanPanel({ session }: Props) {
         <article class="hub-card" data-testid="clan-expedition">
           <p class="hub-card__title">{selected.name}</p>
           <p class="game__meta">
-            {ROLE_LABELS[selected.role]} · Stufe {String(selected.level)}
+            {t(ROLE_LABEL_KEY[selected.role])} · Stufe {String(selected.level)}
           </p>
           <button
             type="button"
@@ -129,9 +129,9 @@ export function ClanPanel({ session }: Props) {
             const cost = session.clan.getRecruitCost(role);
             return (
               <li key={role} class="hub-card hub-card--compact tip tip--below">
-                <p class="hub-card__title">{ROLE_LABELS[role]}</p>
+                <p class="hub-card__title">{t(ROLE_LABEL_KEY[role])}</p>
                 <p class="game__meta">{formatAmount(cost)} Partikel</p>
-                <TipBubble title={ROLE_LABELS[role]}>
+                <TipBubble title={t(ROLE_LABEL_KEY[role])}>
                   {t(ROLE_TIP_KEY[role])}
                 </TipBubble>
                 <button
