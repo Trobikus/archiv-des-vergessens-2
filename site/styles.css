@@ -974,14 +974,23 @@ a:focus-visible,
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gold);
+  text-decoration: none;
   transition: color 0.25s var(--ease);
 }
+.featured__cta:hover { color: var(--gold-hi); }
+a.cover-frame {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
 
-/* Vertical game cover — compact on homepage */
+/* Vertical game cover — fixed width so grid auto-column cannot collapse */
 .cover-frame {
   position: relative;
   justify-self: center;
-  width: min(100%, 168px);
+  width: 168px;
+  max-width: 100%;
+  flex-shrink: 0;
   aspect-ratio: 3 / 4;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -1015,7 +1024,7 @@ a:focus-visible,
   background: linear-gradient(180deg, rgba(233,226,208,0.06), transparent 28%, transparent 72%, rgba(5,5,7,0.28));
 }
 @media (max-width: 859px) {
-  .cover-frame { width: min(100%, 148px); }
+  .cover-frame { width: 148px; max-width: 100%; }
 }
 
 /* ---- legal pages ------------------------------------------------------- */
@@ -1727,7 +1736,8 @@ a:focus-visible,
   .featured .lede { max-width: none; }
   .featured__cta { margin-top: 1.05rem; }
   .cover-frame {
-    width: min(100%, 158px);
+    width: 158px;
+    max-width: 100%;
     justify-self: center;
   }
   .hero__line { margin-bottom: 1.85rem; }

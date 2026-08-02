@@ -27,7 +27,7 @@
 
   <link rel="preload" href="assets/fonts/cinzel-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="assets/fonts/source-serif-4-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=20260802k" />
+  <link rel="stylesheet" href="styles.css?v=20260802n" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -188,7 +188,7 @@
 
     <section class="section featured" aria-labelledby="featured-title">
       <div class="wrap">
-        <a class="featured-link" href="spiele/archiv-des-vergessens.html" data-rise>
+        <div class="featured-link" data-rise>
           <div>
             <p class="featured__meta">Aktueller Titel · <span data-release-version>Frühe Alpha</span></p>
             <h2 id="featured-title">Archiv des Vergessens</h2>
@@ -197,9 +197,9 @@
               unfertig, im Wandel, ohne Marketing-Nebelschwade. Fortschritt im
               <a href="devlog.html">Devlog</a>, Richtung in der <a href="roadmap.html">Roadmap</a>.
             </p>
-            <span class="featured__cta">Zur Alpha <span class="arrow" aria-hidden="true">→</span></span>
+            <a class="featured__cta" href="spiele/archiv-des-vergessens.html">Zur Alpha <span class="arrow" aria-hidden="true">→</span></a>
           </div>
-          <div class="cover-frame">
+          <a class="cover-frame" href="spiele/archiv-des-vergessens.html" aria-label="Archiv des Vergessens — zur Alpha">
             <picture>
               <source srcset="assets/derived/archiv-cover.webp" type="image/webp" />
               <img
@@ -211,8 +211,8 @@
                 decoding="async"
               />
             </picture>
-          </div>
-        </a>
+          </a>
+        </div>
       </div>
     </section>
   </main>
