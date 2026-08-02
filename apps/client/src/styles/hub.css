@@ -125,6 +125,25 @@
   text-align: center;
 }
 
+.hub-skill-node.tip:hover,
+.hub-skill-node.tip:focus-within {
+  z-index: 5;
+}
+
+.hub-skill-node.tip.tip--below > .tip__bubble {
+  left: 50%;
+  right: auto;
+  width: max-content;
+  max-width: min(16rem, 70vw);
+  text-align: left;
+  transform: translate(-50%, -0.2rem);
+}
+
+.hub-skill-node.tip.tip--below:hover > .tip__bubble,
+.hub-skill-node.tip.tip--below:focus-within > .tip__bubble {
+  transform: translate(-50%, 0);
+}
+
 .hub-skill-node.is-allocated {
   border-color: rgba(197, 160, 89, 0.55);
   box-shadow: 0 0 12px rgba(197, 160, 89, 0.15);

@@ -30,15 +30,19 @@ export function SkillTreePanel({ session }: Props) {
               key={node.id}
               class={
                 isAllocated
-                  ? "hub-skill-node is-allocated"
+                  ? "hub-skill-node tip tip--below is-allocated"
                   : canAllocate
-                    ? "hub-skill-node is-available"
-                    : "hub-skill-node"
+                    ? "hub-skill-node tip tip--below is-available"
+                    : "hub-skill-node tip tip--below"
               }
             >
               <p class="hub-skill-node__icon">{node.icon}</p>
               <p class="hub-skill-node__name">{node.name}</p>
               <p class="game__meta">Cost {String(node.cost)}</p>
+              <span class="tip__bubble" role="tooltip">
+                <strong class="tip__title">{node.name}</strong>
+                <span>{node.description}</span>
+              </span>
               {isAllocated ? (
                 <button
                   type="button"
