@@ -24,10 +24,10 @@ export function AchievementPanel({ session }: Props) {
         <p class="hub-card__title">{session.i18n.translate("hub.daily")}</p>
         <p class="game__meta">
           <Tip
-            title="Streak"
+            title={session.i18n.translate("achievements.streak")}
             text={session.i18n.translate("achievements.streakTip")}
           >
-            Streak: {String(streak)}
+            {session.i18n.translate("achievements.streak")}: {String(streak)}
           </Tip>
           {" · Particles: "}
           {formatAmount(state.resources.particles)}

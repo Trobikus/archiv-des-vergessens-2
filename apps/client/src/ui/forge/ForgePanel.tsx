@@ -55,8 +55,8 @@ export function ForgePanel({ session }: Props) {
       {state.hero.inventory.equipment.length > 0 ? (
         <>
           <h3 class="panel__sub tip tip--below">
-            Salvage (common)
-            <TipBubble title="Salvage">{t("forge.salvageTip")}</TipBubble>
+            {t("forge.salvage")}
+            <TipBubble title={t("forge.salvage")}>{t("forge.salvageTip")}</TipBubble>
           </h3>
           <ul class="hub-list">
             {state.hero.inventory.equipment.map((item, index) => (
@@ -74,7 +74,7 @@ export function ForgePanel({ session }: Props) {
                       session.forge.salvageItem(index);
                     }}
                   >
-                    Salvage
+                    {t("forge.salvage")}
                   </button>
                 </Tip>
               </li>

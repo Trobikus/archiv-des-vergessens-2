@@ -597,6 +597,11 @@
   transform: translateY(0);
 }
 
+.tip:focus-visible {
+  outline: 1px solid rgba(197, 160, 89, 0.55);
+  outline-offset: 2px;
+}
+
 .game__topbar-resources > .tip {
   z-index: 6;
 }
@@ -608,8 +613,8 @@
   text-align: left;
 }
 
-.game__status-card__tip {
-  display: inline-block;
+.game__stat-tip {
+  display: block;
 }
 
 .phase6-stats > .tip:hover,

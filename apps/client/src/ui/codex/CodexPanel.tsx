@@ -66,7 +66,10 @@ export function CodexPanel({ session }: Props) {
                     <Tip
                       key={choice.id}
                       title={choice.title}
-                      text={`${session.i18n.translate("codex.decryptTip")} ${formatAmount(node.cost)} Partikel · Boss ${String(node.requiredBoss)}.`}
+                      text={`${session.i18n.translate("codex.decryptTip")} ${session.i18n
+                        .translate("codex.decryptCostDetail")
+                        .replace("{cost}", formatAmount(node.cost))
+                        .replace("{boss}", String(node.requiredBoss))}`}
                     >
                       <button
                         type="button"
