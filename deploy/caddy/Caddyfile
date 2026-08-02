@@ -9,7 +9,7 @@
 #   sudo systemctl reload caddy
 # ==============================================================================
 
-grimoireinteractive.duckdns.org {
+archiv.grimoire-interactive.de {
     # Automatisches Reverse Proxying von WebSockets an das Node.js Backend auf Port 8080
     reverse_proxy 127.0.0.1:8080 {
         # Standard Proxy Header

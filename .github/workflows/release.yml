@@ -67,7 +67,7 @@ jobs:
         run: npm run build -w @adv/desktop
         env:
           # Bake live WSS endpoint (TLS via nginx/Let's Encrypt) into the client
-          VITE_WS_URL: wss://grimoireinteractive.duckdns.org
+          VITE_WS_URL: wss://archiv.grimoire-interactive.de
 
       - name: Create portable game ZIP
         shell: pwsh

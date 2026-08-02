@@ -21,6 +21,9 @@ const DEFAULT_ORIGINS = [
   // Live release origins (same allow-list as v1)
   "https://archiv-des-vergessens.de",
   "https://api.archiv-des-vergessens.de",
+  "https://archiv.grimoire-interactive.de",
+  "wss://archiv.grimoire-interactive.de",
+  // Legacy DuckDNS (Übergang, bis alte Clients auslaufen)
   "https://grimoireinteractive.duckdns.org",
   "wss://grimoireinteractive.duckdns.org",
 ] as const;

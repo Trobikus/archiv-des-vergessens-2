@@ -29,7 +29,7 @@ export type WsClientOptions = {
 };
 
 /** Live release endpoint (TLS via reverse proxy / Let's Encrypt), same as v1. */
-export const RELEASE_WS_URL = "wss://grimoireinteractive.duckdns.org";
+export const RELEASE_WS_URL = "wss://archiv.grimoire-interactive.de";
 
 type ViteClientEnv = {
   readonly VITE_WS_URL?: string;

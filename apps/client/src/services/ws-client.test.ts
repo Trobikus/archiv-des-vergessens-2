@@ -61,7 +61,7 @@ describe("defaultWsUrl", () => {
   });
 
   it("uses the v1 live WSS endpoint as the release default", () => {
-    expect(RELEASE_WS_URL).toBe("wss://grimoireinteractive.duckdns.org");
+    expect(RELEASE_WS_URL).toBe("wss://archiv.grimoire-interactive.de");
   });
 
   it("honors a localStorage override", () => {
