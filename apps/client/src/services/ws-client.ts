@@ -28,12 +28,11 @@ export type WsClientOptions = {
   readonly now?: () => number;
 };
 
-/** Live release endpoint (TLS via reverse proxy / Let's Encrypt), same as v1. */
+/** Live release endpoint (TLS via reverse proxy / Let's Encrypt). */
 export const RELEASE_WS_URL = "wss://archiv.grimoire-interactive.de";
 
 type ViteClientEnv = {
   readonly VITE_WS_URL?: string;
-  readonly DEV?: boolean;
 };
 
 function readViteEnv(): ViteClientEnv {
@@ -46,44 +45,15 @@ function readViteEnv(): ViteClientEnv {
 
 /**
  * Resolve the multiplayer WebSocket URL.
- * Order matches v1 `NetworkService._getServerUrl`:
- * 1. localStorage override (`adv2_server_url`) — v2-only key, never v1's `archiv_server_url`
- * 2. `VITE_WS_URL` (baked at build time)
- * 3. Vite DEV on localhost → `ws://localhost:8080`
- * 4. Production / release → encrypted live server
+ * Release / GitHub EXE always targets the live VM:
+ * 1. `VITE_WS_URL` (baked at build time — set in `.github/workflows/release.yml`)
+ * 2. Fallback `RELEASE_WS_URL`
  */
 export function defaultWsUrl(): string {
-  try {
-    if (typeof localStorage !== "undefined") {
-      const custom = localStorage.getItem("adv2_server_url");
-      if (typeof custom === "string" && custom.length > 0) {
-        return custom;
-      }
-    }
-  } catch {
-    // ignore storage access errors (SSR / restricted contexts)
-  }
-
-  const viteEnv = readViteEnv();
-  const fromEnv = viteEnv.VITE_WS_URL;
+  const fromEnv = readViteEnv().VITE_WS_URL;
   if (typeof fromEnv === "string" && fromEnv.length > 0) {
     return fromEnv;
   }
-
-  if (typeof window !== "undefined") {
-    const hostname = window.location.hostname;
-    const isViteDev = viteEnv.DEV === true;
-    const isLocalHost =
-      (hostname === "localhost" ||
-        hostname === "127.0.0.1" ||
-        hostname === "[::1]") &&
-      window.location.port !== "";
-
-    if (isViteDev && isLocalHost) {
-      return "ws://localhost:8080";
-    }
-  }
-
   return RELEASE_WS_URL;
 }
 

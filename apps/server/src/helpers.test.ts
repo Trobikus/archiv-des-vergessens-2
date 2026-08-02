@@ -80,12 +80,15 @@ describe("config", () => {
     rmSync(dir, { recursive: true, force: true });
   });
 
-  it("includes Windows Tauri WebView origins by default", () => {
+  it("includes Tauri WebView and live origins by default (no localhost dev ports)", () => {
     const dir = mkdtempSync(join(tmpdir(), "adv2-cfg-origins-"));
     const cfg = loadConfig({ DATA_DIR: dir });
     expect(cfg.allowedOrigins).toContain("tauri://localhost");
     expect(cfg.allowedOrigins).toContain("http://tauri.localhost");
     expect(cfg.allowedOrigins).toContain("https://tauri.localhost");
+    expect(cfg.allowedOrigins).toContain("https://archiv.grimoire-interactive.de");
+    expect(cfg.allowedOrigins).not.toContain("http://localhost:5173");
+    expect(cfg.allowedOrigins).not.toContain("http://localhost:4317");
     rmSync(dir, { recursive: true, force: true });
   });
 });

@@ -14,14 +14,11 @@ export type ServerConfig = {
 };
 
 const DEFAULT_ORIGINS = [
-  "http://localhost:5173",
-  "http://localhost:8080",
-  "http://localhost:3000",
+  // GitHub EXE / Tauri WebView (release clients)
   "tauri://localhost",
-  // Windows Tauri 2 / WebView2 custom protocol origins
   "http://tauri.localhost",
   "https://tauri.localhost",
-  // Live release origins (same allow-list as v1)
+  // Live website / API origins
   "https://archiv-des-vergessens.de",
   "https://api.archiv-des-vergessens.de",
   "https://archiv.grimoire-interactive.de",

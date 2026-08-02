@@ -35,10 +35,18 @@ export function createLogger(
 
 function defaultSink(level: LogLevel, message: string, data?: unknown): void {
   if (level === "warn") {
-    console.warn(message, data);
+    if (data !== undefined) {
+      console.warn(message, data);
+    } else {
+      console.warn(message);
+    }
     return;
   }
   if (level === "error") {
-    console.error(message, data);
+    if (data !== undefined) {
+      console.error(message, data);
+    } else {
+      console.error(message);
+    }
   }
 }

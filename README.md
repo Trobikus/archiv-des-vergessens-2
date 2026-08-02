@@ -154,8 +154,7 @@ npm run dev:client    # → http://localhost:5173
 npm run dev:server    # WS-Server auf Port 8080
 ```
 
-Lokal verbindet der Client in der Vite-Dev-Session typischerweise auf `ws://localhost:8080`.  
-Produktion / Release-Builds nutzen `wss://archiv.grimoire-interactive.de` (siehe `.env.example`, `VITE_WS_URL`).
+Client (inkl. GitHub-EXE) verbindet auf `wss://archiv.grimoire-interactive.de` (siehe `.env.example`, `VITE_WS_URL`; im Release-Workflow fest gebacken).
 
 ### Desktop & Launcher
 
@@ -208,8 +207,7 @@ npm run clippy:launcher # Rust-Lint Launcher
 | Thema | Detail |
 |---|---|
 | **Öffentliche WSS-URL** | `wss://archiv.grimoire-interactive.de` |
-| **Lokaler Default** | `ws://localhost:8080` (`PORT`, Default `8080`) |
-| **Runtime-Override** | `localStorage["adv2_server_url"]` |
+| **Server-Listen** | `PORT` (Default `8080`, hinter Proxy typisch `127.0.0.1`) |
 | **Build-Zeit** | `VITE_WS_URL` (siehe `.env.example`; in Releases fest gebacken) |
 | **Upstream** | Node lauscht auf `127.0.0.1:8080`; Nginx/Caddy terminieren TLS auf 443 |
 | **Proxy-Vorlagen** | [`deploy/nginx/nginx.conf`](deploy/nginx/nginx.conf) · [`deploy/caddy/Caddyfile`](deploy/caddy/Caddyfile) |
