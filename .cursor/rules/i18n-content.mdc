@@ -1,0 +1,15 @@
+---
+description: DE/EN i18n key parity and typed content modules
+globs:
+  - packages/content/**/*
+alwaysApply: false
+---
+
+# i18n & content
+
+- Same key in `i18n/de.ts` **and** `en.ts`
+- Content stays typed, I/O-free, no `@adv/*` imports
+- Keep content IDs stable if referenced from saves
+- Gate: `node tools/gates/i18n-keys.mjs`
+
+Skills: `safe-ui-patch` (copy), `.agents/skills/i18n-content`.

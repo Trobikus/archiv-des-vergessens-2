@@ -1,53 +1,49 @@
-# Antigravity agents — Archiv des Vergessens
+# Agents — Archiv des Vergessens
 
-Rule- und Skill-Set für **Google Antigravity** mit **Gemini 3.1 Pro**, damit Agent-Arbeit die bestehende v2-Architektur nicht verfälscht — besonders kritisch kurz vor der offiziellen Test-Alpha.
+Shared **skills** + Antigravity **rules/workflows** for safe work near official test alpha (`0.3.0-alpha`).
+
+Cursor also loads skills from this folder. Cursor-specific rules/hooks/skills live in `.cursor/`. Cross-tool constitution: root `AGENTS.md`.
 
 ## Layout
 
 ```text
 .agents/
-├─ agents.md                 # Personas (@engineer, @backend, @client, @qa, @sim)
-├─ rules/                    # Always-on / decision rules (kurz halten — Cap ~12k)
-├─ skills/*/SKILL.md         # Domain-Skills (progressive disclosure)
-└─ workflows/*.md            # Slash-Commands: /safe-fix, /add-feature, /pre-release-check
+├─ agents.md                 # Personas
+├─ rules/                    # Antigravity always-on (~12k Cap)
+├─ skills/*/SKILL.md         # Shared domain skills (Cursor + Antigravity)
+└─ workflows/*.md            # Antigravity slash commands
 ```
 
-## Nutzung in Antigravity
+## Skills (shared)
 
-1. Workspace = Repo-Root öffnen.
-2. Modell: **Gemini 3.1 Pro** (oder aktuelles Gemini-3.1-Pro-Label in Antigravity).
-3. Rules unter `.agents/rules/` werden als persistenter Kontext geladen.
-4. Skills greifen über ihre `description` automatisch — oder per ausdrücklicher Erwähnung (z. B. „nutze safe-change“).
-5. Workflows: im Agent-Chat `/` → `safe-fix` / `add-feature` / `pre-release-check`.
+| Skill | When |
+|---|---|
+| `safe-change` | Any code change (default) |
+| `alpha-bugfix` | Player-facing bugs |
+| `client-feature` / `ui-hub` | Client services & hub UI |
+| `protocol-ws` / `server-module` / `save-envelope` | Wire contract & server |
+| `sim-balancing` | CONFIG/math (Freigabe!) |
+| `i18n-content` | DE/EN + content data |
+| `gate-verify` | CI / pre-release |
 
-## Empfohlene Default-Haltung
+Several skills declare Cursor `paths:` globs.
 
-- Vor jedem Code-Edit implizit **safe-change**.
-- Bei Spieler-Bugs **alpha-bugfix**.
-- Vor Tag/Release **`/pre-release-check`**.
+## Antigravity
 
-## Was dieses Set verhindert
+1. Workspace = Repo-Root · Modell **Gemini 3.1 Pro**
+2. Rules: `.agents/rules/`
+3. Workflows: `/safe-fix`, `/add-feature`, `/pre-release-check`
 
-- Erfundene APIs / zweite Persistenz / zod / React-Patterns
-- Falsche Package-Imports (`@adv/server` → sim/content)
-- Clan↔Guild-Verwechslung
-- Balancing-Drift ohne Freigabe
-- Feature-Branches trotz main-only
-- Hub-/Logo-Wildwuchs
+## Cursor (parallel, enforceable)
 
-## Cursor-Spiegel
+- Rules: `.cursor/rules/` (`scope-lock`, `package-boundaries`, glob rules, …)
+- Skills: `.cursor/skills/` (`safe-ui-patch`, `hard-stop-architecture`, `pre-done-gate`) + this folder
+- Hooks: `.cursor/hooks.json` (shell `failClosed`, high-risk edit audit, stop gate)
+- Lite gate: `npm run gate:lite` (also on pre-push to `main`)
 
-Dasselbe Repo hat ein paralleles **Cursor**-Set:
-
-- Rules/Skills: `.cursor/rules/`, `.cursor/skills/`
-- Enforceable Hooks: `.cursor/hooks.json` (high-risk edits, shell blocks, stop-audit)
-- Portable Vertrag: Root-`AGENTS.md`
-- Lite-Gate: `npm run gate:lite` (pre-push auf `main`)
-
-Antigravity bleibt kanonisch unter `.agents/`. Cursor-Hooks sind die mechanische Absicherung dort. Bei Policy-Änderungen **beide** Seiten syncen (mindestens `00-alpha-safety` ↔ `scope-lock` + `AGENTS.md`).
+When changing policy: sync `.agents/rules` ↔ `.cursor/rules` + `AGENTS.md`.
 
 ## Pflege
 
-- Rules kurz und stabil halten (Always-on-Budget).
-- Neue Domänenwissen → neuer Skill-Ordner mit `SKILL.md`, nicht die Always-on-Rules aufblasen.
-- Bei Architektur-ADR-Änderungen zuerst `rules/01-architecture.md` und betroffene Skills syncen.
+- Keep always-on rules short; put procedures in skills.
+- Do not weaken hooks/gates without explicit user order.

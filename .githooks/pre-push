@@ -1,12 +1,15 @@
 #!/usr/bin/env sh
-# Quality gates before push.
+# Quality gates + main-only before push.
 # - Release tags (v*.*.*): full `npm run gate` (mandatory, no bypass)
 # - Pushing commits to main: agent-lite gate (balancing + i18n + typecheck)
+# - Other branch pushes: blocked
 
 set -e
 
 release_tag_push=0
 main_push=0
+non_main_branch_push=0
+current_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")"
 
 while read -r local_ref local_sha remote_ref remote_sha
 do
@@ -16,14 +19,29 @@ do
       echo "pre-push: release tag $remote_ref → running npm run gate (mandatory)"
       ;;
     refs/heads/main)
-      # Empty local sha means delete; skip.
       if [ "$local_sha" != "0000000000000000000000000000000000000000" ]; then
         main_push=1
         echo "pre-push: main → running agent-lite gate"
       fi
       ;;
+    refs/heads/*)
+      non_main_branch_push=1
+      echo "pre-push: refusing branch push to $remote_ref (main-only policy)"
+      ;;
   esac
 done
+
+if [ "$non_main_branch_push" -eq 1 ]; then
+  echo "pre-push: blocked — push only main (and release tags)."
+  exit 1
+fi
+
+if [ -n "$current_branch" ] && [ "$current_branch" != "main" ] && [ "$current_branch" != "HEAD" ]; then
+  if [ "$release_tag_push" -eq 0 ]; then
+    echo "pre-push: blocked — current branch is '$current_branch' (main-only)."
+    exit 1
+  fi
+fi
 
 if [ "$release_tag_push" -eq 1 ]; then
   npm run gate

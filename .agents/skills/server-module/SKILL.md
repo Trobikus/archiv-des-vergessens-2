@@ -1,6 +1,8 @@
 ---
 name: server-module
 description: Implements or fixes apps/server WebSocket modules (auth, save, chat, friends, guild, leaderboard), SQLite schema, and router wiring. Use for live server changes.
+paths:
+  - "apps/server/**"
 ---
 
 # Skill: Server module

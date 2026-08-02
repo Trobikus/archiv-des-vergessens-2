@@ -1,0 +1,15 @@
+---
+description: Studio website (Workers static site) — logos, no Pages regression
+globs:
+  - site/**/*
+  - functions/**/*
+  - workers/**/*
+  - wrangler.jsonc
+alwaysApply: false
+---
+
+# Studio site
+
+- Cloudflare **Workers** static assets (`wrangler.jsonc` → `./site`), not Pages
+- Logos: `site/assets/studio-mark.png` / `studio-icon.png` only
+- Prefer existing `site/` CSS/JS patterns; no second site framework

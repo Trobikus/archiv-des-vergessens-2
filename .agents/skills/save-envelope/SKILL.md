@@ -1,6 +1,12 @@
 ---
 name: save-envelope
 description: Safely changes save envelope, Phase2 payload fields, migrations, IndexedDB, or cloud sync. Use for save format, autosave, offline queue, cloud load/save, or v1 import issues.
+paths:
+  - "packages/protocol/**"
+  - "apps/client/src/services/**"
+  - "apps/client/src/state/**"
+  - "apps/server/src/modules/save/**"
+  - "docs/save-format.md"
 ---
 
 # Skill: Save envelope

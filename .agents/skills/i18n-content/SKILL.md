@@ -1,6 +1,9 @@
 ---
 name: i18n-content
 description: Adds or edits DE/EN i18n keys and typed content records in @adv/content. Use when changing player-facing text, tooltips, quests, items, talents, dialogs, or content data modules.
+paths:
+  - "packages/content/**"
+  - "apps/client/src/ui/**"
 ---
 
 # Skill: i18n & content

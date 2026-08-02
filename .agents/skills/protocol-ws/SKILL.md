@@ -1,6 +1,11 @@
 ---
 name: protocol-ws
 description: Changes WebSocket protocol events, payloads, and validators in @adv/protocol and matching client/server handlers. Use when adding or fixing auth, cloud, chat, friends, guild, or leaderboard wire contracts.
+paths:
+  - "packages/protocol/**"
+  - "apps/server/**"
+  - "apps/client/src/services/**"
+  - "docs/protocol.md"
 ---
 
 # Skill: Protocol / WebSocket

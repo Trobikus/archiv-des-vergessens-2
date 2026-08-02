@@ -1,6 +1,11 @@
 ---
 name: ui-hub
 description: Edits cinematic hub chrome, panels, tooltips, scenes, and Abyss & Gold CSS without inventing a new design system. Use for hub layout, Tip bubbles, glass/shell styling, or scene art wiring.
+paths:
+  - "apps/client/src/ui/**"
+  - "apps/client/src/styles/**"
+  - "apps/client/public/scenes/**"
+  - "design/**"
 ---
 
 # Skill: UI hub / chrome

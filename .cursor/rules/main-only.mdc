@@ -1,12 +1,14 @@
 ---
-description: Work only on the main branch in this project
+description: Work only on the main branch — no feature/cursor branches, no force-push
 alwaysApply: true
 ---
 
 # Branching: main only
 
 - Use **only** the `main` branch for all work in this repository.
-- Do not create feature, fix, or cursor/* branches unless the user explicitly asks.
+- Do **not** create `feature/*`, `fix/*`, `cursor/*`, or other side branches unless the user explicitly asks.
 - Commit and push directly to `main` (no PRs from side branches by default).
 - If you are not on `main`, switch to it before making changes: `git checkout main`.
-- Keep remote default as `main`; do not introduce `master` or parallel long-lived branches.
+- Keep remote default as `main`; do not introduce `master` or long-lived parallel branches.
+- Do **not** `git push --force` / `--force-with-lease` to `main`.
+- Cursor `beforeShellExecution` hooks block branch creation and force-push — obey them.

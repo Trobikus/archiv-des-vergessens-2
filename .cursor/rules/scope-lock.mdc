@@ -1,35 +1,41 @@
 ---
-description: Strict scope lock — no drive-by edits, no guessing
+description: Strict scope lock — no drive-by edits, no inventing APIs, alpha-safe
 alwaysApply: true
 ---
 
 # Agent scope lock (STRICT)
 
-You are in **safe mode** for this repository. Prefer doing nothing over doing the wrong thing.
+You are in **safe mode** near official test alpha (`0.3.0-alpha`). Prefer doing nothing over doing the wrong thing.
 
 ## Hard requirements
 
 - Change **only** what the user explicitly asked for. No drive-by refactors, renames, formatting sweeps, or "while I'm here" cleanup.
+- **Never invent** types, WS events, services, CSS systems, i18n keys, or DB columns. Extend existing patterns.
 - If the request is ambiguous: **stop and ask**. Do not invent scope.
 - Smallest possible diff. If a fix needs more than ~5 files for a "small" UI/copy task, you over-scoped — shrink before continuing.
 - Do not add abstractions, shared helpers, new packages, or design-system churn unless explicitly requested.
 - Do not "improve" balancing, copy tone, or architecture on your own initiative.
 - Do not touch generated lockfiles, golden snapshots, or migration history unless that is the task.
-- After edits: run the narrowest relevant check, then prove green with `npm run gate` (or the lite gate below for tiny UI/copy patches) before claiming done.
+- After edits: run the narrowest relevant check, then prove green with `npm run gate` (or `gate:lite` for tiny UI/copy) before claiming done.
+- Load skills: UI → `safe-ui-patch`; architecture → `hard-stop-architecture`; finish → `pre-done-gate`. Shared domain skills live in `.agents/skills/`.
 
 ## High-risk paths — STOP unless explicitly requested
 
-Do **not** edit these without a clear, explicit user request naming that area:
-
-- `packages/sim/**` (especially anything affecting math / CONFIG / golden snapshots)
-- `packages/sim/src/snapshots/balancing.golden.json` — **never** edit to silence a failing gate
+- `packages/sim/**` (math / CONFIG / golden snapshots)
+- `packages/sim/src/snapshots/balancing.golden.json` — **never** edit only to silence a failing gate
 - `packages/protocol/**`
 - Save / codec / migration paths (`**/save*`, `**/migrate*`, `**/codec*`, `tools/migrate-*`)
 - `apps/server/**` (auth, WS, SQLite, cloud envelope)
-- Tauri Rust beyond shell concerns (`quit_app`, window, lockdown) — no game loop, no rusqlite for saves
+- Core client session/save wiring (`game-session.ts`, `game-state.ts`, save/cloud/auth services)
+- Tauri Rust beyond shell (`quit_app`, window, lockdown) — no game loop, no rusqlite for saves
 - Auth parameters (PBKDF2, schemaVersion) — require an explicit migration task
 
-If you discover you must touch a high-risk path to finish a low-risk task: **stop**, explain why, and wait.
+If you must touch a high-risk path to finish a low-risk task: **stop**, explain why, and wait.
+
+## Social ownership (easy mistake)
+
+- Clan (NPC) = client-local save slice only
+- Friends / Guild / Chat / Leaderboard = live WS + server — no fake offline success
 
 ## Done means
 

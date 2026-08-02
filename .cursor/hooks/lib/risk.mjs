@@ -12,6 +12,9 @@ export const HIGH_RISK_REGEXES = [
   /(?:^|\/)docs\/adr(?:\/|$)/,
   /schemaVersion/,
   /(?:^|\/)apps\/(?:desktop|launcher)\/src-tauri(?:\/|$)/,
+  /(?:^|\/)apps\/client\/src\/services\/(?:game-session|save-|cloud-|auth-)/,
+  /(?:^|\/)apps\/client\/src\/state\/game-state/,
+  /(?:^|\/)apps\/server\/src\/(?:db\/schema|crypto\/password)/,
 ];
 
 /** Path substrings that often mean save/codec/migration work */
@@ -25,6 +28,9 @@ export const HIGH_RISK_NAME_HINTS = [
   "pbkdf",
   "cloud-envelope",
   "cloudEnvelope",
+  "ws-message",
+  "save-envelope",
+  "save-payload",
 ];
 
 export function normalizePath(filePath) {

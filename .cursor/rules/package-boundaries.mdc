@@ -1,5 +1,5 @@
 ---
-description: Enforce ADV monorepo package boundaries and persistence rules
+description: Enforce ADV monorepo package boundaries, leaf packages, persistence rules
 alwaysApply: true
 ---
 
@@ -11,13 +11,15 @@ Violating boundaries is a defect, not a style issue.
 
 | Area | May contain | Must NOT contain |
 |---|---|---|
-| `@adv/sim` | Pure math, CONFIG, combat/idle formulas | DOM, Preact, I/O, Node APIs, WS |
-| `@adv/content` | Data, i18n strings, content tables | UI components, network, filesystem writes |
-| `@adv/protocol` | Messages, save types, mini-validators (~no zod) | UI, sim math, DB access |
-| `@adv/core` | DI, EventBus, Store, Ticker, Logger, Result | Game UI, protocol transport, SQL |
+| `@adv/sim` | Pure math, CONFIG, combat/idle formulas | DOM, Preact, I/O, Node APIs, WS, other `@adv/*` |
+| `@adv/content` | Data, i18n strings, content tables | UI, network, filesystem writes, other `@adv/*` |
+| `@adv/protocol` | Messages, save types, mini-validators (**no zod**) | UI, sim math, DB access, other `@adv/*` |
+| `@adv/core` | DI, EventBus, Store, Ticker, Logger, Result | Game UI, protocol transport, SQL, other `@adv/*` |
 | `apps/client` | Preact UI, session, IndexedDB offline queue, WsClient | Server authority, SQLite game DB |
-| `apps/server` | Auth, cloud authority, chat/social, SQLite | Client rendering, Tauri APIs |
+| `apps/server` | Auth, cloud authority, chat/social, SQLite | Client rendering, Tauri, **`@adv/sim` / `@adv/content`** |
 | `apps/desktop` / `apps/launcher` | Tauri shell only | Rust game loop, rusqlite for saves |
+
+**Leaf rule:** `@adv/protocol`, `@adv/core`, `@adv/sim`, `@adv/content` must not import each other. Compose only in apps.
 
 ## Persistence (non-negotiable)
 
@@ -25,6 +27,7 @@ Violating boundaries is a defect, not a style issue.
 - **No** second game database in Tauri.
 - Balancing numbers stay **v1-identical**. Do not "tune" values. Golden snapshot gate is law.
 - TypeScript strict: no `any`, respect `noUncheckedIndexedAccess`.
+- UI: Preact TSX only — **htm removed**, not React.
 
 ## UI / studio
 

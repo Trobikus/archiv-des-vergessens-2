@@ -1,0 +1,16 @@
+---
+description: Balancing parity — CONFIG/math changes need Freigabe and golden snapshot
+globs:
+  - packages/sim/**/*
+alwaysApply: false
+---
+
+# Sim / balancing (high risk)
+
+- Pure package — no `@adv/*` imports, no I/O
+- v1 word-parity; golden gate is law
+- Do **not** change CONFIG/formulas without explicit Freigabe
+- Never edit `balancing.golden.json` only to silence CI
+- Prefer fixing call sites over tweaking numbers
+
+Skills: `hard-stop-architecture`, `.agents/skills/sim-balancing`.

@@ -1,0 +1,19 @@
+---
+description: Protocol validators and server WS modules — no zod, correct social ownership
+globs:
+  - packages/protocol/**/*
+  - apps/server/**/*
+  - docs/protocol.md
+  - docs/save-format.md
+alwaysApply: false
+---
+
+# Protocol & server
+
+- Events via `WS_EVENTS`; hand-rolled `ValidationResult` — **no zod**
+- Save envelope `schemaVersion: 1` — bumps need `migrate.ts` step
+- Server imports: `@adv/core` + `@adv/protocol` only
+- PBKDF2 frozen: 100_000 / keylen 64 / sha512
+- Clan is **not** a server module
+
+This is high-risk: use `hard-stop-architecture` + `.agents/skills/protocol-ws|server-module|save-envelope`. Full `npm run gate`.

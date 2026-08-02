@@ -1,6 +1,8 @@
 ---
 name: sim-balancing
 description: Touches @adv/sim combat/idle math, CONFIG, sanitize, or golden balancing snapshot. Use only when fixing sim bugs or when the user explicitly approves balancing changes.
+paths:
+  - "packages/sim/**"
 ---
 
 # Skill: Sim / balancing

@@ -13,3 +13,6 @@ If you cannot find it in-repo, do **not** introduce it as a new parallel system:
 - Purple/glow “AI default” redesign of the hub
 - Old triangle SVG as Grimoire studio logo
 - Feature branches (`cursor/*`, `feature/*`) unless user asks
+- Force-push / hard-reset “cleanup”
+- Editing `balancing.golden.json` only to silence a failing gate
+- Server importing `@adv/sim` or `@adv/content`

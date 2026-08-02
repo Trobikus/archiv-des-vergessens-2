@@ -13,7 +13,14 @@
     ],
     "beforeShellExecution": [
       {
-        "command": "node .cursor/hooks/before-shell.mjs"
+        "command": "node .cursor/hooks/before-shell.mjs",
+        "failClosed": true
+      }
+    ],
+    "postToolUse": [
+      {
+        "command": "node .cursor/hooks/post-edit-context.mjs",
+        "matcher": "Write|StrReplace|EditNotebook|Delete"
       }
     ],
     "stop": [

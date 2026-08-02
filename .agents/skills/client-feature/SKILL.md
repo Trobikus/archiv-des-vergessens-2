@@ -1,6 +1,8 @@
 ---
 name: client-feature
 description: Implements or extends Preact client features (services, hub panels, game session wiring) in apps/client while matching existing create*Service and UI patterns. Use when editing client gameplay UI or services.
+paths:
+  - "apps/client/**"
 ---
 
 # Skill: Client feature

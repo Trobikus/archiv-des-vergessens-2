@@ -1,0 +1,57 @@
+#!/usr/bin/env sh
+# Lightweight alpha guards on staged content (fast; not a full gate).
+
+set -e
+
+branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")"
+if [ -n "$branch" ] && [ "$branch" != "main" ] && [ "$branch" != "HEAD" ]; then
+  echo "pre-commit: blocked — commit on '$branch' violates main-only policy."
+  echo "pre-commit: run: git checkout main"
+  exit 1
+fi
+
+staged="$(git diff --cached --name-only --diff-filter=ACMR)"
+if [ -z "$staged" ]; then
+  exit 0
+fi
+
+fail=0
+while IFS= read -r file
+do
+  [ -z "$file" ] && continue
+  case "$file" in
+    *.ts|*.tsx|*.js|*.mjs|*.cjs)
+      ;;
+    *)
+      continue
+      ;;
+  esac
+
+  diff_text="$(git diff --cached -U0 -- "$file" || true)"
+
+  if printf '%s\n' "$diff_text" | grep -E '^\+' | grep -Eiq "from[[:space:]]+['\"]zod['\"]|require\\(['\"]zod['\"]\\)"; then
+    echo "pre-commit: blocked zod import in staged change: $file"
+    echo "pre-commit: use hand-rolled validators in @adv/protocol (ADR 0001)."
+    fail=1
+  fi
+
+  if printf '%s\n' "$diff_text" | grep -E '^\+' | grep -Eiq "from[[:space:]]+['\"]htm['\"]|htm/preact"; then
+    echo "pre-commit: blocked htm import in staged change: $file"
+    echo "pre-commit: use Preact TSX only (ADR 0001)."
+    fail=1
+  fi
+
+  if printf '%s\n' "$diff_text" | grep -E '^\+' | grep -Eiq "from[[:space:]]+['\"]react['\"]|from[[:space:]]+['\"]react-dom['\"]"; then
+    echo "pre-commit: blocked React import in staged change: $file"
+    echo "pre-commit: UI stack is Preact."
+    fail=1
+  fi
+done <<EOF
+$staged
+EOF
+
+if [ "$fail" -eq 1 ]; then
+  exit 1
+fi
+
+exit 0

@@ -1,0 +1,18 @@
+---
+description: Preact client patterns — services, hub UI, Tip/i18n, Abyss & Gold CSS
+globs:
+  - apps/client/**/*
+alwaysApply: false
+---
+
+# Client (`@adv/client`)
+
+- Services: `create*Service` in `apps/client/src/services/`; wire via `game-session.ts`
+- State: `@adv/core` Store + `ui/useStore.ts` — no Redux/Zustand
+- Preact hooks from `preact/hooks`; DOM `class="..."` (not React `className`)
+- Hub categories only: `archiv` · `hero` · `story` · `missions` · `workshop` · `collection` · `social`
+- Tooltips: `ui/Tip.tsx` + DE/EN keys; keep `tip-i18n.test.ts` green
+- Extend existing CSS tokens (`styles/variables.css`, `hub.css`, `game-shell.css`)
+- Formulas belong in `@adv/sim`, not TSX
+
+Skills: `safe-ui-patch` (tiny), `.agents/skills/client-feature` / `ui-hub` / `i18n-content` (larger).
