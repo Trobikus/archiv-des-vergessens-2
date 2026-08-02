@@ -99,7 +99,21 @@ body {
   background-attachment: fixed;
 }
 
-main { flex: 1 0 auto; }
+main {
+  position: relative;
+  z-index: 2;
+  flex: 1 0 auto;
+}
+
+/* Ambient dust motes — behind content, never intercepts clicks */
+.site-particles {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
 
 img { max-width: 100%; display: block; }
 
@@ -622,7 +636,7 @@ a:focus-visible,
 }
 .detail-hero__bg {
   position: absolute; inset: 0; z-index: -2;
-  background: url("assets/keyart.png") center / cover no-repeat;
+  background: url("assets/game-banner-archiv.png") center / cover no-repeat;
   transform: scale(1.05);
   animation: heroDrift 40s ease-in-out infinite alternate;
 }
