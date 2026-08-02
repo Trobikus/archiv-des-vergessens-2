@@ -1,6 +1,6 @@
 import { formatAmount, formatDuration } from "@adv/core";
 import type { I18nKey } from "@adv/content";
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 
 import { nextGedankenArchivCost } from "../services/idle-service";
 import type { GameSession } from "../services/game-session";
@@ -23,6 +23,107 @@ import { SkillTreePanel } from "./skilltree/SkillTreePanel";
 import { StoryPanel } from "./story/StoryPanel";
 import { useStore } from "./useStore";
 import { VaultPanel } from "./vault/VaultPanel";
+
+/** Ornate compass seal for cinematic brand mark (inline SVG, mock-faithful). */
+function BrandSeal() {
+  return (
+    <svg
+      class="game__brand-seal-svg"
+      viewBox="0 0 40 40"
+      width="40"
+      height="40"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="20" cy="20" r="18.5" fill="none" stroke="currentColor" stroke-width="1.1" />
+      <circle cx="20" cy="20" r="14.5" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.85" />
+      <circle cx="20" cy="20" r="4.2" fill="none" stroke="currentColor" stroke-width="0.9" />
+      <path
+        d="M20 3.5 V36.5 M3.5 20 H36.5 M8.2 8.2 L31.8 31.8 M31.8 8.2 L8.2 31.8"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="0.75"
+        opacity="0.9"
+      />
+      <path
+        d="M20 7.5 L21.2 11.5 L20 10.2 L18.8 11.5 Z M32.5 20 L28.5 21.2 L29.8 20 L28.5 18.8 Z M20 32.5 L18.8 28.5 L20 29.8 L21.2 28.5 Z M7.5 20 L11.5 18.8 L10.2 20 L11.5 21.2 Z"
+        fill="currentColor"
+        opacity="0.95"
+      />
+    </svg>
+  );
+}
+
+function ParticleIcon() {
+  return (
+    <svg
+      class="game__resource-icon-svg"
+      viewBox="0 0 20 20"
+      width="18"
+      height="18"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="10" cy="10" r="8.2" fill="none" stroke="currentColor" stroke-width="1.2" />
+      <circle cx="10" cy="10" r="3.1" fill="currentColor" opacity="0.9" />
+      <path
+        d="M10 2.8 V6.2 M10 13.8 V17.2 M2.8 10 H6.2 M13.8 10 H17.2 M5.1 5.1 L7.4 7.4 M12.6 12.6 L14.9 14.9 M14.9 5.1 L12.6 7.4 M7.4 12.6 L5.1 14.9"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="0.9"
+        opacity="0.85"
+      />
+    </svg>
+  );
+}
+
+function MnemeIcon() {
+  return (
+    <svg
+      class="game__resource-icon-svg"
+      viewBox="0 0 20 20"
+      width="18"
+      height="18"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M5.2 16.5 C5.2 16.5 6.8 11.5 11.5 7.2 C14.8 4.2 17.2 3.2 17.2 3.2 C17.2 3.2 16.4 6.1 13.6 9 C10.4 12.4 6.8 14.8 5.2 16.5 Z"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.15"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M6.4 15.2 C8.6 12.8 11.2 10.4 13.8 8.4"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="0.85"
+        opacity="0.75"
+      />
+      <path
+        d="M4.6 17.2 L6.1 15.4"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.2"
+        stroke-linecap="round"
+      />
+    </svg>
+  );
+}
+
+function isTypingTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+  const tag = target.tagName;
+  return (
+    tag === "INPUT" ||
+    tag === "TEXTAREA" ||
+    tag === "SELECT" ||
+    target.isContentEditable
+  );
+}
 
 type Props = {
   readonly session: GameSession;
@@ -125,6 +226,44 @@ export function GameView({ session }: Props) {
     setCategory(id);
   };
 
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent): void => {
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+        return;
+      }
+      if (isTypingTarget(event.target)) {
+        return;
+      }
+      const key = event.key.toLowerCase();
+      if (key !== "q" && key !== "e") {
+        return;
+      }
+      event.preventDefault();
+      const idx = CATEGORIES.findIndex((def) => def.id === category);
+      if (idx < 0) {
+        return;
+      }
+      const direction = key === "e" ? 1 : -1;
+      const next =
+        CATEGORIES[(idx + direction + CATEGORIES.length) % CATEGORIES.length];
+      if (next === undefined) {
+        return;
+      }
+      if (next.id === "story") {
+        const boss = session.story.getCurrentBoss();
+        if (boss !== null) {
+          session.story.selectChapter(boss.chapter);
+        }
+        setStoryNav("fights");
+      }
+      setCategory(next.id);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [category, session.story]);
+
   return (
     <main class="game game--cinematic">
       <div
@@ -138,10 +277,16 @@ export function GameView({ session }: Props) {
 
       <header class="game__topbar">
         <div class="game__topbar-brand">
+          <span class="game__brand-seal" aria-hidden="true">
+            <BrandSeal />
+          </span>
           <p class="game__brand">{t("menu.title")}</p>
         </div>
 
         <nav class="game__tabs" aria-label="Game sections">
+          <span class="game__tab-cycle" aria-hidden="true">
+            [Q]
+          </span>
           {CATEGORIES.map((def) => (
             <button
               key={def.id}
@@ -153,27 +298,45 @@ export function GameView({ session }: Props) {
                 openCategory(def.id);
               }}
             >
-              {t(def.labelKey)}
+              <span class="game__tab-label">{t(def.labelKey)}</span>
+              {category === def.id ? (
+                <span class="game__tab-ornament" aria-hidden="true">
+                  <span class="game__tab-ornament-line" />
+                  <span class="game__tab-ornament-diamond" />
+                </span>
+              ) : null}
             </button>
           ))}
+          <span class="game__tab-cycle" aria-hidden="true">
+            [E]
+          </span>
         </nav>
 
         <div class="game__topbar-resources" aria-label="Resources">
-          <span class="game__resource">
-            <span class="game__resource-label">Partikel</span>
-            <span class="game__resource-value">
+          <span class="game__resource" aria-label="Partikel">
+            <span class="game__resource-icon" aria-hidden="true">
+              <ParticleIcon />
+            </span>
+            <span class="game__resource-value" data-testid="topbar-particles">
               {formatAmount(state.resources.particles)}
             </span>
           </span>
-          <span class="game__resource">
-            <span class="game__resource-label">Mneme</span>
-            <span class="game__resource-value">
+          <span class="game__resource" aria-label="Mneme">
+            <span class="game__resource-icon" aria-hidden="true">
+              <MnemeIcon />
+            </span>
+            <span class="game__resource-value" data-testid="topbar-mneme">
               {formatAmount(state.resources.mnemeFragmente)}
             </span>
           </span>
-          <span class="game__resource game__resource--level">
+          <span
+            class="game__resource game__resource--level"
+            aria-label={`${t("hero.level")} ${String(state.hero.level)}`}
+          >
             <span class="game__resource-label">{t("hero.level")}</span>
-            <span class="game__resource-value">{String(state.hero.level)}</span>
+            <span class="game__resource-value" data-testid="topbar-level">
+              {String(state.hero.level)}
+            </span>
           </span>
         </div>
       </header>
