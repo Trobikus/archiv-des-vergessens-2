@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Devlog — Grimoire Interactive</title>
+  <meta name="description" content="Devlog von Grimoire Interactive — ehrliche Einblicke in die frühe Alpha von Archiv des Vergessens." />
+  <meta name="theme-color" content="#050507" />
+  <link rel="canonical" href="https://grimoire-interactive.de/devlog" />
+  <meta property="og:title" content="Devlog — Grimoire Interactive" />
+  <meta property="og:description" content="Was gebaut wurde, was noch bricht, was als Nächstes kommt — ohne Marketing-Nebel." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://grimoire-interactive.de/assets/studio-mark.png" />
+  <link rel="icon" href="assets/studio-icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/studio-icon.png" />
+  <link rel="stylesheet" href="styles.css?v=20260802d" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  <header class="site-nav" data-site-nav>
+    <div class="wrap">
+      <a class="brand-mark" href="index.html" aria-label="Grimoire Interactive — Startseite">
+        <img class="brand-mark__logo" src="assets/studio-icon.png" alt="" width="30" height="30" decoding="async" />
+        <span>Grimoire</span>
+      </a>
+      <button class="nav-toggle" data-nav-toggle aria-label="Navigation umschalten" aria-expanded="false" aria-controls="primary-nav">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <nav aria-label="Hauptnavigation">
+        <ul class="nav-links" id="primary-nav">
+          <li><a href="index.html">Studio</a></li>
+          <li><a href="spiele.html">Spiele</a></li>
+          <li><a href="devlog.html" aria-current="page">Devlog</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <header class="page-head">
+      <div class="wrap">
+        <p class="eyebrow" data-rise style="justify-content:center">Arbeit sichtbar</p>
+        <h1 data-rise data-rise-delay="1">Devlog</h1>
+        <p class="lede" data-rise data-rise-delay="2">
+          Kurze, ehrliche Notizen zur Entwicklung — was steht, was fehlt, was als Nächstes kommt.
+          Keine Launch-Versprechen, keine Hochglanz-Roadshow.
+        </p>
+      </div>
+    </header>
+
+    <section class="section section--tight">
+      <div class="wrap" style="max-width:42rem">
+        <ol class="devlog-list" data-rise>
+          <li>
+            <a href="#alpha-oeffentlich">
+              <span class="devlog-list__date">02.08.2026</span>
+              <span class="devlog-list__title">Die Alpha ist öffentlich</span>
+              <span class="devlog-list__more">Lesen →</span>
+            </a>
+          </li>
+          <li>
+            <a href="#launcher">
+              <span class="devlog-list__date">Juli 2026</span>
+              <span class="devlog-list__title">Launcher, Siegel-Portal, erste Builds</span>
+              <span class="devlog-list__more">Lesen →</span>
+            </a>
+          </li>
+          <li>
+            <a href="#stand">
+              <span class="devlog-list__date">Juni 2026</span>
+              <span class="devlog-list__title">Was schon trägt — und was noch bricht</span>
+              <span class="devlog-list__more">Lesen →</span>
+            </a>
+          </li>
+          <li>
+            <a href="#transparenz">
+              <span class="devlog-list__date">Mai 2026</span>
+              <span class="devlog-list__title">Warum wir ohne Marketing-Nebel starten</span>
+              <span class="devlog-list__more">Lesen →</span>
+            </a>
+          </li>
+        </ol>
+
+        <article class="devlog-article" id="alpha-oeffentlich" data-rise>
+          <p class="meta">02. August 2026 · Archiv des Vergessens</p>
+          <h2>Die Alpha ist öffentlich</h2>
+          <p>
+            Ab sofort liegt eine frühe Alpha zum Download bereit. Das ist kein Soft-Launch und
+            kein verstecktes Early Access — es ist genau der Stand der Arbeit, den ich jetzt habe.
+          </p>
+          <p>
+            Erwartet Unfertiges: fehlende Inhalte, Systeme im Umbau, Balancing im Fluss und Fehler.
+            Speicherstände können sich mit Updates ändern. Wer mitspielt, begleitet die Entwicklung,
+            nicht den Launch eines fertigen Produkts.
+          </p>
+          <p>
+            Feedback ist willkommen über das
+            <a href="kontakt.html">Kontaktformular</a>.
+            Die grobe Richtung steht auf der
+            <a href="roadmap.html">Roadmap</a> —
+            ohne Datumsversprechen.
+          </p>
+        </article>
+
+        <article class="devlog-article" id="launcher" data-rise>
+          <p class="meta">Juli 2026 · Technik</p>
+          <h2>Launcher, Siegel-Portal, erste Builds</h2>
+          <p>
+            Der portable Windows-Launcher („Siegel-Portal“) holt die aktuelle Alpha von den
+            GitHub Releases. Ziel war ein schlanker Weg zum Spielen — ohne Store-Account,
+            ohne Installations-Theater.
+          </p>
+          <p>
+            Das bedeutet auch: Updates können abrupt wirken, Signierung und Verteilwege werden
+            noch verbessert, und Edge-Cases (Firewall, Antivirus-Fehlalarme, alte Windows-Stände)
+            tauchen erst jetzt im echten Feld auf.
+          </p>
+          <p>
+            Wer den Launcher nutzt, sollte die
+            <a href="https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest">Release-Seite</a>
+            im Blick behalten — dort liegen Changelog und Dateien offen.
+          </p>
+        </article>
+
+        <article class="devlog-article" id="stand" data-rise>
+          <p class="meta">Juni 2026 · Spielstand</p>
+          <h2>Was schon trägt — und was noch bricht</h2>
+          <p>
+            <strong>Trägt bereits:</strong> die Kernschleife aus Idle-Fortschritt und Archiv-Atmosphäre,
+            erste Systeme rund um den Mneme-Bund, Story-/Kampf-Ansätze, ein dunkles UI-Gerüst und
+            der Studio-Intro-Moment.
+          </p>
+          <p>
+            <strong>Bricht oder fehlt noch:</strong> Inhaltstiefe, Feinschliff, stabile Progression
+            über lange Zeiträume, Onboarding, Audio-Polishing, viele QoL-Details und alles, was ein
+            „fertiges“ Spiel ausmacht. Manches sieht fertiger aus, als es unter der Haube ist —
+            genau deshalb steht die Alpha-Kennzeichnung so deutlich.
+          </p>
+          <p>
+            Einblicke zum aktuellen Look liegen auf der
+            <a href="spiele/archiv-des-vergessens.html#einblicke">Game-Seite unter Einblicke</a>.
+          </p>
+        </article>
+
+        <article class="devlog-article" id="transparenz" data-rise>
+          <p class="meta">Mai 2026 · Studio</p>
+          <h2>Warum wir ohne Marketing-Nebel starten</h2>
+          <p>
+            Viele Studios verkaufen Hoffnung vor Substanz. Als Ein-Personen-Studio mache ich das
+            Gegenteil: sichtbare Arbeit, klare Grenzen, keine Fake-Featurelisten.
+          </p>
+          <p>
+            Transparenz heißt nicht, jedes interne Detail auszubreiten. Sie heißt: ehrlich sagen,
+            wo das Spiel steht — und wo nicht. Wenn etwas verschoben, gestrichen oder umgebaut wird,
+            soll das hier nachvollziehbar bleiben.
+          </p>
+          <p>
+            Der Devlog bleibt deshalb kurz und konkret. Lieber ein nüchterner Absatz als eine
+            Hochglanz-Ankündigung ohne Boden darunter.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <div class="footer-brand">Grimoire Interactive</div>
+        <p class="footer-meta">© <span data-year>2026</span> · Independent Game Studio</p>
+      </div>
+      <nav class="footer-col" aria-label="Studio">
+        <span class="footer-label">Studio</span>
+        <a href="spiele.html">Spiele</a>
+        <a href="devlog.html" aria-current="page">Devlog</a>
+        <a href="roadmap.html">Roadmap</a>
+        <a href="kontakt.html">Kontakt</a>
+      </nav>
+      <nav class="footer-col" aria-label="Rechtliches">
+        <span class="footer-label">Rechtliches</span>
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutz</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="main.js?v=20260802d" defer></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+name = "grimoire-contact"
+main = "index.js"
+compatibility_date = "2026-08-02"
+workers_dev = true
+
+[[routes]]
+pattern = "grimoire-interactive.de/api/contact"
+zone_name = "grimoire-interactive.de"
+
+[[routes]]
+pattern = "www.grimoire-interactive.de/api/contact"
+zone_name = "grimoire-interactive.de"
+
+# Inbox behind kontakt@ (verified Email Routing destination)
+[[send_email]]
+name = "EMAIL"
+destination_address = "grimoire.interactive@gmail.com"

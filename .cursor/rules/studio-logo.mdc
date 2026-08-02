@@ -1,0 +1,13 @@
+---
+description: Canonical Grimoire Interactive studio logo assets
+alwaysApply: true
+---
+
+# Studio logo
+
+When a studio logo / brand mark is needed on the website (nav, favicon, Open Graph, schema.org, about/studio sections, email headers, etc.):
+
+- **Full logo:** `site/assets/studio-mark.png` (book + GRIMOIRE / INTERACTIVE)
+- **Compact mark:** `site/assets/studio-icon.png` (book only — nav, favicon, small UI)
+
+Do not reintroduce the old triangle SVG sigil as the studio logo. Game-specific art (`archiv-cover.png`, `keyart.png`, `hero.png`) stays for game/atmosphere contexts only.

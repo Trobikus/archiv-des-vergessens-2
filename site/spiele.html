@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spiele — Grimoire Interactive</title>
+  <meta name="description" content="Die Spiele von Grimoire Interactive — atmosphärische Welten aus Erinnerung und Mythos." />
+  <meta name="theme-color" content="#050507" />
+  <link rel="canonical" href="https://grimoire-interactive.de/spiele" />
+  <link rel="icon" href="assets/studio-icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/studio-icon.png" />
+  <link rel="stylesheet" href="styles.css?v=20260802d" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  <header class="site-nav" data-site-nav>
+    <div class="wrap">
+      <a class="brand-mark" href="index.html" aria-label="Grimoire Interactive — Startseite">
+        <img class="brand-mark__logo" src="assets/studio-icon.png" alt="" width="30" height="30" decoding="async" />
+        <span>Grimoire</span>
+      </a>
+      <button class="nav-toggle" data-nav-toggle aria-label="Navigation umschalten" aria-expanded="false" aria-controls="primary-nav">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <nav aria-label="Hauptnavigation">
+        <ul class="nav-links" id="primary-nav">
+          <li><a href="index.html">Studio</a></li>
+          <li><a href="spiele.html" aria-current="page">Spiele</a></li>
+          <li><a href="devlog.html">Devlog</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <header class="page-head">
+      <div class="wrap">
+        <p class="eyebrow" data-rise style="justify-content:center">Das Verzeichnis</p>
+        <h1 data-rise data-rise-delay="1">Spiele</h1>
+        <p class="lede" data-rise data-rise-delay="2">
+          Jeder Titel ist eine versiegelte Welt. Wähle einen Eintrag, um das Siegel zu lösen.
+        </p>
+      </div>
+    </header>
+
+    <section class="section section--tight" aria-label="Liste der Spiele">
+      <div class="wrap">
+        <ul class="game-list">
+          <li class="game-row is-link" data-rise>
+            <div class="game-row__art game-row__art--cover">
+              <img
+                src="assets/archiv-cover.png"
+                alt="Cover zu Archiv des Vergessens"
+                width="450"
+                height="600"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="game-row__body">
+              <p class="game-row__meta">Idle · RPG · Frühe Alpha</p>
+              <h2>Archiv des Vergessens</h2>
+              <p class="muted">
+                Atmosphärisches Idle-RPG über den Mneme-Bund — derzeit eine Alpha im frühen
+                Stadium: unfertig, fehleranfällig und offen so kommuniziert.
+              </p>
+              <span class="game-row__cta">Öffnen <span class="arrow" aria-hidden="true">→</span></span>
+              <a class="stretch" href="spiele/archiv-des-vergessens.html" aria-label="Archiv des Vergessens öffnen"></a>
+            </div>
+          </li>
+
+          <li class="game-row game-row--soon" data-rise data-rise-delay="1" aria-disabled="true">
+            <div class="game-row__body">
+              <span class="badge">In Arbeit</span>
+              <h2 class="muted">Weitere Titel folgen</h2>
+              <p class="muted">
+                Ein neues Siegel entsteht bereits im Halbdunkel. Details werden zu gegebener Zeit
+                offengelegt.
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <div class="footer-brand">Grimoire Interactive</div>
+        <p class="footer-meta">© <span data-year>2026</span> · Independent Game Studio</p>
+      </div>
+      <nav class="footer-col" aria-label="Studio">
+        <span class="footer-label">Studio</span>
+        <a href="spiele.html" aria-current="page">Spiele</a>
+        <a href="devlog.html">Devlog</a>
+        <a href="roadmap.html">Roadmap</a>
+        <a href="kontakt.html">Kontakt</a>
+      </nav>
+      <nav class="footer-col" aria-label="Rechtliches">
+        <span class="footer-label">Rechtliches</span>
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutz</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="main.js?v=20260802d" defer></script>
+</body>
+</html>

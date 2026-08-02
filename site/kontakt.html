@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kontakt — Grimoire Interactive</title>
+  <meta name="description" content="Schreib an Grimoire Interactive — Fragen, Feedback und Anliegen zum Studio und zu den Spielen." />
+  <meta name="theme-color" content="#050507" />
+  <link rel="canonical" href="https://grimoire-interactive.de/kontakt" />
+  <link rel="icon" href="assets/studio-icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/studio-icon.png" />
+  <link rel="stylesheet" href="styles.css?v=20260802d" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  <header class="site-nav" data-site-nav>
+    <div class="wrap">
+      <a class="brand-mark" href="index.html" aria-label="Grimoire Interactive — Startseite">
+        <img class="brand-mark__logo" src="assets/studio-icon.png" alt="" width="30" height="30" decoding="async" />
+        <span>Grimoire</span>
+      </a>
+      <button class="nav-toggle" data-nav-toggle aria-label="Navigation umschalten" aria-expanded="false" aria-controls="primary-nav">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <nav aria-label="Hauptnavigation">
+        <ul class="nav-links" id="primary-nav">
+          <li><a href="index.html">Studio</a></li>
+          <li><a href="spiele.html">Spiele</a></li>
+          <li><a href="devlog.html">Devlog</a></li>
+          <li><a href="kontakt.html" aria-current="page">Kontakt</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <header class="page-head">
+      <div class="wrap">
+        <p class="eyebrow" data-rise style="justify-content:center">Schreiben</p>
+        <h1 data-rise data-rise-delay="1">Kontakt</h1>
+        <p class="lede" data-rise data-rise-delay="2">
+          Fragen, Feedback oder ein Anliegen zum Studio — die Nachricht geht an
+          <a href="mailto:kontakt@grimoire-interactive.de">kontakt@grimoire-interactive.de</a>.
+        </p>
+      </div>
+    </header>
+
+    <section class="section section--tight" aria-labelledby="form-title">
+      <div class="wrap contact-wrap" data-rise>
+        <h2 id="form-title">Nachricht</h2>
+        <p class="contact-intro">
+          Die Nachricht wird an unser Studio-Postfach zugestellt und vertraulich behandelt.
+        </p>
+
+        <form class="contact-form" id="contact-form" data-contact-form novalidate>
+          <div class="hp" aria-hidden="true">
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" autocomplete="name" required maxlength="120" placeholder="Dein Name" />
+          </div>
+
+          <div class="field">
+            <label for="email">E-Mail</label>
+            <input id="email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="name@beispiel.de" />
+          </div>
+
+          <div class="field">
+            <label for="subject">Betreff <span class="optional">(optional)</span></label>
+            <input id="subject" name="subject" type="text" maxlength="160" placeholder="Worum geht es?" />
+          </div>
+
+          <div class="field">
+            <label for="message">Nachricht</label>
+            <textarea id="message" name="message" rows="7" required maxlength="5000" placeholder="Schreib uns dein Anliegen …"></textarea>
+          </div>
+
+          <div class="field field--check">
+            <input id="privacy" name="privacy" type="checkbox" required />
+            <label for="privacy">
+              Ich habe die <a href="datenschutz.html">Datenschutzerklärung</a> gelesen und willige ein,
+              dass meine Angaben zur Bearbeitung der Anfrage verarbeitet werden.
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" data-submit>
+              Nachricht senden <span class="arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <p class="form-status" data-form-status role="status" aria-live="polite" hidden></p>
+
+          <p class="form-note">
+            Alternativ per E-Mail an
+            <a href="mailto:kontakt@grimoire-interactive.de">kontakt@grimoire-interactive.de</a>.
+          </p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <div class="footer-brand">Grimoire Interactive</div>
+        <p class="footer-meta">© <span data-year>2026</span> · Independent Game Studio</p>
+      </div>
+      <nav class="footer-col" aria-label="Studio">
+        <span class="footer-label">Studio</span>
+        <a href="spiele.html">Spiele</a>
+        <a href="devlog.html">Devlog</a>
+        <a href="roadmap.html">Roadmap</a>
+        <a href="kontakt.html" aria-current="page">Kontakt</a>
+      </nav>
+      <nav class="footer-col" aria-label="Rechtliches">
+        <span class="footer-label">Rechtliches</span>
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutz</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="main.js?v=20260802d" defer></script>
+</body>
+</html>

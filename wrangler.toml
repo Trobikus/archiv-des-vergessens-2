@@ -1,0 +1,4 @@
+# Cloudflare Pages — Grimoire Interactive studio site (static + optional Functions)
+name = "grimoire-interactive"
+compatibility_date = "2026-08-02"
+pages_build_output_dir = "./site"
