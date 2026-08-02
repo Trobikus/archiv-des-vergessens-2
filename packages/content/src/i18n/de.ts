@@ -180,6 +180,8 @@ export const DE = {
     'auth.registering': 'Erstelle Konto...',
     'auth.rememberMe': 'Benutzername speichern',
     'auth.serverOffline': 'Server ist offline. Bitte versuche es später erneut.',
+    'auth.retryConnection': 'Erneut verbinden',
+    'auth.reconnecting': 'Verbinde erneut…',
     'auth.online': 'Online',
     'auth.offline': 'Offline',
     'auth.cloudSynced': 'Cloud synchron',

@@ -119,4 +119,36 @@ describe("ws-client", () => {
     await expect(client.connect()).rejects.toThrow("WebSocket connection failed");
     expect(client.status()).toBe("disconnected");
   });
+
+  it("allows a later connect after a failed handshake", async () => {
+    let attempt = 0;
+    let lastSocket: FakeSocket | undefined;
+    const WsImpl = vi.fn(function WsImpl() {
+      const socket = new FakeSocket();
+      lastSocket = socket;
+      const current = attempt;
+      attempt += 1;
+      queueMicrotask(() => {
+        if (current === 0) {
+          socket.emit("close");
+          return;
+        }
+        socket.open();
+      });
+      return socket;
+    }) as unknown as typeof WebSocket;
+    Object.assign(WsImpl, { OPEN: 1 });
+
+    const client = createWsClient({
+      url: "ws://test",
+      WebSocketImpl: WsImpl,
+    });
+    await expect(client.connect()).rejects.toThrow("WebSocket connection failed");
+    expect(client.status()).toBe("disconnected");
+
+    await client.connect();
+    expect(client.status()).toBe("open");
+    expect(lastSocket?.readyState).toBe(FakeSocket.OPEN);
+    client.close();
+  });
 });

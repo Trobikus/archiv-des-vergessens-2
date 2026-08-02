@@ -1342,6 +1342,11 @@
   line-height: 1.4;
 }
 
+.login-screen__retry {
+  margin-top: 10px;
+  opacity: 0.92;
+}
+
 /* ---- Options ---- */
 .options-screen {
   pointer-events: auto;

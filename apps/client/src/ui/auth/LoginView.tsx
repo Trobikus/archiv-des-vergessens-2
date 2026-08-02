@@ -1,4 +1,4 @@
-import { useEffect, useState } from "preact/hooks";
+import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 
 import { formatVersionLabel } from "../../app-version";
 import type { AuthService } from "../../services/auth-service";
@@ -16,6 +16,17 @@ type Props = {
 };
 
 type Tab = "login" | "register";
+
+const WS_RETRY_BASE_MS = 2_000;
+const WS_RETRY_MAX_MS = 15_000;
+
+function nextWsRetryDelay(attempt: number): number {
+  const exp = Math.min(
+    WS_RETRY_MAX_MS,
+    WS_RETRY_BASE_MS * 2 ** Math.max(0, attempt),
+  );
+  return exp;
+}
 
 function LoginRuneMarks() {
   const ticks = Array.from({ length: 36 }, (_, index) => {
@@ -237,9 +248,56 @@ export function LoginView({
   const [wsOpen, setWsOpen] = useState(
     () => ws === undefined || ws.status() === "open",
   );
+  const [reconnecting, setReconnecting] = useState(false);
+  const retryAttempt = useRef(0);
+  const retryTimer = useRef<number | null>(null);
+  const reconnectInFlight = useRef(false);
 
   const t = (key: Parameters<I18nService["translate"]>[0]): string =>
     i18n.translate(key);
+
+  const clearRetryTimer = useCallback(() => {
+    if (retryTimer.current !== null) {
+      window.clearTimeout(retryTimer.current);
+      retryTimer.current = null;
+    }
+  }, []);
+
+  const tryReconnect = useCallback(
+    async (options?: { readonly manual?: boolean }): Promise<boolean> => {
+      if (ws === undefined || reconnectInFlight.current) {
+        return ws?.status() === "open";
+      }
+      if (ws.status() === "open") {
+        setWsOpen(true);
+        setReconnecting(false);
+        retryAttempt.current = 0;
+        clearRetryTimer();
+        return true;
+      }
+      reconnectInFlight.current = true;
+      setReconnecting(true);
+      if (options?.manual === true) {
+        clearRetryTimer();
+        setLocalError(null);
+      }
+      try {
+        await ws.connect();
+        setWsOpen(true);
+        setReconnecting(false);
+        retryAttempt.current = 0;
+        clearRetryTimer();
+        return true;
+      } catch {
+        setWsOpen(false);
+        setReconnecting(false);
+        return false;
+      } finally {
+        reconnectInFlight.current = false;
+      }
+    },
+    [clearRetryTimer, ws],
+  );
 
   useEffect(() => {
     if (ws === undefined) {
@@ -247,9 +305,33 @@ export function LoginView({
     }
     setWsOpen(ws.status() === "open");
     return ws.onStatus((status) => {
-      setWsOpen(status === "open");
+      const open = status === "open";
+      setWsOpen(open);
+      if (open) {
+        retryAttempt.current = 0;
+        clearRetryTimer();
+        setReconnecting(false);
+      }
     });
-  }, [ws]);
+  }, [clearRetryTimer, ws]);
+
+  // Auto-retry while the portal is offline so a recovering server unlocks login.
+  useEffect(() => {
+    if (ws === undefined || wsOpen || reconnecting) {
+      return;
+    }
+    clearRetryTimer();
+    const delay = nextWsRetryDelay(retryAttempt.current);
+    retryTimer.current = window.setTimeout(() => {
+      retryAttempt.current += 1;
+      void tryReconnect();
+    }, delay);
+    return clearRetryTimer;
+  }, [clearRetryTimer, reconnecting, tryReconnect, ws, wsOpen]);
+
+  useEffect(() => () => {
+    clearRetryTimer();
+  }, [clearRetryTimer]);
 
   const serverOffline = ws !== undefined && !wsOpen;
 
@@ -294,14 +376,23 @@ export function LoginView({
   }, [isLoggedIn, onQuit, tab]);
 
   const enterRealm = (): void => {
-    if (!realmSelected || enteringRealm || serverOffline) {
+    // Registered sessions may enter offline — core idle play is local;
+    // live social/cloud features stay fail-closed inside the hub.
+    if (!realmSelected || enteringRealm || (!isLoggedIn && serverOffline)) {
       return;
     }
     setEnteringRealm(true);
-    window.setTimeout(() => {
+    const proceed = (): void => {
       onContinue();
       setEnteringRealm(false);
-    }, 420);
+    };
+    if (serverOffline) {
+      void tryReconnect({ manual: true }).finally(() => {
+        window.setTimeout(proceed, 220);
+      });
+      return;
+    }
+    window.setTimeout(proceed, 420);
   };
 
   const submit = async (): Promise<void> => {
@@ -309,8 +400,11 @@ export function LoginView({
     setSuccessMessage(null);
 
     if (serverOffline) {
-      setLocalError(t("auth.serverOffline"));
-      return;
+      const recovered = await tryReconnect({ manual: true });
+      if (!recovered) {
+        setLocalError(t("auth.serverOffline"));
+        return;
+      }
     }
 
     const needsEmail = tab === "register";
@@ -354,6 +448,8 @@ export function LoginView({
   const currentLang = i18n.getLocale();
   const showRegister = tab === "register";
   const formLocked = busy || serverOffline;
+  const showOfflineRetry = serverOffline && !isLoggedIn;
+  const realmEnterBlocked = !realmSelected || enteringRealm;
 
   return (
     <section
@@ -415,7 +511,7 @@ export function LoginView({
                   .join(" ")}
                 data-testid="server-realm-mneme"
                 aria-pressed={realmSelected}
-                disabled={enteringRealm || serverOffline}
+                disabled={enteringRealm}
                 onClick={() => {
                   setRealmSelected(true);
                 }}
@@ -455,9 +551,7 @@ export function LoginView({
                 type="button"
                 class="glass-btn primary w-100 login-screen__cta"
                 data-testid="auth-continue"
-                disabled={
-                  !realmSelected || enteringRealm || serverOffline
-                }
+                disabled={realmEnterBlocked}
                 onClick={enterRealm}
               >
                 {enteringRealm
@@ -493,6 +587,21 @@ export function LoginView({
                   <div>
                     <div class="auth-banner__title">{t("common.error")}</div>
                     <div class="auth-banner__body">{errorText}</div>
+                    {showOfflineRetry ? (
+                      <button
+                        type="button"
+                        class="glass-btn btn-small login-screen__retry"
+                        data-testid="auth-retry-ws"
+                        disabled={reconnecting}
+                        onClick={() => {
+                          void tryReconnect({ manual: true });
+                        }}
+                      >
+                        {reconnecting
+                          ? t("auth.reconnecting")
+                          : t("auth.retryConnection")}
+                      </button>
+                    ) : null}
                   </div>
                 </div>
               ) : null}

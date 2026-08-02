@@ -180,6 +180,8 @@ export const EN = {
     'auth.registering': 'Creating account...',
     'auth.rememberMe': 'Remember username',
     'auth.serverOffline': 'Server is offline. Please try again later.',
+    'auth.retryConnection': 'Retry connection',
+    'auth.reconnecting': 'Reconnecting…',
     'auth.online': 'Online',
     'auth.offline': 'Offline',
     'auth.cloudSynced': 'Cloud synced',
