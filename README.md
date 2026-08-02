@@ -128,14 +128,14 @@ archiv-des-vergessens-2/
 ├─ deploy/
 │  ├─ nginx/             TLS + WSS Reverse-Proxy
 │  └─ caddy/             Alternative Proxy-Config
-├─ site/                 Studio-Website (Cloudflare Pages)
-├─ functions/            Pages Function (www → apex 301)
+├─ site/                 Studio-Website (Workers static assets)
+├─ functions/            www → apex 301 (compiled into site Worker)
 ├─ workers/
 │  └─ contact/           Kontaktformular → kontakt@grimoire-interactive.de
 ├─ design/               Design-Referenzen / Hub-Mocks / Szenen
 ├─ docs/                 Plan, ADRs, Legal, Checklisten
 ├─ .env.example
-├─ wrangler.toml         Cloudflare Pages → ./site
+├─ wrangler.jsonc        Workers + assets → ./site
 ├─ CHANGELOG.md
 └─ README.md
 ```
@@ -304,9 +304,9 @@ Account-Migration: [`tools/migrate-v1-users/`](tools/migrate-v1-users/)
 
 | Thema | Detail |
 |---|---|
-| **Site** | [`site/`](site/) — static HTML, Deploy per Cloudflare Pages (`wrangler.toml`) |
+| **Site** | [`site/`](site/) — static HTML, Deploy per Cloudflare Workers (`npm run deploy:site`) |
 | **Domain** | [https://grimoire-interactive.de/](https://grimoire-interactive.de/) |
-| **www → apex** | [`functions/_middleware.js`](functions/_middleware.js) — 301-Redirect |
+| **www → apex** | [`functions/_middleware.js`](functions/_middleware.js) — 301-Redirect (compiled via `build:site`) |
 | **Kontakt-API** | [`workers/contact/`](workers/contact/) → `kontakt@grimoire-interactive.de` |
 | **Rechtliches (Docs)** | `grimoire.interactive@gmail.com` |
 

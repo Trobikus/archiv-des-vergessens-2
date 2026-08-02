@@ -8,7 +8,9 @@ No build step is required. Open `index.html` directly in a browser, or serve the
 
 ## Deploy
 
-Deploy static assets with Cloudflare Pages (`npx wrangler pages deploy` from the repo root). Pages Functions in `/functions` 301-redirect `www` → apex. The contact form posts to `/api/contact`, handled by the Worker in `workers/contact/` (`npx wrangler deploy` there).
+Deploy as a Cloudflare Worker with static assets (`npm run deploy:site` from the repo root). That compiles Pages Functions in `/functions` (www → apex 301) into `dist/site-worker/`, then runs `wrangler deploy`. The contact form posts to `/api/contact`, handled by the Worker in `workers/contact/` (`npx wrangler deploy` there).
+
+Local preview: `npm run dev:site`.
 
 ## Structure
 

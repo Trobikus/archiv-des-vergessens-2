@@ -25,7 +25,10 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "gate": "node tools/gates/gate.mjs",
-    "migrate:v1-saves": "node --experimental-strip-types tools/migrate-v1-saves/migrate-v1-saves.ts"
+    "migrate:v1-saves": "node --experimental-strip-types tools/migrate-v1-saves/migrate-v1-saves.ts",
+    "build:site": "wrangler pages functions build --outdir=./dist/site-worker/",
+    "dev:site": "npm run build:site && wrangler dev",
+    "deploy:site": "npm run build:site && wrangler deploy"
   },
   "engines": {
     "node": ">=22"
@@ -42,7 +45,8 @@
     "globals": "^16.3.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.0",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "wrangler": "^4.118.0"
   },
   "allowScripts": {
     "esbuild@0.28.1": true,
