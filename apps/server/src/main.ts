@@ -9,10 +9,13 @@ import { loadConfig, type ServerConfig } from "./config";
 import { openDatabase, type AppDatabase } from "./db/open";
 import { createRateLimiter } from "./modules/auth/rate-limit";
 import { sendChatHistory } from "./modules/chat/handlers";
+import { sendFriendUpdate } from "./modules/friends/handlers";
+import { sendGuildUpdate } from "./modules/guild/handlers";
 import { sendLeaderboardUpdate } from "./modules/leaderboard/handlers";
 import { isOriginAllowed, resolveClientIp } from "./net/origins";
 import { routeMessage } from "./net/router";
-import { createSessionStore } from "./net/session";
+import { createSessionStore, type ClientSession } from "./net/session";
+import { hasActiveRegisteredSession } from "./modules/auth/session-guard";
 
 const log = createLogger("server");
 
@@ -67,9 +70,21 @@ export function createGameServer(
     rateLimiter,
     cloudVersion: config.cloudVersion,
     broadcastClients: () => wss.clients,
+    forEachSession: (fn: (ws: WebSocket, session: ClientSession) => void) => {
+      sessions.forEach(fn);
+    },
     onAuthenticated: (ws: WebSocket) => {
       sendChatHistory(ws, stmts);
       sendLeaderboardUpdate(ws, stmts);
+      const session = sessions.get(ws);
+      if (
+        session !== undefined &&
+        session.userId !== null &&
+        hasActiveRegisteredSession(session, stmts)
+      ) {
+        sendFriendUpdate(ws, stmts, session.userId);
+        sendGuildUpdate(ws, stmts, session.userId);
+      }
     },
   };
 

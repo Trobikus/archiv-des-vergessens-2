@@ -45,7 +45,7 @@ Der Client organisiert den Hub in sieben Bereiche: **Archiv** · **Held** · **S
 | **Missionen & Craft** | Quests, Achievements, Daily, Schmiede, Crafting, Bibliothek |
 | **Wissen & Macht** | Talente, Challenges, Codex, Reliktjagd, Account-Tresor |
 | **Story** | Story-Kämpfe, Branches, Dialoge, Intro / Tutorial |
-| **Social** | Globaler Chat & Bestenliste **live** (Server); Freunde & Clan (Idle / Raid / Expedition) **lokal im Client** |
+| **Social** | Globaler Chat, Freunde, Gilde/Gilden-Chat & Bestenliste **live** (Server); NPC-Clan (Idle / Raid / Expedition) **lokal im Client** |
 | **Desktop** | Tauri-2-Shell, Siegel-Portal-Launcher, signierte portable ZIP, Chrome-Lockdown |
 
 ---
@@ -216,7 +216,7 @@ npm run clippy:launcher # Rust-Lint Launcher
 | **HTTP-Banner** | `GET /` → Klartext „Multiplayer-Server läuft“ (kein separates Health-API) |
 
 Server-Module: **Auth**, **Cloud-Save**, **Chat**, **Leaderboard**.  
-Freunde und Clan bleiben clientseitig (lokale Simulation), auch wenn die UI sie im Social-Hub zeigt.
+NPC-Clan bleibt clientseitig (lokale Idle-Simulation). Freunde und Multiplayer-Gilde laufen über WebSocket (registrierte Konten).
 
 Produktionsstart (Beispiel):
 
@@ -239,7 +239,7 @@ TRUST_PROXY=true PORT=8080 npm run start -w @adv/server
 | **4** Server + Auth + Cloud | ✅ | WS-Auth, Cloud-Sync, User-Migrationstool |
 | **5** Tauri + E2E | ✅ | Desktop-Shell, Playwright |
 | **6** Feature-Parität A–F | ✅ | Hub, Quests, Forge, Talente, Story, Tutorial |
-| **7** Social / Live | ✅ | Chat, Freunde, Clan, Leaderboard |
+| **7** Social / Live | ✅ | Chat, Freunde, Gilde, Clan-Idle, Leaderboard |
 | **8** Release-Meilenstein | ✅ | Perf, a11y, Patch Notes, Cutover-Docs |
 | **9** v1-Save-Importer | ✅ | `importV1Save`, Options-UI, CLI `migrate-v1-saves` |
 

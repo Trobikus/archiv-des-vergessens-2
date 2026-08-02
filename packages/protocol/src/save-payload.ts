@@ -201,12 +201,15 @@ export type ClanSave = {
 export type FriendEntrySave = {
   readonly name: string;
   readonly added: number;
+  readonly userId?: string;
 };
 
 export type FriendRequestSave = {
   readonly from: string;
   readonly to: string;
   readonly timestamp: number;
+  readonly fromUserId?: string;
+  readonly toUserId?: string;
 };
 
 export type FriendsSave = {
@@ -654,7 +657,17 @@ function validateFriendEntry(
   if (!isFiniteNumber(value["added"]) || value["added"] < 0) {
     return { ok: false, error: `${path}.added invalid` };
   }
-  return { ok: true, value: { name: value["name"], added: value["added"] } };
+  const userId = value["userId"];
+  if (userId !== undefined && (typeof userId !== "string" || userId.length === 0)) {
+    return { ok: false, error: `${path}.userId invalid` };
+  }
+  return {
+    ok: true,
+    value:
+      typeof userId === "string"
+        ? { name: value["name"], added: value["added"], userId }
+        : { name: value["name"], added: value["added"] },
+  };
 }
 
 function validateFriendRequest(
@@ -673,12 +686,28 @@ function validateFriendRequest(
   if (!isFiniteNumber(value["timestamp"]) || value["timestamp"] < 0) {
     return { ok: false, error: `${path}.timestamp invalid` };
   }
+  const fromUserId = value["fromUserId"];
+  const toUserId = value["toUserId"];
+  if (
+    fromUserId !== undefined &&
+    (typeof fromUserId !== "string" || fromUserId.length === 0)
+  ) {
+    return { ok: false, error: `${path}.fromUserId invalid` };
+  }
+  if (
+    toUserId !== undefined &&
+    (typeof toUserId !== "string" || toUserId.length === 0)
+  ) {
+    return { ok: false, error: `${path}.toUserId invalid` };
+  }
   return {
     ok: true,
     value: {
       from: value["from"],
       to: value["to"],
       timestamp: value["timestamp"],
+      ...(typeof fromUserId === "string" ? { fromUserId } : {}),
+      ...(typeof toUserId === "string" ? { toUserId } : {}),
     },
   };
 }

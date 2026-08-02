@@ -7,6 +7,7 @@ import { createAuthService } from "./auth-service";
 import { createChatService } from "./chat-service";
 import { createFriendService } from "./friend-service";
 import { createGameSession } from "./game-session";
+import { createGuildService } from "./guild-service";
 import { createLeaderboardService } from "./leaderboard-service";
 import { createMemorySaveStorage } from "./save-storage";
 import type { WsClient, WsClientStatus } from "./ws-client";
@@ -196,6 +197,79 @@ describe("phase 7 social services", () => {
     expect(updated.totalBossesDefeated).toBe(25);
     expect(updated.highestLevel).toBe(20);
     expect(updated.highestChapterReached).toBe(3);
+  });
+
+  it("applies friend:update and guild:update from the wire", () => {
+    const store = createStore({ initialState: createInitialGameState() });
+    const eventBus = createEventBus();
+    const ws = createListenerWs();
+    const auth = createAuthService({
+      ws,
+      storage: {
+        getItem: () => null,
+        setItem: () => undefined,
+        removeItem: () => undefined,
+      },
+    });
+    auth.store.setState((prev) => ({
+      ...prev,
+      user: {
+        id: "u1",
+        username: "Tester",
+        email: "t@example.com",
+        avatar: "A",
+        createdAt: 1,
+        lastLogin: 1,
+        isGuest: false,
+      },
+      token: "tok",
+      ready: true,
+      lastError: null,
+    }));
+    const friends = createFriendService(store, eventBus, { ws, auth });
+    const guild = createGuildService(store, eventBus, { ws, auth });
+    const chat = createChatService(store, eventBus, ws);
+
+    ws.emit(WS_EVENTS.FRIEND_UPDATE, {
+      list: [{ userId: "u2", username: "Ada", added: 10 }],
+      pending: [],
+      sent: [],
+    });
+    expect(friends.getFriends()).toHaveLength(1);
+    expect(friends.getFriends()[0]?.name).toBe("Ada");
+
+    ws.emit(WS_EVENTS.GUILD_UPDATE, {
+      guild: {
+        id: "guild_1",
+        name: "Hüter",
+        ownerId: "u1",
+        createdAt: 1,
+      },
+      members: [
+        { userId: "u1", username: "Tester", role: "owner", joinedAt: 1 },
+      ],
+      invites: [],
+      outgoingInvites: [],
+    });
+    expect(guild.getGuild()?.name).toBe("Hüter");
+
+    ws.emit(WS_EVENTS.CHAT_GUILD_MESSAGE, {
+      id: "c1",
+      player: "Tester",
+      message: "Gildenruf",
+      timestamp: 20,
+      type: "guild",
+      guildId: "guild_1",
+    });
+    expect(chat.getClanMessages()[0]?.message).toBe("Gildenruf");
+    expect(chat.getClanMessages()[0]?.type).toBe("guild");
+
+    friends.destroy();
+    guild.destroy();
+    chat.destroy();
+    auth.destroy();
+    eventBus.destroy();
+    store.destroy();
   });
 
   it("surfaces chat:error and leaderboard:error from the wire", () => {

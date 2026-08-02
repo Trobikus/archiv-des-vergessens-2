@@ -8,11 +8,14 @@ export type ClientSession = {
   clientIp: string;
 };
 
-export function createSessionStore(): {
+export type SessionStore = {
   get(ws: WebSocket): ClientSession | undefined;
   set(ws: WebSocket, session: ClientSession): void;
   delete(ws: WebSocket): void;
-} {
+  forEach(fn: (ws: WebSocket, session: ClientSession) => void): void;
+};
+
+export function createSessionStore(): SessionStore {
   const clients = new Map<WebSocket, ClientSession>();
   return {
     get(ws) {
@@ -23,6 +26,11 @@ export function createSessionStore(): {
     },
     delete(ws) {
       clients.delete(ws);
+    },
+    forEach(fn) {
+      for (const [ws, session] of clients) {
+        fn(ws, session);
+      }
     },
   };
 }

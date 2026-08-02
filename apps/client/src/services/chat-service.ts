@@ -27,7 +27,7 @@ export type ChatService = {
   sendClan(text: string): ChatSendResult;
   getGlobalMessages(limit?: number): readonly ChatMessage[];
   getClanMessages(limit?: number): readonly ClanChatMessage[];
-  getHistory(): boolean;
+  getHistory(guildId?: string | null): boolean;
   lastError(): string | null;
   clearError(): void;
   clearGlobal(): void;
@@ -87,10 +87,29 @@ export function createChatService(
   unsubs.push(
     ws.on(WS_EVENTS.CHAT_GLOBAL_MESSAGE, (payload) => {
       const parsed = validateChatMessage(payload);
-      if (!parsed.ok) {
+      if (!parsed.ok || parsed.value.type !== "global") {
         return;
       }
       appendGlobal(parsed.value);
+    }),
+  );
+
+  unsubs.push(
+    ws.on(WS_EVENTS.CHAT_GUILD_MESSAGE, (payload) => {
+      const parsed = validateChatMessage(payload);
+      if (!parsed.ok || parsed.value.type !== "guild") {
+        return;
+      }
+      appendClan({
+        id: parsed.value.id,
+        player: parsed.value.player,
+        message: parsed.value.message,
+        timestamp: parsed.value.timestamp,
+        type: "guild",
+        ...(typeof parsed.value.guildId === "string"
+          ? { guildId: parsed.value.guildId }
+          : {}),
+      });
     }),
   );
 
@@ -101,11 +120,30 @@ export function createChatService(
         return;
       }
       setError(null);
+      const globalMsgs = parsed.value.messages.filter(
+        (msg) => msg.type === "global",
+      );
+      const guildMsgs = parsed.value.messages
+        .filter((msg) => msg.type === "guild")
+        .map((msg): ClanChatMessage => {
+          return {
+            id: msg.id,
+            player: msg.player,
+            message: msg.message,
+            timestamp: msg.timestamp,
+            type: "guild",
+            ...(typeof msg.guildId === "string" ? { guildId: msg.guildId } : {}),
+          };
+        });
       store.setState((prev) => ({
         ...prev,
         chat: {
-          ...prev.chat,
-          global: trimMessages(parsed.value.messages),
+          global:
+            globalMsgs.length > 0
+              ? trimMessages(globalMsgs)
+              : prev.chat.global,
+          clan:
+            guildMsgs.length > 0 ? trimMessages(guildMsgs) : prev.chat.clan,
         },
       }));
       eventBus.publish("chat:history", { messages: parsed.value.messages });
@@ -155,13 +193,32 @@ export function createChatService(
         setError(message);
         return { success: false, message };
       }
+
+      const guildId = store.getState().guild.guild?.id ?? null;
+      if (
+        guildId !== null &&
+        ws.status() === "open" &&
+        ws.send(WS_EVENTS.CHAT_GUILD, { message: clean })
+      ) {
+        setError(null);
+        return { success: true };
+      }
+
+      if (guildId === null && ws.status() === "open") {
+        const message =
+          "Tritt einer Gilde bei, um den Gilden-Chat zu nutzen.";
+        setError(message);
+        return { success: false, message };
+      }
+
       const player = store.getState().hero.name || "Gast";
       appendClan({
         id: createLocalId(),
         player,
         message: clean,
         timestamp: Date.now(),
-        type: "clan",
+        type: guildId !== null ? "guild" : "clan",
+        ...(guildId !== null ? { guildId } : {}),
       });
       setError(null);
       return { success: true };
@@ -175,9 +232,12 @@ export function createChatService(
       return store.getState().chat.clan.slice(-limit);
     },
 
-    getHistory() {
+    getHistory(guildId) {
       if (ws.status() !== "open") {
         return false;
+      }
+      if (typeof guildId === "string" && guildId.length > 0) {
+        return ws.send(WS_EVENTS.CHAT_GET_HISTORY, { guildId });
       }
       return ws.send(WS_EVENTS.CHAT_GET_HISTORY, {});
     },

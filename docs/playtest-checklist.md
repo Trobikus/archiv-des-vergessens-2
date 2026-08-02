@@ -69,15 +69,16 @@ DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei gr�nem `npm
 - [x] Phase-6-Service-Tests + `npm run gate` gr�n
 - [ ] Tag `v2-phase6` nach Freigabe
 
-## Phase 7 ? Social/Live ??
+## Phase 7 — Social/Live
 
 - [x] Globaler Chat: senden, Broadcast, History; Offline-Fallback lokal
-- [x] Leaderboard: pers�nliche Rekorde + globales Top-10 (nur registriert submit)
-- [x] Freunde: Anfragen/Accept-Sim/Entfernen (lokal)
-- [x] Clan: Rekrutieren (`#clan-recruit-panel`), Produktion, Expedition, Raid
+- [x] Leaderboard: persönliche Rekorde + globales Top-10 (nur registriert submit)
+- [x] Freunde: Multiplayer Anfragen/Accept/Entfernen (+ Offline-Sim-Fallback)
+- [x] Gilde: Create/Invite/Accept, Gilden-Chat + History (registriert)
+- [x] Clan: Rekrutieren (`#clan-recruit-panel`), Produktion, Expedition, Raid (NPC idle)
 - [x] Clan-Offline-Produktion im Boot-Report
-- [x] Server-Module + Protocol-Docs; Phase-7-Tests gr�n
-- [x] Playtest-Abdeckung: 2-Client Chat-Broadcast + registrierter LB-Submit/Jump-Limits; Clan/Freunde offline (inkl. Expedition/Raid/Offline-Produktion)
+- [x] Server-Module + Protocol-Docs; Phase-7-Tests grün
+- [x] Playtest-Abdeckung: 2-Client Chat-Broadcast + Friend/Guild E2E + LB Jump-Limits; Clan offline
 - [x] Tag `v2-phase7` nach Freigabe
 
 ## Phase 8 — Härtung → Release 2.0.0

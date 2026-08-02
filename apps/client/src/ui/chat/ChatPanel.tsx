@@ -27,6 +27,17 @@ export function ChatPanel({ session }: Props) {
     };
   }, [session]);
 
+  useEffect(() => {
+    if (tab === "global") {
+      session.chat.getHistory();
+      return;
+    }
+    const guildId = state.guild.guild?.id;
+    if (typeof guildId === "string") {
+      session.chat.getHistory(guildId);
+    }
+  }, [session, tab, state.guild.guild?.id]);
+
   const messages =
     tab === "global"
       ? session.chat.getGlobalMessages(100)
@@ -72,7 +83,7 @@ export function ChatPanel({ session }: Props) {
             setTab("clan");
           }}
         >
-          Clan
+          Gilde
         </button>
       </div>
 

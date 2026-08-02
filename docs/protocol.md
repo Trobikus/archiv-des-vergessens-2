@@ -51,11 +51,13 @@ Server validates envelope + Phase2 payload before upsert. Size cap: 240 KiB. Gue
 |---|---|---|
 | `chat:global` | C→S | `{ message }` (sanitized ≤200, requires session `userId`) |
 | `chat:globalMessage` | S→C (broadcast) | `{ id, player, message, timestamp, type: "global" }` |
+| `chat:guild` | C→S | `{ message }` — registered + guild member |
+| `chat:guildMessage` | S→C (guild members) | `{ id, player, message, timestamp, type: "guild", guildId }` |
 | `chat:getHistory` | C→S | `{ guildId?: string \| null }` |
-| `chat:history` | S→C | `{ messages: ChatMessage[] }` (last 50 global) |
+| `chat:history` | S→C | `{ messages: ChatMessage[] }` (last 50 global or guild) |
 | `chat:error` | S→C | `{ error }` |
 
-Guild history is rejected until server-side membership exists. Clan chat stays client-local.
+Guild history requires an active registered session and membership in `guildId`. Offline clan-tab messages may still fall back to local client state.
 
 ## Leaderboard events (Phase 7)
 
@@ -68,6 +70,27 @@ Guild history is rejected until server-side membership exists. Clan chat stays c
 
 Server clamps values, rejects implausible jumps (+50 prestige / +200 bosses / +1000 level), and upserts with `MAX()`. Rank: prestige DESC, bosses DESC, level DESC.
 
-## Friends / Clan
+## Friends events (Phase 7 multiplayer)
 
-Local client simulation (parity with v1). Persisted in the save envelope (`friends`, `clan`, personal `leaderboard` records). No multiplayer WS yet.
+| Event | Dir | Payload |
+|---|---|---|
+| `friend:request` | C→S | `{ username }` — registered only |
+| `friend:accept` / `friend:decline` / `friend:cancel` / `friend:remove` | C→S | `{ username }` |
+| `friend:list` | C→S | `{}` |
+| `friend:update` | S→C | `{ list, pending, sent }` |
+| `friend:error` | S→C | `{ error }` |
+
+Server tables: `friend_requests`, `friendships`. Cap: 50 friends. Offline/guest clients keep the local simulation fallback.
+
+## Guild events (Phase 7 multiplayer)
+
+| Event | Dir | Payload |
+|---|---|---|
+| `guild:create` | C→S | `{ name }` (≥3 chars) |
+| `guild:invite` / `guild:kick` | C→S | `{ username }` — owner only for invite/kick |
+| `guild:acceptInvite` / `guild:declineInvite` | C→S | `{ guildId }` |
+| `guild:leave` / `guild:disband` / `guild:get` | C→S | `{}` |
+| `guild:update` | S→C | `{ guild, members, invites, outgoingInvites }` |
+| `guild:error` | S→C | `{ error }` |
+
+Server tables: `guilds`, `guild_members` (one guild per user), `guild_invites`. Cap: 20 members. NPC Clan idle gameplay remains a separate local save-slice (`clan`).

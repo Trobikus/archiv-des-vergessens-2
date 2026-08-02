@@ -13,6 +13,7 @@ import { CodexPanel } from "./codex/CodexPanel";
 import { CraftingPanel } from "./crafting/CraftingPanel";
 import { ForgePanel } from "./forge/ForgePanel";
 import { FriendsPanel } from "./friends/FriendsPanel";
+import { GuildPanel } from "./guild/GuildPanel";
 import { HeroPanel, type HeroSubTab } from "./hero/HeroPanel";
 import { LeaderboardPanel } from "./leaderboard/LeaderboardPanel";
 import { LibraryPanel } from "./library/LibraryPanel";
@@ -41,7 +42,7 @@ type StoryNavId = "fights" | "challenges" | "analytics";
 type MissionsNavId = "quests" | "achievements";
 type WorkshopNavId = "forge" | "crafting" | "library";
 type CollectionNavId = "relicHunt" | "codex";
-type SocialNavId = "chat" | "friends" | "clan" | "leaderboard";
+type SocialNavId = "chat" | "friends" | "guild" | "clan" | "leaderboard";
 
 type CategoryDef = {
   readonly id: CategoryId;
@@ -284,6 +285,7 @@ export function GameView({ session }: Props) {
             [
               ["chat", "hub.chat", "tab-chat"],
               ["friends", "hub.friends", "tab-friends"],
+              ["guild", "hub.guild", "tab-guild"],
               ["clan", "hub.clan", "tab-clan"],
               ["leaderboard", "hub.leaderboard", "tab-leaderboard"],
             ] as const
@@ -396,6 +398,9 @@ export function GameView({ session }: Props) {
             ) : null}
             {category === "social" && socialNav === "friends" ? (
               <FriendsPanel session={session} />
+            ) : null}
+            {category === "social" && socialNav === "guild" ? (
+              <GuildPanel session={session} />
             ) : null}
             {category === "social" && socialNav === "clan" ? (
               <ClanPanel session={session} />

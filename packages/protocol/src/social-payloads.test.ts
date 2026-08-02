@@ -4,8 +4,13 @@ import {
   validateChatErrorPayload,
   validateChatGetHistoryPayload,
   validateChatGlobalPayload,
+  validateChatGuildPayload,
   validateChatHistoryPayload,
   validateChatMessage,
+  validateFriendUpdatePayload,
+  validateFriendUsernamePayload,
+  validateGuildCreatePayload,
+  validateGuildUpdatePayload,
   validateLeaderboardErrorPayload,
   validateLeaderboardSubmitPayload,
   validateLeaderboardUpdatePayload,
@@ -15,6 +20,11 @@ describe("social payloads", () => {
   it("validates chat:global", () => {
     expect(validateChatGlobalPayload({ message: "Hallo" }).ok).toBe(true);
     expect(validateChatGlobalPayload({ message: 1 }).ok).toBe(false);
+  });
+
+  it("validates chat:guild", () => {
+    expect(validateChatGuildPayload({ message: "Gilde hi" }).ok).toBe(true);
+    expect(validateChatGuildPayload({ message: 1 }).ok).toBe(false);
   });
 
   it("validates chat history messages", () => {
@@ -30,6 +40,36 @@ describe("social payloads", () => {
     expect(
       validateChatHistoryPayload({ messages: [{ ...msg, type: "clan" }] }).ok,
     ).toBe(false);
+    const guildMsg = {
+      ...msg,
+      type: "guild" as const,
+      guildId: "g1",
+    };
+    expect(validateChatMessage(guildMsg).ok).toBe(true);
+    expect(
+      validateChatMessage({ ...msg, type: "guild" as const }).ok,
+    ).toBe(false);
+  });
+
+  it("validates friend and guild payloads", () => {
+    expect(validateFriendUsernamePayload({ username: "Ada" }).ok).toBe(true);
+    expect(validateFriendUsernamePayload({ username: "" }).ok).toBe(false);
+    expect(
+      validateFriendUpdatePayload({
+        list: [{ userId: "u1", username: "Ada", added: 1 }],
+        pending: [],
+        sent: [],
+      }).ok,
+    ).toBe(true);
+    expect(validateGuildCreatePayload({ name: "Hüter" }).ok).toBe(true);
+    expect(
+      validateGuildUpdatePayload({
+        guild: null,
+        members: [],
+        invites: [],
+        outgoingInvites: [],
+      }).ok,
+    ).toBe(true);
   });
 
   it("validates chat:getHistory guildId", () => {

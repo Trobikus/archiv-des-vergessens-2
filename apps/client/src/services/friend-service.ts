@@ -1,7 +1,16 @@
 import type { EventBus, Store } from "@adv/core";
+import {
+  validateFriendErrorPayload,
+  validateFriendUpdatePayload,
+  WS_EVENTS,
+  type FriendEntry,
+  type FriendRequestEntry,
+} from "@adv/protocol";
 
 import type { GameState } from "../state/game-state";
+import type { AuthService } from "./auth-service";
 import { sanitizeClientText } from "./sanitize-client-text";
+import type { WsClient } from "./ws-client";
 
 const MAX_FRIENDS = 50;
 const SIMULATED_NAMES = [
@@ -27,6 +36,9 @@ export type FriendService = {
   cancelSentRequest(name: string): FriendActionResult;
   removeFriend(name: string): FriendActionResult;
   simulateIncomingRequest(name: string): void;
+  sync(): boolean;
+  lastError(): string | null;
+  clearError(): void;
   getFriends(): GameState["friends"]["list"];
   getPendingRequests(): GameState["friends"]["pending"];
   getSentRequests(): GameState["friends"]["sent"];
@@ -40,7 +52,29 @@ export type FriendServiceOptions = {
   ) => ReturnType<typeof setTimeout>;
   readonly clearSchedule?: (id: ReturnType<typeof setTimeout>) => void;
   readonly now?: () => number;
+  readonly ws?: WsClient;
+  readonly auth?: AuthService;
 };
+
+function mapFriendEntry(entry: FriendEntry): GameState["friends"]["list"][number] {
+  return {
+    name: entry.username,
+    added: entry.added,
+    userId: entry.userId,
+  };
+}
+
+function mapRequest(
+  entry: FriendRequestEntry,
+): GameState["friends"]["pending"][number] {
+  return {
+    from: entry.fromUsername,
+    to: entry.toUsername,
+    timestamp: entry.timestamp,
+    fromUserId: entry.fromUserId,
+    toUserId: entry.toUserId,
+  };
+}
 
 export function createFriendService(
   store: Store<GameState>,
@@ -50,7 +84,62 @@ export function createFriendService(
   const schedule = options.schedule ?? setTimeout;
   const clearSchedule = options.clearSchedule ?? clearTimeout;
   const nowFn = options.now ?? Date.now;
+  const ws = options.ws;
+  const auth = options.auth;
   const pendingTimers = new Set<ReturnType<typeof setTimeout>>();
+  const unsubs: Array<() => void> = [];
+  let lastError: string | null = null;
+
+  const setError = (message: string | null): void => {
+    lastError = message;
+    if (message !== null) {
+      eventBus.publish("friend:error", { error: message });
+    }
+  };
+
+  const canUseNetwork = (): boolean =>
+    ws !== undefined &&
+    ws.status() === "open" &&
+    auth !== undefined &&
+    auth.isRegistered();
+
+  const applyServerUpdate = (list: readonly FriendEntry[], pending: readonly FriendRequestEntry[], sent: readonly FriendRequestEntry[]): void => {
+    store.setState((prev) => ({
+      ...prev,
+      friends: {
+        list: list.map(mapFriendEntry),
+        pending: pending.map(mapRequest),
+        sent: sent.map(mapRequest),
+      },
+    }));
+    eventBus.publish("friend:update", { list, pending, sent });
+  };
+
+  if (ws !== undefined) {
+    unsubs.push(
+      ws.on(WS_EVENTS.FRIEND_UPDATE, (payload) => {
+        const parsed = validateFriendUpdatePayload(payload);
+        if (!parsed.ok) {
+          return;
+        }
+        setError(null);
+        applyServerUpdate(
+          parsed.value.list,
+          parsed.value.pending,
+          parsed.value.sent,
+        );
+      }),
+    );
+    unsubs.push(
+      ws.on(WS_EVENTS.FRIEND_ERROR, (payload) => {
+        const parsed = validateFriendErrorPayload(payload);
+        if (!parsed.ok) {
+          return;
+        }
+        setError(parsed.value.error);
+      }),
+    );
+  }
 
   const scheduleAccept = (cleanName: string): void => {
     const isSimulated = SIMULATED_NAMES.map((n) => n.toLowerCase()).includes(
@@ -90,6 +179,17 @@ export function createFriendService(
           success: false,
           message: "Du kannst dich nicht selbst als Freund hinzufügen.",
         };
+      }
+      if (canUseNetwork() && ws !== undefined) {
+        const sent = ws.send(WS_EVENTS.FRIEND_REQUEST, { username: cleanName });
+        if (!sent) {
+          return {
+            success: false,
+            message: "Verbindung nicht verfügbar.",
+          };
+        }
+        setError(null);
+        return { success: true, message: `Anfrage an ${cleanName} gesendet.` };
       }
       if (state.friends.list.some((f) => f.name === cleanName)) {
         return {
@@ -136,9 +236,17 @@ export function createFriendService(
     },
 
     acceptFriend(name) {
+      const cleanName = sanitizeClientText(name, 50);
+      if (canUseNetwork() && ws !== undefined) {
+        const sent = ws.send(WS_EVENTS.FRIEND_ACCEPT, { username: cleanName });
+        if (!sent) {
+          return { success: false, message: "Verbindung nicht verfügbar." };
+        }
+        setError(null);
+        return { success: true, message: `${cleanName} ist jetzt dein Freund.` };
+      }
       const state = store.getState();
       const playerName = state.hero.name;
-      const cleanName = sanitizeClientText(name, 50);
       const request = state.friends.pending.find(
         (r) => r.from === cleanName && r.to === playerName,
       );
@@ -167,9 +275,20 @@ export function createFriendService(
     },
 
     declineFriendRequest(name) {
+      const cleanName = sanitizeClientText(name, 50);
+      if (canUseNetwork() && ws !== undefined) {
+        const sent = ws.send(WS_EVENTS.FRIEND_DECLINE, { username: cleanName });
+        if (!sent) {
+          return { success: false, message: "Verbindung nicht verfügbar." };
+        }
+        setError(null);
+        return {
+          success: true,
+          message: `Anfrage von ${cleanName} abgelehnt.`,
+        };
+      }
       const state = store.getState();
       const playerName = state.hero.name;
-      const cleanName = sanitizeClientText(name, 50);
       const request = state.friends.pending.find(
         (r) => r.from === cleanName && r.to === playerName,
       );
@@ -194,6 +313,17 @@ export function createFriendService(
 
     cancelSentRequest(name) {
       const cleanName = sanitizeClientText(name, 50);
+      if (canUseNetwork() && ws !== undefined) {
+        const sent = ws.send(WS_EVENTS.FRIEND_CANCEL, { username: cleanName });
+        if (!sent) {
+          return { success: false, message: "Verbindung nicht verfügbar." };
+        }
+        setError(null);
+        return {
+          success: true,
+          message: `Anfrage an ${cleanName} zurückgezogen.`,
+        };
+      }
       const request = store
         .getState()
         .friends.sent.find((r) => r.to === cleanName);
@@ -219,6 +349,14 @@ export function createFriendService(
 
     removeFriend(name) {
       const cleanName = sanitizeClientText(name, 50);
+      if (canUseNetwork() && ws !== undefined) {
+        const sent = ws.send(WS_EVENTS.FRIEND_REMOVE, { username: cleanName });
+        if (!sent) {
+          return { success: false, message: "Verbindung nicht verfügbar." };
+        }
+        setError(null);
+        return { success: true, message: `${cleanName} entfernt.` };
+      }
       if (!store.getState().friends.list.some((f) => f.name === cleanName)) {
         return {
           success: false,
@@ -265,18 +403,31 @@ export function createFriendService(
       });
     },
 
+    sync() {
+      if (!canUseNetwork() || ws === undefined) {
+        return false;
+      }
+      return ws.send(WS_EVENTS.FRIEND_LIST, {});
+    },
+
+    lastError() {
+      return lastError;
+    },
+
+    clearError() {
+      setError(null);
+    },
+
     getFriends() {
       return store.getState().friends.list;
     },
 
     getPendingRequests() {
-      const state = store.getState();
-      return state.friends.pending.filter((r) => r.to === state.hero.name);
+      return store.getState().friends.pending;
     },
 
     getSentRequests() {
-      const state = store.getState();
-      return state.friends.sent.filter((r) => r.from === state.hero.name);
+      return store.getState().friends.sent;
     },
 
     destroy() {
@@ -284,6 +435,10 @@ export function createFriendService(
         clearSchedule(timer);
       }
       pendingTimers.clear();
+      for (const unsub of unsubs) {
+        unsub();
+      }
+      unsubs.length = 0;
     },
   };
 }

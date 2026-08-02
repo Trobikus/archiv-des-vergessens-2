@@ -10,14 +10,18 @@ type Props = {
 export function FriendsPanel({ session }: Props) {
   useStore(session.store);
   const [friendInput, setFriendInput] = useState("");
+  const [status, setStatus] = useState<string | null>(null);
   const friends = session.friends.getFriends();
   const pending = session.friends.getPendingRequests();
   const sent = session.friends.getSentRequests();
+  const error = session.friends.lastError();
 
   const addFriend = (): void => {
     const result = session.friends.addFriend(friendInput);
+    setStatus(result.message);
     if (result.success) {
       setFriendInput("");
+      session.friends.clearError();
     }
   };
 
@@ -25,6 +29,16 @@ export function FriendsPanel({ session }: Props) {
     <section class="hub-panel" data-testid="friends-panel">
       <h2 class="game__heading">{session.i18n.translate("hub.friends")}</h2>
       <p class="game__meta">Verbinde dich mit anderen Hütern des Archivs.</p>
+      {error !== null ? (
+        <p class="game__meta" role="alert" data-testid="friend-error">
+          {error}
+        </p>
+      ) : null}
+      {status !== null && error === null ? (
+        <p class="game__meta" data-testid="friend-status">
+          {status}
+        </p>
+      ) : null}
 
       <div class="game__actions">
         <input

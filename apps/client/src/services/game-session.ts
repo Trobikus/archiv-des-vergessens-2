@@ -70,6 +70,7 @@ import { createDialogService, type DialogService } from "./dialog-service";
 import { createForgeService, type ForgeService } from "./forge-service";
 import { createFriendService, type FriendService } from "./friend-service";
 import { createGatherService, type GatherService } from "./gather-service";
+import { createGuildService, type GuildService } from "./guild-service";
 import { createHeroService, type HeroService } from "./hero-service";
 import { createIdleService, type IdleService } from "./idle-service";
 import { createI18nService, type I18nService } from "./i18n-service";
@@ -134,6 +135,7 @@ export type GameSession = {
   readonly challenges: ChallengeService;
   readonly chat: ChatService;
   readonly friends: FriendService;
+  readonly guild: GuildService;
   readonly clan: ClanService;
   readonly leaderboard: LeaderboardService;
   readonly i18n: I18nService;
@@ -233,7 +235,12 @@ export function createGameSession(
   const auth = createAuthService({ ws });
   const accountVault = createAccountVaultService(store, eventBus, auth);
   const tutorial = createTutorialService(store, eventBus);
-  const friends = createFriendService(store, eventBus, { now: nowFn });
+  const friends = createFriendService(store, eventBus, {
+    now: nowFn,
+    ws,
+    auth,
+  });
+  const guild = createGuildService(store, eventBus, { ws, auth });
   const clan = createClanService(store, eventBus, resources, library);
   const chat = createChatService(store, eventBus, ws);
   const leaderboard = createLeaderboardService(store, eventBus, ws, auth, {
@@ -316,6 +323,7 @@ export function createGameSession(
     challenges,
     chat,
     friends,
+    guild,
     clan,
     leaderboard,
     i18n,
@@ -380,6 +388,12 @@ export function createGameSession(
       if (ws.status() === "open") {
         if (auth.isRegistered()) {
           leaderboard.submit();
+          friends.sync();
+          guild.sync();
+          const guildId = store.getState().guild.guild?.id;
+          if (typeof guildId === "string") {
+            chat.getHistory(guildId);
+          }
         }
         chat.getHistory();
       }
@@ -532,6 +546,7 @@ export function createGameSession(
       combatAnalytics.destroy();
       chat.destroy();
       friends.destroy();
+      guild.destroy();
       clan.destroy();
       leaderboard.destroy();
       eventBus.destroy();

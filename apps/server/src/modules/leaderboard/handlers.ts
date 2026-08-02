@@ -17,6 +17,7 @@ import {
 } from "../../db/schema";
 import { broadcastJson, sendJson } from "../../net/send";
 import type { ClientSession } from "../../net/session";
+import { hasActiveRegisteredSession } from "../auth/session-guard";
 
 export type LeaderboardHandlerDeps = {
   readonly stmts: PreparedStatements;
@@ -31,24 +32,6 @@ type LeaderboardRow = {
   readonly level: number;
   readonly timestamp: number;
 };
-
-function hasActiveRegisteredSession(
-  session: ClientSession,
-  stmts: PreparedStatements,
-): boolean {
-  if (
-    session.userId === null ||
-    session.sessionToken === null ||
-    session.isGuest
-  ) {
-    return false;
-  }
-  const row = stmts.getUserBySession.get(
-    session.userId,
-    session.sessionToken,
-  );
-  return row !== undefined;
-}
 
 export function getTopLeaderboard(
   stmts: PreparedStatements,

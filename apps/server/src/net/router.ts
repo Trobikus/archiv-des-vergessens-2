@@ -10,6 +10,14 @@ import {
   type ChatHandlerDeps,
 } from "../modules/chat/handlers";
 import {
+  handleFriendsMessage,
+  type FriendsHandlerDeps,
+} from "../modules/friends/handlers";
+import {
+  handleGuildMessage,
+  type GuildHandlerDeps,
+} from "../modules/guild/handlers";
+import {
   handleLeaderboardMessage,
   type LeaderboardHandlerDeps,
 } from "../modules/leaderboard/handlers";
@@ -23,7 +31,9 @@ import type { ClientSession } from "./session";
 export type RouterDeps = AuthHandlerDeps &
   SaveHandlerDeps &
   ChatHandlerDeps &
-  LeaderboardHandlerDeps;
+  LeaderboardHandlerDeps &
+  FriendsHandlerDeps &
+  GuildHandlerDeps;
 
 export function routeMessage(
   ws: WebSocket,
@@ -56,6 +66,12 @@ export function routeMessage(
     return;
   }
   if (handleLeaderboardMessage(ws, type, payload, session, deps)) {
+    return;
+  }
+  if (handleFriendsMessage(ws, type, payload, session, deps)) {
+    return;
+  }
+  if (handleGuildMessage(ws, type, payload, session, deps)) {
     return;
   }
   sendJson(ws, WS_EVENTS.ERROR, {

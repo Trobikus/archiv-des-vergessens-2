@@ -229,11 +229,11 @@ Erledigt:
 Chat, Freunde, Clan, Leaderboard — Client + Servermodule, serverseitige Validierung.
 
 Erledigt:
-- [x] Protocol-Events + Validatoren (`chat:*`, `leaderboard:*`)
-- [x] Server: SQLite `chats` / `leaderboard`, Handler, Broadcast, Jump-Limits
-- [x] Client: Chat / Friends / Clan / Leaderboard Services + Hub-UI
+- [x] Protocol-Events + Validatoren (`chat:*`, `leaderboard:*`, `friend:*`, `guild:*`)
+- [x] Server: SQLite `chats` / `leaderboard` / `friend_*` / `guild*`, Handler, Broadcast, Jump-Limits
+- [x] Client: Chat / Friends / Guild / Clan / Leaderboard Services + Hub-UI
 - [x] Save-Slices `friends` / `clan` / `leaderboard` (optional mit Defaults)
-- [x] Clan-Offline-Produktion; Freunde/Clan lokal wie v1
+- [x] Clan-Offline-Produktion (NPC idle); Multiplayer-Freunde + Gilde + Gilden-Chat live
 
 ### Phase 8 — Härtung → Release 2.0.0 (4–6 Tage) ✅
 Perf-Budgets, Leak-Tests, a11y-Basis, Patch Notes, Updater-Rollout, v1-Cutover.

@@ -48,7 +48,8 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | auth-service | 4 | [x] |
 | network-service | 4 | [x] WsClient |
 | chat-service | 7 | [x] |
-| friend-service | 7 | [x] local sim |
+| friend-service | 7 | [x] multiplayer WS + offline local sim fallback |
+| guild-service | 7 | [x] multiplayer create/invite/chat |
 | clan-service | 7 | [x] local idle / raid / expedition |
 | leaderboard-service | 7 | [x] personal + global WS |
 
@@ -80,8 +81,9 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | tutorial/TutorialUI | 6F | [x] |
 | account/* | 4 | [x] AccountBadge + convertGuest |
 | chat/ChatUI | 7 | [x] ChatPanel |
-| friends/FriendsUI | 7 | [x] FriendsPanel |
-| clan/ClanUI | 7 | [x] ClanPanel (`#clan-recruit-panel`) |
+| friends/FriendsUI | 7 | [x] FriendsPanel (multiplayer) |
+| guild/GuildUI | 7 | [x] GuildPanel |
+| clan/ClanUI | 7 | [x] ClanPanel (`#clan-recruit-panel`) NPC idle |
 | leaderboard/LeaderboardUI | 7 | [x] LeaderboardPanel |
 | shared/* (modals, toasts, offline) | 2+ | [x] Offline-Report Banner (Phase 2) |
 | vault/VaultUI | 6E | [x] VaultPanel |

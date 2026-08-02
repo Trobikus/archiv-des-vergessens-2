@@ -161,7 +161,7 @@ describe("phase 7 social server", () => {
     ws.close();
   }, 15_000);
 
-  it("rejects guild chat history and guest leaderboard submit", async () => {
+  it("rejects guild chat history for guests and guest leaderboard submit", async () => {
     const server = await startServer();
     const ws = await connect(server);
     const inbox = attachInbox(ws);
@@ -182,7 +182,9 @@ describe("phase 7 social server", () => {
       }),
     );
     const chatErr = await inbox.waitFor([WS_EVENTS.CHAT_ERROR]);
-    expect(String(chatErr.payload["error"])).toMatch(/Gilden/i);
+    expect(String(chatErr.payload["error"])).toMatch(
+      /registriertes Konto|Zugriff/i,
+    );
 
     ws.send(
       JSON.stringify({
@@ -309,4 +311,149 @@ describe("phase 7 social server", () => {
 
     ws.close();
   }, 20_000);
+
+  async function registerUser(
+    ws: WebSocket,
+    inbox: ReturnType<typeof attachInbox>,
+    username: string,
+  ): Promise<void> {
+    ws.send(
+      JSON.stringify({
+        type: WS_EVENTS.AUTH_REGISTER,
+        payload: {
+          username,
+          email: `${username}@example.com`,
+          password: "secret12",
+        },
+      }),
+    );
+    await inbox.waitFor([WS_EVENTS.AUTH_REGISTER_SUCCESS]);
+    await inbox.waitFor([WS_EVENTS.LEADERBOARD_UPDATE]);
+    await inbox.waitFor([WS_EVENTS.FRIEND_UPDATE]);
+    await inbox.waitFor([WS_EVENTS.GUILD_UPDATE]);
+  }
+
+  it("handles multiplayer friend request accept and remove", async () => {
+    const server = await startServer();
+    const a = await connect(server);
+    const b = await connect(server);
+    const inboxA = attachInbox(a);
+    const inboxB = attachInbox(b);
+    const nameA = `friend_a_${Date.now().toString(36)}`;
+    const nameB = `friend_b_${Date.now().toString(36)}`;
+
+    await registerUser(a, inboxA, nameA);
+    await registerUser(b, inboxB, nameB);
+
+    a.send(
+      JSON.stringify({
+        type: WS_EVENTS.FRIEND_REQUEST,
+        payload: { username: nameB },
+      }),
+    );
+    const sentUpdate = await inboxA.waitFor([WS_EVENTS.FRIEND_UPDATE]);
+    const sent = sentUpdate.payload["sent"] as unknown[];
+    expect(sent.length).toBe(1);
+    const pendingUpdate = await inboxB.waitFor([WS_EVENTS.FRIEND_UPDATE]);
+    const pending = pendingUpdate.payload["pending"] as unknown[];
+    expect(pending.length).toBe(1);
+
+    b.send(
+      JSON.stringify({
+        type: WS_EVENTS.FRIEND_ACCEPT,
+        payload: { username: nameA },
+      }),
+    );
+    const friendsA = await inboxA.waitFor([WS_EVENTS.FRIEND_UPDATE]);
+    const friendsB = await inboxB.waitFor([WS_EVENTS.FRIEND_UPDATE]);
+    expect((friendsA.payload["list"] as unknown[]).length).toBe(1);
+    expect((friendsB.payload["list"] as unknown[]).length).toBe(1);
+
+    a.send(
+      JSON.stringify({
+        type: WS_EVENTS.FRIEND_REMOVE,
+        payload: { username: nameB },
+      }),
+    );
+    const removedA = await inboxA.waitFor([WS_EVENTS.FRIEND_UPDATE]);
+    const removedB = await inboxB.waitFor([WS_EVENTS.FRIEND_UPDATE]);
+    expect((removedA.payload["list"] as unknown[]).length).toBe(0);
+    expect((removedB.payload["list"] as unknown[]).length).toBe(0);
+
+    a.close();
+    b.close();
+  }, 25_000);
+
+  it("supports guild create, invite, chat and history", async () => {
+    const server = await startServer();
+    const owner = await connect(server);
+    const member = await connect(server);
+    const inboxOwner = attachInbox(owner);
+    const inboxMember = attachInbox(member);
+    const ownerName = `guild_o_${Date.now().toString(36)}`;
+    const memberName = `guild_m_${Date.now().toString(36)}`;
+
+    await registerUser(owner, inboxOwner, ownerName);
+    await registerUser(member, inboxMember, memberName);
+
+    owner.send(
+      JSON.stringify({
+        type: WS_EVENTS.GUILD_CREATE,
+        payload: { name: `Hüter ${Date.now().toString(36)}` },
+      }),
+    );
+    const created = await inboxOwner.waitFor([WS_EVENTS.GUILD_UPDATE]);
+    const guild = created.payload["guild"] as { id: string; name: string };
+    expect(guild.id).toMatch(/^guild_/);
+    expect((created.payload["members"] as unknown[]).length).toBe(1);
+
+    owner.send(
+      JSON.stringify({
+        type: WS_EVENTS.GUILD_INVITE,
+        payload: { username: memberName },
+      }),
+    );
+    await inboxOwner.waitFor([WS_EVENTS.GUILD_UPDATE]);
+    const inviteUpdate = await inboxMember.waitFor([WS_EVENTS.GUILD_UPDATE]);
+    expect((inviteUpdate.payload["invites"] as unknown[]).length).toBe(1);
+
+    member.send(
+      JSON.stringify({
+        type: WS_EVENTS.GUILD_ACCEPT_INVITE,
+        payload: { guildId: guild.id },
+      }),
+    );
+    const joinedOwner = await inboxOwner.waitFor([WS_EVENTS.GUILD_UPDATE]);
+    const joinedMember = await inboxMember.waitFor([WS_EVENTS.GUILD_UPDATE]);
+    expect((joinedOwner.payload["members"] as unknown[]).length).toBe(2);
+    expect((joinedMember.payload["guild"] as { id: string }).id).toBe(guild.id);
+
+    owner.send(
+      JSON.stringify({
+        type: WS_EVENTS.CHAT_GUILD,
+        payload: { message: "Willkommen in der Gilde" },
+      }),
+    );
+    const chatOwner = await inboxOwner.waitFor([WS_EVENTS.CHAT_GUILD_MESSAGE]);
+    const chatMember = await inboxMember.waitFor([WS_EVENTS.CHAT_GUILD_MESSAGE]);
+    expect(chatOwner.payload["message"]).toBe("Willkommen in der Gilde");
+    expect(chatMember.payload["message"]).toBe("Willkommen in der Gilde");
+    expect(chatMember.payload["type"]).toBe("guild");
+    expect(chatMember.payload["guildId"]).toBe(guild.id);
+
+    member.send(
+      JSON.stringify({
+        type: WS_EVENTS.CHAT_GET_HISTORY,
+        payload: { guildId: guild.id },
+      }),
+    );
+    const history = await inboxMember.waitFor([WS_EVENTS.CHAT_HISTORY]);
+    const messages = history.payload["messages"] as Array<{ message: string }>;
+    expect(messages.some((m) => m.message === "Willkommen in der Gilde")).toBe(
+      true,
+    );
+
+    owner.close();
+    member.close();
+  }, 30_000);
 });

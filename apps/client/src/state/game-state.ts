@@ -27,6 +27,9 @@ import {
   type EquipmentSave,
   type ForgeSave,
   type FriendsSave,
+  type GuildInfo,
+  type GuildInviteEntry,
+  type GuildMember,
   type HeroSave,
   type ItemSave,
   type LeaderboardSave,
@@ -79,12 +82,20 @@ export type ClanChatMessage = {
   readonly player: string;
   readonly message: string;
   readonly timestamp: number;
-  readonly type: "clan";
+  readonly type: "clan" | "guild";
+  readonly guildId?: string;
 };
 
 export type ChatState = {
   readonly global: readonly ChatMessage[];
   readonly clan: readonly ClanChatMessage[];
+};
+
+export type GuildState = {
+  readonly guild: GuildInfo | null;
+  readonly members: readonly GuildMember[];
+  readonly invites: readonly GuildInviteEntry[];
+  readonly outgoingInvites: readonly GuildInviteEntry[];
 };
 
 export type StatBlock = StatBlockSave;
@@ -180,6 +191,8 @@ export type GameState = {
   readonly leaderboard: LeaderboardState;
   /** Runtime-only; not persisted in save payload. */
   readonly chat: ChatState;
+  /** Runtime-only multiplayer guild; synced from server. */
+  readonly guild: GuildState;
   readonly meta: {
     readonly lastActiveAt: number;
     readonly lastSavedAt: number | null;
@@ -260,6 +273,12 @@ export function createInitialGameState(now = Date.now()): GameState {
     clan: createDefaultClanSave(),
     leaderboard: createDefaultLeaderboardSave(now),
     chat: { global: [], clan: [] },
+    guild: {
+      guild: null,
+      members: [],
+      invites: [],
+      outgoingInvites: [],
+    },
     meta: {
       lastActiveAt: now,
       lastSavedAt: null,
@@ -361,6 +380,12 @@ export function gameStateFromPayload(payload: Phase2SavePayload): GameState {
     clan: payload.clan,
     leaderboard: payload.leaderboard,
     chat: { global: [], clan: [] },
+    guild: {
+      guild: null,
+      members: [],
+      invites: [],
+      outgoingInvites: [],
+    },
     meta: {
       lastActiveAt: payload.meta.lastActiveAt,
       lastSavedAt: null,
