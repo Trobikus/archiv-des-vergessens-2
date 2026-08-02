@@ -53,7 +53,7 @@ DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei grï¿½nem `npm
 ## Phase 5 ? Tauri-Shell + E2E ??
 
 - [x] `@adv/desktop` startet Client im Webview (devUrl 5173 / frontendDist)
-- [x] Identifier `com.grimoire.archivdesvergessens` + Updater-Pubkey/Endpoint aus v1
+- [x] Identifier `com.grimoire.archivdesvergessens2` + Updater-Pubkey/Endpoint aus v1
 - [x] Keine lokale Save-DB / kein Rust-Game-Loop
 - [x] `quit_app` + Safe-Quit ï¿½ber `app:quit-requested` (Client speichert vor Exit)
 - [x] Playwright-Smoke (`npm run e2e`): Intro ? Login, keine pageerrors
@@ -97,5 +97,5 @@ DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei grï¿½nem `npm
 - [x] `importV1Save` mappt IDB-/Cloud-/Inner-State ? validiertes v2-Envelope
 - [x] Options-UI Datei-Import + Confirm
 - [x] CLI `tools/migrate-v1-saves` dry-run/`--apply`
-- [ ] Manueller Playtest: echten v1-Export importieren und Hub/Kampf prüfen
+- [ ] Manueller Playtest: echten v1-Export importieren und Hub/Kampf prï¿½fen
 - [ ] Tag `v2-phase9` nach Freigabe

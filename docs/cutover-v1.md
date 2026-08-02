@@ -36,14 +36,14 @@ Users must re-login (`sessionToken` cleared).
 ## Desktop updater cutover
 
 1. Tag `v2.0.0` (or next SemVer) → `release.yml` builds portable
-   `archiv-des-vergessens.zip` / `.sig` / `ArchivDesVergessens-Launcher.exe`
+   `archiv-des-vergessens-2.zip` / `.sig` / `ArchivDesVergessens2-Launcher.exe`
    (no NSIS / Windows setup EXE)
 2. Publish the GitHub Release (draft → public)
-3. Point players at the **v2 Siegel-Portal launcher** (`ArchivDesVergessens-Launcher.exe`)
+3. Point players at the **v2 Siegel-Portal launcher** (`ArchivDesVergessens2-Launcher.exe`)
    from the v2 release (or announce the new download URL). v1 clients keep using the
    v1 feed until they install via the new launcher.
 4. Portable installs land in the folder chosen in the launcher (default
-   `%APPDATA%\ArchivDesVergessens\app\`) and are updated by the launcher.
+   `%APPDATA%\ArchivDesVergessens2\app\`) and are updated by the launcher.
 
 ## Server cutover
 

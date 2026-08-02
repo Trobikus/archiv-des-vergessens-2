@@ -76,10 +76,10 @@ jobs:
           if (-not (Test-Path $exe)) { throw "Portable EXE fehlt: $exe" }
           $stage = "apps/desktop/src-tauri/target/release/portable-stage"
           New-Item -ItemType Directory -Force -Path $stage | Out-Null
-          Copy-Item $exe (Join-Path $stage "ArchivDesVergessens.exe") -Force
-          $zip = "apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip"
+          Copy-Item $exe (Join-Path $stage "ArchivDesVergessens2.exe") -Force
+          $zip = "apps/desktop/src-tauri/target/release/archiv-des-vergessens-2.zip"
           if (Test-Path $zip) { Remove-Item $zip -Force }
-          Compress-Archive -Path (Join-Path $stage "ArchivDesVergessens.exe") -DestinationPath $zip -Force
+          Compress-Archive -Path (Join-Path $stage "ArchivDesVergessens2.exe") -DestinationPath $zip -Force
 
       - name: Sign portable ZIP
         shell: pwsh
@@ -90,15 +90,15 @@ jobs:
             throw "Secret ED25519_PRIVATE_KEY fehlt (Hex-Key für portable ZIP-Signatur)."
           }
           [IO.File]::WriteAllText("private.key", $env:ED25519_PRIVATE_KEY.Trim())
-          node tools/sign_release.mjs apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip
+          node tools/sign_release.mjs apps/desktop/src-tauri/target/release/archiv-des-vergessens-2.zip
           Remove-Item private.key -Force
 
       - name: Stage portable artifacts
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path release-stage | Out-Null
-          Copy-Item apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip release-stage/ -Force
-          Copy-Item apps/desktop/src-tauri/target/release/archiv-des-vergessens.zip.sig release-stage/ -Force
+          Copy-Item apps/desktop/src-tauri/target/release/archiv-des-vergessens-2.zip release-stage/ -Force
+          Copy-Item apps/desktop/src-tauri/target/release/archiv-des-vergessens-2.zip.sig release-stage/ -Force
 
       - uses: actions/upload-artifact@v4
         with:
@@ -141,14 +141,14 @@ jobs:
         shell: pwsh
         run: |
           $src = "apps/launcher/src-tauri/target/release/archiv-launcher.exe"
-          $dst = "apps/launcher/src-tauri/target/release/ArchivDesVergessens-Launcher.exe"
+          $dst = "apps/launcher/src-tauri/target/release/ArchivDesVergessens2-Launcher.exe"
           if (-not (Test-Path $src)) { throw "Launcher EXE fehlt: $src" }
           Copy-Item $src $dst -Force
 
       - uses: actions/upload-artifact@v4
         with:
           name: launcher-exe
-          path: apps/launcher/src-tauri/target/release/ArchivDesVergessens-Launcher.exe
+          path: apps/launcher/src-tauri/target/release/ArchivDesVergessens2-Launcher.exe
           if-no-files-found: error
 
   publish:
@@ -186,21 +186,23 @@ jobs:
           # without auth. Keep prerelease=false so GitHub treats it as "latest".
           draft: false
           prerelease: false
-          # Launcher first — this is the only player-facing EXE.
+          # Launcher first — this is the only player-facing EXE (v2-only names).
           files: |
-            release-assets/ArchivDesVergessens-Launcher.exe
-            release-assets/archiv-des-vergessens.zip
-            release-assets/archiv-des-vergessens.zip.sig
+            release-assets/ArchivDesVergessens2-Launcher.exe
+            release-assets/archiv-des-vergessens-2.zip
+            release-assets/archiv-des-vergessens-2.zip.sig
           body: |
             ## Archiv des Vergessens ${{ steps.meta.outputs.tag }}
 
             ### Installation
-            1. Lade **`ArchivDesVergessens-Launcher.exe`** herunter und starte sie.
+            1. Lade **`ArchivDesVergessens2-Launcher.exe`** herunter und starte sie.
             2. Wähle den Speicherort, entsiegle das Archiv und optional eine Desktop-Verknüpfung.
             3. Über die Verknüpfung / die Launcher-EXE öffnet sich immer das Siegel-Portal — nicht das Spiel direkt.
 
+            v2 nutzt eigene Pfade (`%APPDATA%\ArchivDesVergessens2\`) und berührt die v1-Installation nicht.
+
             ### Optional
-            - Portable-Paket: `archiv-des-vergessens.zip` (+ `.sig`) für manuelle Installation
+            - Portable-Paket: `archiv-des-vergessens-2.zip` (+ `.sig`) für manuelle Installation
 
             Siehe [CHANGELOG.md](../blob/main/CHANGELOG.md) und
             [docs/patch-notes-2.0.0.md](../blob/main/docs/patch-notes-2.0.0.md).

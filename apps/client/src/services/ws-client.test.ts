@@ -75,7 +75,7 @@ describe("defaultWsUrl", () => {
         store.delete(key);
       },
     });
-    localStorage.setItem("archiv_server_url", "ws://custom.example:9");
+    localStorage.setItem("adv2_server_url", "ws://custom.example:9");
     expect(defaultWsUrl()).toBe("ws://custom.example:9");
   });
 });

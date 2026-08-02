@@ -47,7 +47,7 @@ function readViteEnv(): ViteClientEnv {
 /**
  * Resolve the multiplayer WebSocket URL.
  * Order matches v1 `NetworkService._getServerUrl`:
- * 1. localStorage override (`archiv_server_url`)
+ * 1. localStorage override (`adv2_server_url`) — v2-only key, never v1's `archiv_server_url`
  * 2. `VITE_WS_URL` (baked at build time)
  * 3. Vite DEV on localhost → `ws://localhost:8080`
  * 4. Production / release → encrypted live server
@@ -55,7 +55,7 @@ function readViteEnv(): ViteClientEnv {
 export function defaultWsUrl(): string {
   try {
     if (typeof localStorage !== "undefined") {
-      const custom = localStorage.getItem("archiv_server_url");
+      const custom = localStorage.getItem("adv2_server_url");
       if (typeof custom === "string" && custom.length > 0) {
         return custom;
       }

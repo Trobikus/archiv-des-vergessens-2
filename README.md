@@ -13,11 +13,11 @@
 | | |
 |---|---|
 | **Studio** | [Grimoire Interactive](https://grimoire-interactive.de/) |
-| **Version** | `0.2.2-alpha` · [![release](https://img.shields.io/github/v/release/Trobikus/archiv-des-vergessens-2?include_prereleases&sort=semver&label=release)](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest) [![tag](https://img.shields.io/github/v/tag/Trobikus/archiv-des-vergessens-2?sort=semver&label=tag)](https://github.com/Trobikus/archiv-des-vergessens-2/tags) |
+| **Version** | `0.2.3-alpha` · [![release](https://img.shields.io/github/v/release/Trobikus/archiv-des-vergessens-2?include_prereleases&sort=semver&label=release)](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest) [![tag](https://img.shields.io/github/v/tag/Trobikus/archiv-des-vergessens-2?sort=semver&label=tag)](https://github.com/Trobikus/archiv-des-vergessens-2/tags) |
 | **Stand** | Rewrite-Phasen **0–9** code-seitig fertig · öffentlich **frühe Alpha** |
 | **Stack** | TypeScript strict · Preact · Vite · Tauri 2 · Node WebSocket · SQLite |
 | **Live-Server** | `wss://archiv.grimoire-interactive.de` |
-| **Spieler-Download** | [`ArchivDesVergessens-Launcher.exe`](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest/download/ArchivDesVergessens-Launcher.exe) (Windows, portabel) |
+| **Spieler-Download** | [`ArchivDesVergessens2-Launcher.exe`](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest/download/ArchivDesVergessens2-Launcher.exe) (Windows, portabel) |
 | **Repo** | [Trobikus/archiv-des-vergessens-2](https://github.com/Trobikus/archiv-des-vergessens-2) |
 
 Spieler-Patch Notes (Rewrite-Meilenstein) → [`docs/patch-notes-2.0.0.md`](docs/patch-notes-2.0.0.md)  
@@ -32,7 +32,7 @@ Studio-Site → [grimoire-interactive.de](https://grimoire-interactive.de/)
 
 Die v2-Codebasis ist kein Refactor von v1, sondern ein **kompletter Neuaufbau** mit striktem TypeScript, klaren Paketgrenzen und einer gemeinsamen Protokollschicht für Web und Desktop. Balancing-Zahlen bleiben wortgleich zu v1 (Golden-Snapshot-Gate).
 
-Die veröffentlichte Produktversion ist **`0.2.2-alpha`**. Dokumente mit der Bezeichnung „2.0.0“ beschreiben den Rewrite-Meilenstein (Feature-Parität / Cutover), nicht zwingend die aktuelle GitHub-Release-Nummer.
+Die veröffentlichte Produktversion ist **`0.2.3-alpha`**. Dokumente mit der Bezeichnung „2.0.0“ beschreiben den Rewrite-Meilenstein (Feature-Parität / Cutover), nicht zwingend die aktuelle GitHub-Release-Nummer.
 
 ### Hub & Spielsysteme
 
@@ -209,7 +209,7 @@ npm run clippy:launcher # Rust-Lint Launcher
 |---|---|
 | **Öffentliche WSS-URL** | `wss://archiv.grimoire-interactive.de` |
 | **Lokaler Default** | `ws://localhost:8080` (`PORT`, Default `8080`) |
-| **Runtime-Override** | `localStorage["archiv_server_url"]` |
+| **Runtime-Override** | `localStorage["adv2_server_url"]` |
 | **Build-Zeit** | `VITE_WS_URL` (siehe `.env.example`; in Releases fest gebacken) |
 | **Upstream** | Node lauscht auf `127.0.0.1:8080`; Nginx/Caddy terminieren TLS auf 443 |
 | **Proxy-Vorlagen** | [`deploy/nginx/nginx.conf`](deploy/nginx/nginx.conf) · [`deploy/caddy/Caddyfile`](deploy/caddy/Caddyfile) |
@@ -258,7 +258,7 @@ graph LR
   P8 --> P9["P9 v1 Importer ✅"]
 ```
 
-**Produktstatus danach:** frühe Alpha (`0.2.2-alpha`) — Playtest, Feinschliff, Inhalte.
+**Produktstatus danach:** frühe Alpha (`0.2.3-alpha`) — Playtest, Feinschliff, Inhalte.
 
 Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-checklist.md) · [a11y](docs/a11y-checklist.md) · [Cutover](docs/cutover-v1.md)
 
@@ -268,10 +268,10 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 
 | Thema | Detail |
 |---|---|
-| **App-ID** | `com.grimoire.archivdesvergessens` |
-| **Spieler-EXE** | **`ArchivDesVergessens-Launcher.exe`** — einziger Download für Spieler |
-| **Artifacts** | Launcher · `archiv-des-vergessens.zip` · `.sig` — **kein** NSIS / Windows-Setup |
-| **Installationspfad** | Standard `%APPDATA%\ArchivDesVergessens\app\` (im Launcher wählbar) |
+| **App-ID** | `com.grimoire.archivdesvergessens2` |
+| **Spieler-EXE** | **`ArchivDesVergessens2-Launcher.exe`** — einziger Download für Spieler |
+| **Artifacts** | Launcher · `archiv-des-vergessens-2.zip` · `.sig` — **kein** NSIS / Windows-Setup |
+| **Installationspfad** | Standard `%APPDATA%\ArchivDesVergessens2\app\` (im Launcher wählbar) |
 | **Updates** | Über den Launcher (GitHub Releases, Ed25519-Verify) — nicht über einen NSIS/`latest.json`-Setup-Pfad |
 | **Workflow** | [`.github/workflows/release.yml`](.github/workflows/release.yml) — Tag `v*` oder `workflow_dispatch` |
 | **CI** | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — Gate + Desktop + E2E |

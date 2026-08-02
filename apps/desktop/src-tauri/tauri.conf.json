@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "ArchivDesVergessens",
-  "version": "0.2.2-alpha",
-  "identifier": "com.grimoire.archivdesvergessens",
+  "productName": "ArchivDesVergessens2",
+  "version": "0.2.3-alpha",
+  "identifier": "com.grimoire.archivdesvergessens2",
   "build": {
     "beforeDevCommand": {
       "script": "npm run dev:client",

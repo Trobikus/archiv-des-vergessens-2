@@ -13,11 +13,16 @@ use tauri::{AppHandle, Emitter};
 
 const GITHUB_REPO: &str = "Trobikus/archiv-des-vergessens-2";
 const USER_AGENT_VALUE: &str =
-    concat!("ArchivDesVergessensLauncher/", env!("CARGO_PKG_VERSION"));
+    concat!("ArchivDesVergessens2Launcher/", env!("CARGO_PKG_VERSION"));
 /// Ed25519 verifying key for portable ZIP signatures (v2 release key).
 const RELEASE_PUBKEY_HEX: &str = "1a8208b9aa60550ff38869657b82d88fdf330bb863ab1f1bf1fa7cd4a0cb55cb";
-const ZIP_ASSET_NAME: &str = "archiv-des-vergessens.zip";
+/// Portable ZIP asset name — v2-only; never the v1 `archiv-des-vergessens.zip`.
+const ZIP_ASSET_NAME: &str = "archiv-des-vergessens-2.zip";
 const CONFIG_FILE_NAME: &str = "launcher-config.json";
+/// Roaming AppData folder — must not be the v1 `ArchivDesVergessens` tree.
+const APP_DATA_FOLDER: &str = "ArchivDesVergessens2";
+const GAME_EXE_NAME: &str = "ArchivDesVergessens2.exe";
+const DESKTOP_SHORTCUT_NAME: &str = "Archiv des Vergessens 2.lnk";
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -56,7 +61,7 @@ pub struct InstallPaths {
 fn get_config_dir() -> Result<PathBuf, String> {
     let mut path =
         dirs::data_dir().ok_or_else(|| "Konnte APPDATA-Verzeichnis nicht ermitteln.".to_string())?;
-    path.push("ArchivDesVergessens");
+    path.push(APP_DATA_FOLDER);
     fs::create_dir_all(&path).map_err(|e| e.to_string())?;
     Ok(path)
 }
@@ -66,8 +71,26 @@ fn get_config_path() -> Result<PathBuf, String> {
 }
 
 fn default_install_dir() -> Result<PathBuf, String> {
-    // v2 portable root — keep separate from legacy v1 `%APPDATA%\ArchivDesVergessens\app`.
-    Ok(get_config_dir()?.join("app-v2"))
+    Ok(get_config_dir()?.join("app"))
+}
+
+/// Reject paths under the legacy v1 AppData tree so v1 and v2 never mix.
+fn assert_not_legacy_v1_path(path: &Path) -> Result<(), String> {
+    let normalized = path
+        .to_string_lossy()
+        .replace('/', "\\")
+        .to_ascii_lowercase();
+    // Exact folder segment `\archivdesvergessens\` but not `\archivdesvergessens2\`.
+    if normalized.contains("\\archivdesvergessens\\")
+        || normalized.ends_with("\\archivdesvergessens")
+    {
+        return Err(
+            "Dieser Ordner gehört zur v1-Installation. Bitte einen eigenen v2-Pfad wählen \
+             (Standard: %APPDATA%\\ArchivDesVergessens2\\app)."
+                .to_string(),
+        );
+    }
+    Ok(())
 }
 
 fn load_config() -> LauncherConfig {
@@ -90,7 +113,9 @@ fn resolve_install_dir(config: &LauncherConfig) -> Result<PathBuf, String> {
     if let Some(custom) = config.install_dir.as_ref() {
         let trimmed = custom.trim();
         if !trimmed.is_empty() {
-            return Ok(PathBuf::from(trimmed));
+            let path = PathBuf::from(trimmed);
+            assert_not_legacy_v1_path(&path)?;
+            return Ok(path);
         }
     }
     default_install_dir()
@@ -99,6 +124,7 @@ fn resolve_install_dir(config: &LauncherConfig) -> Result<PathBuf, String> {
 fn get_game_dir() -> Result<PathBuf, String> {
     let config = load_config();
     let path = resolve_install_dir(&config)?;
+    assert_not_legacy_v1_path(&path)?;
     fs::create_dir_all(&path).map_err(|e| e.to_string())?;
     Ok(path)
 }
@@ -109,17 +135,14 @@ fn get_version_file_path() -> Result<PathBuf, String> {
 
 fn get_executable_path() -> Result<PathBuf, String> {
     let dir = get_game_dir()?;
-    for name in [
-        "ArchivDesVergessens.exe",
-        "adv-desktop.exe",
-        "archiv-des-vergessens.exe",
-    ] {
+    // Only the v2 portable binary — never fall back to legacy v1 EXE names.
+    for name in [GAME_EXE_NAME, "adv-desktop.exe"] {
         let candidate = dir.join(name);
         if candidate.exists() {
             return Ok(candidate);
         }
     }
-    Ok(dir.join("ArchivDesVergessens.exe"))
+    Ok(dir.join(GAME_EXE_NAME))
 }
 
 fn game_is_installed() -> bool {
@@ -163,7 +186,7 @@ fn create_windows_shortcut(target: &Path, link_path: &Path, working_dir: &Path) 
          $l = $s.CreateShortcut('{link}'); \
          $l.TargetPath = '{target}'; \
          $l.WorkingDirectory = '{work}'; \
-         $l.Description = 'Archiv des Vergessens — Siegel-Portal'; \
+         $l.Description = 'Archiv des Vergessens 2 — Siegel-Portal'; \
          $l.Save()",
         link = link_str.replace('\'', "''"),
         target = target_str.replace('\'', "''"),
@@ -209,6 +232,7 @@ fn set_install_dir(path: String) -> Result<String, String> {
         return Err("Bitte einen gültigen Speicherort wählen.".to_string());
     }
     let dir = PathBuf::from(trimmed);
+    assert_not_legacy_v1_path(&dir)?;
     fs::create_dir_all(&dir)
         .map_err(|e| format!("Ordner konnte nicht erstellt werden: {e}"))?;
 
@@ -236,7 +260,7 @@ fn create_desktop_shortcut() -> Result<(), String> {
         return Err("Launcher-EXE nicht gefunden.".to_string());
     }
     let desktop = desktop_dir()?;
-    let link = desktop.join("Archiv des Vergessens.lnk");
+    let link = desktop.join(DESKTOP_SHORTCUT_NAME);
     let work_dir = launcher
         .parent()
         .map(Path::to_path_buf)

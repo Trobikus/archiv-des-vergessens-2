@@ -4,8 +4,11 @@ Standalone **Siegel-Portal** launcher for Archiv des Vergessens v2.
 
 This is the **only player-facing EXE**. It asks for an install directory, downloads
 the signed portable ZIP from GitHub Releases, verifies the Ed25519 signature,
-extracts into the chosen folder (default `%APPDATA%\ArchivDesVergessens\app-v2\`),
+extracts into the chosen folder (default `%APPDATA%\ArchivDesVergessens2\app\`),
 optionally creates a **Desktop shortcut to the launcher**, and starts the game.
+
+v2 paths, identifiers, and binary names are fully isolated from v1
+(`%APPDATA%\ArchivDesVergessens\` is rejected as an install target).
 
 ## Commands
 
@@ -20,7 +23,7 @@ Output EXE:
 
 `apps/launcher/src-tauri/target/release/archiv-launcher.exe`
 
-Release renames it to `ArchivDesVergessens-Launcher.exe`.
+Release renames it to `ArchivDesVergessens2-Launcher.exe`.
 
 ## Layout
 
@@ -31,9 +34,9 @@ Release renames it to `ArchivDesVergessens-Launcher.exe`.
 
 | Asset | Role |
 |---|---|
-| `ArchivDesVergessens-Launcher.exe` | Player download (this launcher) |
-| `archiv-des-vergessens.zip` | Portable game (`ArchivDesVergessens.exe`) |
-| `archiv-des-vergessens.zip.sig` | Hex Ed25519 signature |
+| `ArchivDesVergessens2-Launcher.exe` | Player download (this launcher) |
+| `archiv-des-vergessens-2.zip` | Portable game (`ArchivDesVergessens2.exe`) |
+| `archiv-des-vergessens-2.zip.sig` | Hex Ed25519 signature |
 
 No NSIS / Windows setup EXE is published. Updates go through this launcher.
 

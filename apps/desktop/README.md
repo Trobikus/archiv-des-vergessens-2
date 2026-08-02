@@ -20,7 +20,7 @@ npm run build -w @adv/desktop   # production shell (needs client build)
 
 ## Identifier / updater
 
-Ported from v1: `com.grimoire.archivdesvergessens` + minisign pubkey.
+Ported from v1: `com.grimoire.archivdesvergessens2` + minisign pubkey.
 Player distribution is **launcher + portable ZIP** (no NSIS setup EXE).
 `bundle.active` / `createUpdaterArtifacts` stay off — same model as v1.
 Optional in-app updater config may remain for future use; release workflow:
