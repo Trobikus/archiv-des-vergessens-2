@@ -23,6 +23,7 @@ const CONFIG_FILE_NAME: &str = "launcher-config.json";
 const APP_DATA_FOLDER: &str = "ArchivDesVergessens2";
 const GAME_EXE_NAME: &str = "ArchivDesVergessens2.exe";
 const DESKTOP_SHORTCUT_NAME: &str = "Archiv des Vergessens 2.lnk";
+const UNINSTALL_SCRIPT_NAME: &str = "Deinstallieren.cmd";
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -167,6 +168,81 @@ fn launcher_exe_path() -> Result<PathBuf, String> {
 
 fn desktop_dir() -> Result<PathBuf, String> {
     dirs::desktop_dir().ok_or_else(|| "Desktop-Verzeichnis nicht gefunden.".to_string())
+}
+
+fn to_windows_path(path: &Path) -> String {
+    path.to_string_lossy().replace('/', "\\")
+}
+
+/// Writes `Deinstallieren.cmd` into the portable install dir (recreated on every install/update).
+fn write_uninstall_script(game_dir: &Path) -> Result<(), String> {
+    let config_dir = get_config_dir()?;
+    let shortcut = desktop_dir()
+        .map(|d| d.join(DESKTOP_SHORTCUT_NAME))
+        .unwrap_or_else(|_| PathBuf::from(DESKTOP_SHORTCUT_NAME));
+
+    let install_dir = to_windows_path(game_dir);
+    let config_dir = to_windows_path(&config_dir);
+    let shortcut_path = to_windows_path(&shortcut);
+    let config_file = format!("{config_dir}\\{CONFIG_FILE_NAME}");
+    let temp_zip = format!("{config_dir}\\temp_download.zip");
+
+    let script = format!(
+        r#"@echo off
+chcp 65001 >nul
+setlocal
+title Archiv des Vergessens 2 - Deinstallation
+set "INSTALL_DIR={install_dir}"
+set "CONFIG_DIR={config_dir}"
+set "CONFIG_FILE={config_file}"
+set "TEMP_ZIP={temp_zip}"
+set "SHORTCUT={shortcut_path}"
+
+echo.
+echo  Archiv des Vergessens 2 - Deinstallation
+echo  ========================================
+echo.
+echo  Entfernt wird:
+echo    - Spielordner:    %INSTALL_DIR%
+echo    - Launcher-Daten: %CONFIG_DIR%
+echo    - Desktop-Verknuepfung (falls vorhanden)
+echo.
+echo  Nicht entfernt: die heruntergeladene Launcher-EXE selbst.
+echo  v1-Daten unter ArchivDesVergessens bleiben unberuehrt.
+echo.
+set /p CONFIRM=Wirklich deinstallieren? [J/N] 
+if /i not "%CONFIRM%"=="J" if /i not "%CONFIRM%"=="Y" goto :cancel
+
+echo.
+echo Entferne Verknuepfung...
+if exist "%SHORTCUT%" del /f /q "%SHORTCUT%" >nul 2>&1
+
+echo Entferne Launcher-Config...
+if exist "%CONFIG_FILE%" del /f /q "%CONFIG_FILE%" >nul 2>&1
+if exist "%TEMP_ZIP%" del /f /q "%TEMP_ZIP%" >nul 2>&1
+
+echo Entferne Spielordner...
+cd /d "%TEMP%"
+ping -n 2 127.0.0.1 >nul
+if exist "%INSTALL_DIR%" rmdir /s /q "%INSTALL_DIR%"
+if exist "%CONFIG_DIR%" rmdir "%CONFIG_DIR%" >nul 2>&1
+echo.
+echo Deinstallation abgeschlossen.
+pause
+exit /b 0
+
+:cancel
+echo.
+echo Abgebrochen - es wurde nichts entfernt.
+pause
+exit /b 1
+"#
+    );
+
+    let out = game_dir.join(UNINSTALL_SCRIPT_NAME);
+    fs::write(&out, script)
+        .map_err(|e| format!("Deinstallieren.cmd konnte nicht geschrieben werden: {e}"))?;
+    Ok(())
 }
 
 #[cfg(target_os = "windows")]
@@ -584,6 +660,8 @@ async fn download_and_extract_game(
         get_version_file_path()?,
         serde_json::to_string_pretty(&version_data).unwrap_or_default(),
     );
+
+    write_uninstall_script(&game_dir)?;
 
     let _ = app.emit(
         "download_progress",

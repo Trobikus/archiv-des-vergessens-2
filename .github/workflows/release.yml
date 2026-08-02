@@ -200,6 +200,7 @@ jobs:
             3. Über die Verknüpfung / die Launcher-EXE öffnet sich immer das Siegel-Portal — nicht das Spiel direkt.
 
             v2 nutzt eigene Pfade (`%APPDATA%\ArchivDesVergessens2\`) und berührt die v1-Installation nicht.
+            Im Installationsordner liegt `Deinstallieren.cmd` zum sauberen Entfernen.
 
             ### Optional
             - Portable-Paket: `archiv-des-vergessens-2.zip` (+ `.sig`) für manuelle Installation
