@@ -36,8 +36,18 @@
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0, rootMargin: "0px 0px -4% 0px" });
+    }, { threshold: 0, rootMargin: "0px 0px -2% 0px" });
     risers.forEach(function (el) { io.observe(el); });
+    /* Reveal anything already in view (helps short mobile viewports). */
+    requestAnimationFrame(function () {
+      risers.forEach(function (el) {
+        var rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          el.classList.add("in");
+          io.unobserve(el);
+        }
+      });
+    });
   }
 
   var toggle = document.querySelector("[data-nav-toggle]");

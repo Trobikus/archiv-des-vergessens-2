@@ -1,0 +1,17 @@
+# Extensionless canonical URLs
+/index.html           /                       301
+/spiele.html          /spiele                 301
+/devlog.html          /devlog                 301
+/roadmap.html         /roadmap                301
+/faq.html             /faq                    301
+/kontakt.html         /kontakt                301
+/ueber.html           /ueber                  301
+/presse.html          /presse                 301
+/support.html         /support                301
+/impressum.html       /impressum              301
+/datenschutz.html     /datenschutz            301
+/spiele/archiv-des-vergessens.html  /spiele/archiv-des-vergessens  301
+/devlog/alpha-oeffentlich.html  /devlog/alpha-oeffentlich  301
+/devlog/launcher.html           /devlog/launcher           301
+/devlog/stand.html              /devlog/stand              301
+/devlog/transparenz.html        /devlog/transparenz        301

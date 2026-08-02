@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Grimoire Interactive — Devlog</title>
+    <link>https://grimoire-interactive.de/devlog</link>
+    <atom:link href="https://grimoire-interactive.de/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Ehrliche Entwicklungsnotizen zu Archiv des Vergessens und dem Studio.</description>
+    <language>de-de</language>
+    <lastBuildDate>Sun, 02 Aug 2026 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Die Alpha ist öffentlich</title>
+      <link>https://grimoire-interactive.de/devlog/alpha-oeffentlich</link>
+      <guid isPermaLink="true">https://grimoire-interactive.de/devlog/alpha-oeffentlich</guid>
+      <pubDate>Sun, 02 Aug 2026 12:00:00 GMT</pubDate>
+      <description>Die frühe Alpha von Archiv des Vergessens ist öffentlich — unfertig, fehleranfällig und bewusst so kommuniziert.</description>
+    </item>
+    <item>
+      <title>Launcher, Siegel-Portal, erste Builds</title>
+      <link>https://grimoire-interactive.de/devlog/launcher</link>
+      <guid isPermaLink="true">https://grimoire-interactive.de/devlog/launcher</guid>
+      <pubDate>Wed, 15 Jul 2026 12:00:00 GMT</pubDate>
+      <description>Der portable Windows-Launcher (Siegel-Portal) holt die Alpha von GitHub Releases — ohne Store-Account.</description>
+    </item>
+    <item>
+      <title>Was schon trägt — und was noch bricht</title>
+      <link>https://grimoire-interactive.de/devlog/stand</link>
+      <guid isPermaLink="true">https://grimoire-interactive.de/devlog/stand</guid>
+      <pubDate>Mon, 15 Jun 2026 12:00:00 GMT</pubDate>
+      <description>Ehrlicher Stand der Alpha: Idle-Kern und Atmosphäre tragen — Inhaltstiefe und Feinschliff fehlen noch.</description>
+    </item>
+    <item>
+      <title>Warum wir ohne Marketing-Nebel starten</title>
+      <link>https://grimoire-interactive.de/devlog/transparenz</link>
+      <guid isPermaLink="true">https://grimoire-interactive.de/devlog/transparenz</guid>
+      <pubDate>Fri, 15 May 2026 12:00:00 GMT</pubDate>
+      <description>Warum Grimoire Interactive mit sichtbarer Arbeit und klaren Grenzen startet — ohne Fake-Featurelisten.</description>
+    </item>
+  </channel>
+</rss>

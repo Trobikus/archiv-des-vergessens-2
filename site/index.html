@@ -3,30 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Grimoire Interactive — Independent Game Studio</title>
+  <title>Grimoire Interactive — Unabhängiges Game Studio</title>
   <meta name="description" content="Grimoire Interactive ist ein unabhängiges Solo-Entwicklerstudio, das atmosphärische Welten aus Erinnerung und Mythos erschafft." />
   <meta name="theme-color" content="#050507" />
   <link rel="canonical" href="https://grimoire-interactive.de/" />
-  <meta property="og:title" content="Grimoire Interactive" />
+  <meta property="og:title" content="Grimoire Interactive — Unabhängiges Game Studio" />
   <meta property="og:description" content="Ein unabhängiges Studio für atmosphärische Spiele aus Erinnerung und Mythos." />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="de_DE" />
   <meta property="og:url" content="https://grimoire-interactive.de/" />
-  <meta property="og:image" content="https://grimoire-interactive.de/assets/studio-mark.png" />
+  <meta property="og:site_name" content="Grimoire Interactive" />
+  <meta property="og:image" content="https://grimoire-interactive.de/assets/og-studio.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://grimoire-interactive.de/assets/studio-mark.png" />
-  <link rel="icon" href="assets/studio-icon.png" type="image/png" />
-  <link rel="apple-touch-icon" href="assets/studio-icon.png" />
-  <link rel="stylesheet" href="styles.css?v=20260802f" />
+  <meta name="twitter:title" content="Grimoire Interactive — Unabhängiges Game Studio" />
+  <meta name="twitter:description" content="Atmosphärische Spiele aus Erinnerung und Mythos — Solo-Studio, frühe Alpha von Archiv des Vergessens." />
+  <meta name="twitter:image" content="https://grimoire-interactive.de/assets/og-studio.jpg" />
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180" />
+  <link rel="manifest" href="site.webmanifest" />
+
+  <link rel="preload" href="assets/fonts/cinzel-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/source-serif-4-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="styles.css?v=20260802k" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Grimoire Interactive",
-    "url": "https://grimoire-interactive.de/",
-    "email": "kontakt@grimoire-interactive.de",
-    "logo": "https://grimoire-interactive.de/assets/studio-mark.png",
-    "sameAs": []
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "Grimoire Interactive",
+        "url": "https://grimoire-interactive.de/",
+        "inLanguage": "de-DE",
+        "publisher": { "@id": "https://grimoire-interactive.de/#organization" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://grimoire-interactive.de/#organization",
+        "name": "Grimoire Interactive",
+        "url": "https://grimoire-interactive.de/",
+        "email": "kontakt@grimoire-interactive.de",
+        "logo": "https://grimoire-interactive.de/assets/studio-mark.png",
+        "sameAs": ["https://github.com/Trobikus"],
+        "founder": {
+          "@type": "Person",
+          "name": "Max Jotanovic",
+          "url": "https://grimoire-interactive.de/ueber"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "kontakt@grimoire-interactive.de",
+          "contactType": "customer support",
+          "availableLanguage": ["German"]
+        }
+      }
+    ]
   }
   </script>
 </head>
@@ -121,14 +154,17 @@
     <section class="section" id="studio" aria-labelledby="studio-title">
       <div class="wrap split">
         <div class="framed framed--studio" data-rise>
-          <img
-            src="assets/studio-mark.png"
-            alt="Logo von Grimoire Interactive: ein leuchtendes Grimoire mit dem Studionamen darunter."
-            loading="lazy"
-            width="2048"
-            height="1536"
-            decoding="async"
-          />
+          <picture>
+            <source srcset="assets/derived/studio-mark.webp" type="image/webp" />
+            <img
+              src="assets/studio-mark.png"
+              alt="Logo von Grimoire Interactive: ein leuchtendes Grimoire mit dem Studionamen darunter."
+              loading="lazy"
+              width="1200"
+              height="900"
+              decoding="async"
+            />
+          </picture>
         </div>
         <div>
           <p class="eyebrow" data-rise>Über das Studio</p>
@@ -136,9 +172,16 @@
           <p class="lede" data-rise data-rise-delay="2">
             Grimoire Interactive ist ein unabhängiges Ein-Personen-Studio. Hier entstehen ruhige, dichte Spiele
             über das Erinnern und Vergessen — von der ersten Zeile Code bis zum letzten Farbton des Nebels
-            in einer Hand. Kein Publisher, keine Live-Service-Maschine: nur sorgfältig versiegelte Welten,
+            in einer Hand.
+          </p>
+          <p class="lede lede--follow" data-rise data-rise-delay="2">
+            Kein Publisher, keine Live-Service-Maschine: nur sorgfältig versiegelte Welten,
             die darauf warten, geöffnet zu werden.
           </p>
+          <div class="page-links" data-rise data-rise-delay="3">
+            <a class="release-link" href="ueber.html">Mehr über das Studio →</a>
+            <a class="release-link" href="presse.html">Presse-Kit →</a>
+          </div>
         </div>
       </div>
     </section>
@@ -152,26 +195,29 @@
             <p class="lede">
               Atmosphärisches Idle-RPG über den Mneme-Bund — bewusst als frühe Alpha veröffentlicht:
               unfertig, im Wandel, ohne Marketing-Nebelschwade. Fortschritt im
-              <span class="muted">Devlog</span>, Richtung in der <span class="muted">Roadmap</span>.
+              <a href="devlog.html">Devlog</a>, Richtung in der <a href="roadmap.html">Roadmap</a>.
             </p>
             <span class="featured__cta">Zur Alpha <span class="arrow" aria-hidden="true">→</span></span>
           </div>
           <div class="cover-frame">
-            <img
-              src="assets/archiv-cover.png"
-              alt="Cover zu Archiv des Vergessens: ein leuchtendes Runensiegel über einem Archiv aus zerfallenden Erinnerungen."
-              loading="lazy"
-              width="1152"
-              height="1536"
-              decoding="async"
-            />
+            <picture>
+              <source srcset="assets/derived/archiv-cover.webp" type="image/webp" />
+              <img
+                src="assets/archiv-cover.png"
+                alt="Cover zu Archiv des Vergessens: ein leuchtendes Runensiegel über einem Archiv aus zerfallenden Erinnerungen."
+                loading="lazy"
+                width="900"
+                height="1200"
+                decoding="async"
+              />
+            </picture>
           </div>
         </a>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
+    <footer class="site-footer">
     <div class="wrap footer-grid">
       <div>
         <div class="footer-brand">Grimoire Interactive</div>
@@ -182,6 +228,10 @@
         <a href="spiele.html">Spiele</a>
         <a href="devlog.html">Devlog</a>
         <a href="roadmap.html">Roadmap</a>
+        <a href="faq.html">FAQ</a>
+        <a href="ueber.html">Über</a>
+        <a href="presse.html">Presse</a>
+        <a href="support.html">Support</a>
         <a href="kontakt.html">Kontakt</a>
       </nav>
       <nav class="footer-col" aria-label="Rechtliches">
@@ -192,6 +242,6 @@
     </div>
   </footer>
 
-  <script src="main.js?v=20260802f" defer></script>
+  <script src="main.js?v=20260802i" defer></script>
 </body>
 </html>

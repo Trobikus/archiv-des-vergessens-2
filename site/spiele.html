@@ -7,9 +7,25 @@
   <meta name="description" content="Die Spiele von Grimoire Interactive — atmosphärische Welten aus Erinnerung und Mythos." />
   <meta name="theme-color" content="#050507" />
   <link rel="canonical" href="https://grimoire-interactive.de/spiele" />
-  <link rel="icon" href="assets/studio-icon.png" type="image/png" />
-  <link rel="apple-touch-icon" href="assets/studio-icon.png" />
-  <link rel="stylesheet" href="styles.css?v=20260802f" />
+  <meta property="og:title" content="Spiele — Grimoire Interactive" />
+  <meta property="og:description" content="Die Spiele von Grimoire Interactive — atmosphärische Welten aus Erinnerung und Mythos." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://grimoire-interactive.de/spiele" />
+  <meta property="og:locale" content="de_DE" />
+  <meta property="og:site_name" content="Grimoire Interactive" />
+  <meta property="og:image" content="https://grimoire-interactive.de/assets/og-archiv.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Spiele — Grimoire Interactive" />
+  <meta name="twitter:description" content="Die Spiele von Grimoire Interactive — atmosphärische Welten aus Erinnerung und Mythos." />
+  <meta name="twitter:image" content="https://grimoire-interactive.de/assets/og-archiv.jpg" />
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180" />
+  <link rel="manifest" href="site.webmanifest" />
+
+  <link rel="stylesheet" href="styles.css?v=20260802k" />
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -50,14 +66,17 @@
         <ul class="game-list">
           <li class="game-row is-link" data-rise>
             <div class="game-row__art game-row__art--cover">
-              <img
-                src="assets/archiv-cover.png"
-                alt="Cover zu Archiv des Vergessens"
-                width="450"
-                height="600"
-                loading="lazy"
-                decoding="async"
-              />
+              <picture>
+                <source srcset="assets/derived/archiv-cover.webp" type="image/webp" />
+                <img
+                  src="assets/archiv-cover.png"
+                  alt="Cover zu Archiv des Vergessens"
+                  width="450"
+                  height="600"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
             </div>
             <div class="game-row__body">
               <p class="game-row__meta">Idle · RPG · Frühe Alpha</p>
@@ -86,7 +105,7 @@
     </section>
   </main>
 
-  <footer class="site-footer">
+    <footer class="site-footer">
     <div class="wrap footer-grid">
       <div>
         <div class="footer-brand">Grimoire Interactive</div>
@@ -97,6 +116,10 @@
         <a href="spiele.html" aria-current="page">Spiele</a>
         <a href="devlog.html">Devlog</a>
         <a href="roadmap.html">Roadmap</a>
+        <a href="faq.html">FAQ</a>
+        <a href="ueber.html">Über</a>
+        <a href="presse.html">Presse</a>
+        <a href="support.html">Support</a>
         <a href="kontakt.html">Kontakt</a>
       </nav>
       <nav class="footer-col" aria-label="Rechtliches">
@@ -107,6 +130,6 @@
     </div>
   </footer>
 
-  <script src="main.js?v=20260802f" defer></script>
+  <script src="main.js?v=20260802i" defer></script>
 </body>
 </html>

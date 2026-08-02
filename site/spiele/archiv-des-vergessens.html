@@ -6,14 +6,52 @@
   <title>Archiv des Vergessens — Grimoire Interactive</title>
   <meta name="description" content="Archiv des Vergessens — frühe Alpha eines atmosphärischen Idle-RPGs. Noch unfertig, offen kommuniziert. Launcher für Windows." />
   <meta name="theme-color" content="#050507" />
-  <meta property="og:title" content="Archiv des Vergessens — Frühe Alpha" />
-  <meta property="og:description" content="Frühe Alpha eines Idle-RPGs über den Mneme-Bund. Unfertig, fehleranfällig — und bewusst transparent kommuniziert." />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://grimoire-interactive.de/assets/game-banner-archiv.png" />
   <link rel="canonical" href="https://grimoire-interactive.de/spiele/archiv-des-vergessens" />
-  <link rel="icon" href="../assets/studio-icon.png" type="image/png" />
-  <link rel="apple-touch-icon" href="../assets/studio-icon.png" />
-  <link rel="stylesheet" href="../styles.css?v=20260802f" />
+  <meta property="og:title" content="Archiv des Vergessens — Grimoire Interactive" />
+  <meta property="og:description" content="Archiv des Vergessens — frühe Alpha eines atmosphärischen Idle-RPGs. Noch unfertig, offen kommuniziert. Launcher für Windows." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://grimoire-interactive.de/spiele/archiv-des-vergessens" />
+  <meta property="og:locale" content="de_DE" />
+  <meta property="og:site_name" content="Grimoire Interactive" />
+  <meta property="og:image" content="https://grimoire-interactive.de/assets/og-archiv.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Archiv des Vergessens — Grimoire Interactive" />
+  <meta name="twitter:description" content="Archiv des Vergessens — frühe Alpha eines atmosphärischen Idle-RPGs. Noch unfertig, offen kommuniziert. Launcher für Windows." />
+  <meta name="twitter:image" content="https://grimoire-interactive.de/assets/og-archiv.jpg" />
+  <link rel="icon" href="../assets/favicon.ico" sizes="any" />
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" sizes="180x180" />
+  <link rel="manifest" href="../site.webmanifest" />
+
+  <link rel="stylesheet" href="../styles.css?v=20260802k" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Archiv des Vergessens",
+    "description": "Atmosphärisches Idle-RPG über den Mneme-Bund — frühe Alpha.",
+    "url": "https://grimoire-interactive.de/spiele/archiv-des-vergessens",
+    "image": "https://grimoire-interactive.de/assets/og-archiv.jpg",
+    "genre": ["Idle", "RPG"],
+    "gamePlatform": "PC",
+    "operatingSystem": "Windows",
+    "applicationCategory": "Game",
+    "author": {
+      "@type": "Organization",
+      "name": "Grimoire Interactive",
+      "url": "https://grimoire-interactive.de/"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR",
+      "availability": "https://schema.org/OnlineOnly",
+      "url": "https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest"
+    }
+  }
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -50,7 +88,10 @@
             Tritt dem <strong>Mneme-Bund</strong> bei und wache über ein Archiv, das dem Vergessen
             entrissen wurde. In stiller Kulisse aus Kerzenlicht und Abgrund-Nebel bergen deine
             Wächter Erinnerungen, während die Zeit unaufhaltsam weiterläuft — auch dann, wenn du
-            das Portal schließt. Ein ruhiges Idle-RPG über Bewahrung, Verlust und Mythos.
+            das Portal schließt.
+          </p>
+          <p class="blurb blurb--follow" data-rise data-rise-delay="2">
+            Ein ruhiges Idle-RPG über Bewahrung, Verlust und Mythos.
           </p>
           <p class="build-status" data-rise data-rise-delay="3">
             <span class="build-status__label">Stand</span>
@@ -70,6 +111,7 @@
           </p>
           <div class="page-links" data-rise data-rise-delay="5">
             <a class="release-link" href="../roadmap.html">Roadmap →</a>
+            <a class="release-link" href="../faq.html">FAQ →</a>
             <a class="release-link" href="../devlog.html">Devlog →</a>
             <a class="release-link" href="#einblicke">Einblicke →</a>
           </div>
@@ -113,19 +155,22 @@
             <figure class="media-gallery__item">
               <button
                 type="button"
-                data-lightbox="../assets/gallery/shot-archiv-kammer.png"
+                data-lightbox="../assets/derived/shot-archiv-kammer.webp"
                 data-alt="Archivkammer mit Runensiegel im Kerzenlicht"
                 data-caption="Archivkammer — atmosphärischer Einblick (Alpha-Stand)"
               >
                 <span class="media-gallery__frame">
-                  <img
-                    src="../assets/gallery/shot-archiv-kammer.png"
-                    alt="Archivkammer mit Runensiegel im Kerzenlicht"
-                    width="1920"
-                    height="1080"
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  <picture>
+                    <source srcset="../assets/derived/shot-archiv-kammer.webp" type="image/webp" />
+                    <img
+                      src="../assets/gallery/shot-archiv-kammer.png"
+                      alt="Archivkammer mit Runensiegel im Kerzenlicht"
+                      width="1920"
+                      height="1080"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </picture>
                 </span>
                 <span class="media-gallery__zoom" aria-hidden="true">⌕</span>
               </button>
@@ -136,19 +181,22 @@
             <figure class="media-gallery__item">
               <button
                 type="button"
-                data-lightbox="../assets/gallery/shot-mneme-bund.png"
+                data-lightbox="../assets/derived/shot-mneme-bund.webp"
                 data-alt="Mneme-Bund Ansicht mit Erinnerungsfragmenten"
                 data-caption="Mneme-Bund — Richtung der Systeme, noch im Umbau"
               >
                 <span class="media-gallery__frame">
-                  <img
-                    src="../assets/gallery/shot-mneme-bund.png"
-                    alt="Mneme-Bund Ansicht mit Erinnerungsfragmenten"
-                    width="1920"
-                    height="1080"
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  <picture>
+                    <source srcset="../assets/derived/shot-mneme-bund.webp" type="image/webp" />
+                    <img
+                      src="../assets/gallery/shot-mneme-bund.png"
+                      alt="Mneme-Bund Ansicht mit Erinnerungsfragmenten"
+                      width="1920"
+                      height="1080"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </picture>
                 </span>
                 <span class="media-gallery__zoom" aria-hidden="true">⌕</span>
               </button>
@@ -159,19 +207,22 @@
             <figure class="media-gallery__item">
               <button
                 type="button"
-                data-lightbox="../assets/gallery/shot-idle-nebel.png"
+                data-lightbox="../assets/derived/shot-idle-nebel.webp"
                 data-alt="Weite Archivhalle im Abgrund-Nebel"
                 data-caption="Idle im Nebel — Fortschritt auch bei geschlossenem Portal"
               >
                 <span class="media-gallery__frame">
-                  <img
-                    src="../assets/gallery/shot-idle-nebel.png"
-                    alt="Weite Archivhalle im Abgrund-Nebel"
-                    width="1920"
-                    height="1080"
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  <picture>
+                    <source srcset="../assets/derived/shot-idle-nebel.webp" type="image/webp" />
+                    <img
+                      src="../assets/gallery/shot-idle-nebel.png"
+                      alt="Weite Archivhalle im Abgrund-Nebel"
+                      width="1920"
+                      height="1080"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </picture>
                 </span>
                 <span class="media-gallery__zoom" aria-hidden="true">⌕</span>
               </button>
@@ -182,19 +233,22 @@
             <figure class="media-gallery__item">
               <button
                 type="button"
-                data-lightbox="../assets/gallery/shot-keyart.png"
+                data-lightbox="../assets/derived/shot-keyart.webp"
                 data-alt="Key Art mit leuchtendem Runensiegel"
                 data-caption="Key Art — visuelle Leitidee der Alpha"
               >
                 <span class="media-gallery__frame">
-                  <img
-                    src="../assets/gallery/shot-keyart.png"
-                    alt="Key Art mit leuchtendem Runensiegel"
-                    width="1536"
-                    height="1024"
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  <picture>
+                    <source srcset="../assets/derived/shot-keyart.webp" type="image/webp" />
+                    <img
+                      src="../assets/gallery/shot-keyart.png"
+                      alt="Key Art mit leuchtendem Runensiegel"
+                      width="1536"
+                      height="1024"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </picture>
                 </span>
                 <span class="media-gallery__zoom" aria-hidden="true">⌕</span>
               </button>
@@ -205,19 +259,22 @@
             <figure class="media-gallery__item">
               <button
                 type="button"
-                data-lightbox="../assets/gallery/shot-cover.png"
+                data-lightbox="../assets/derived/shot-cover.webp"
                 data-alt="Cover zu Archiv des Vergessens"
                 data-caption="Cover der Alpha — Stand der äußeren Form"
               >
                 <span class="media-gallery__frame">
-                  <img
-                    src="../assets/gallery/shot-cover.png"
-                    alt="Cover zu Archiv des Vergessens"
-                    width="1152"
-                    height="1536"
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  <picture>
+                    <source srcset="../assets/derived/shot-cover.webp" type="image/webp" />
+                    <img
+                      src="../assets/gallery/shot-cover.png"
+                      alt="Cover zu Archiv des Vergessens"
+                      width="1152"
+                      height="1536"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </picture>
                 </span>
                 <span class="media-gallery__zoom" aria-hidden="true">⌕</span>
               </button>
@@ -250,7 +307,7 @@
     </section>
   </main>
 
-  <footer class="site-footer">
+    <footer class="site-footer">
     <div class="wrap footer-grid">
       <div>
         <div class="footer-brand">Grimoire Interactive</div>
@@ -261,6 +318,10 @@
         <a href="../spiele.html" aria-current="page">Spiele</a>
         <a href="../devlog.html">Devlog</a>
         <a href="../roadmap.html">Roadmap</a>
+        <a href="../faq.html">FAQ</a>
+        <a href="../ueber.html">Über</a>
+        <a href="../presse.html">Presse</a>
+        <a href="../support.html">Support</a>
         <a href="../kontakt.html">Kontakt</a>
       </nav>
       <nav class="footer-col" aria-label="Rechtliches">
@@ -271,6 +332,6 @@
     </div>
   </footer>
 
-  <script src="../main.js?v=20260802f" defer></script>
+  <script src="../main.js?v=20260802i" defer></script>
 </body>
 </html>
