@@ -17,7 +17,7 @@ export const DE = {
     'pause.resume': 'Zum Spiel zurück',
     'pause.logOut': 'Ausloggen',
     'pause.exitGame': 'Spiel beenden',
-    'pause.escHint': 'Spielmenü',
+    'pause.escHint': 'Zurück',
 
     // ===== SERVER / REALM SELECT =====
     'serverSelect.title': 'Realm-Auswahl',
@@ -77,6 +77,7 @@ export const DE = {
 
     // ===== HUB / NAVIGATION =====
     'hub.archive': 'Archiv',
+    'hub.fragments': 'Fragmente',
     'hub.hero': 'Held',
     'hub.missions': 'Missionen',
     'hub.workshop': 'Werkstatt',

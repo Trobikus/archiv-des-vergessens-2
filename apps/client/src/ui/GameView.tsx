@@ -259,6 +259,16 @@ export function GameView({ session }: Props) {
         return;
       }
       const key = event.key.toLowerCase();
+      if (key === "r") {
+        event.preventDefault();
+        session.gather.gather();
+        return;
+      }
+      if (key === "f") {
+        event.preventDefault();
+        setCategory("archiv");
+        return;
+      }
       if (key !== "q" && key !== "e") {
         return;
       }
@@ -286,7 +296,7 @@ export function GameView({ session }: Props) {
     return () => {
       window.removeEventListener("keydown", onKey);
     };
-  }, [category, session.story]);
+  }, [category, session.gather, session.story]);
 
   return (
     <main class="game game--cinematic">
@@ -333,6 +343,9 @@ export function GameView({ session }: Props) {
           ))}
           <span class="game__tab-cycle" aria-hidden="true">
             [E]
+          </span>
+          <span class="game__tabs-seal" aria-hidden="true">
+            <BrandSeal />
           </span>
         </nav>
 
@@ -812,14 +825,51 @@ export function GameView({ session }: Props) {
       </div>
 
       <footer class="game__hotkeys" aria-label={t("pause.title")}>
+        <span class="game__hotkeys-flourish" aria-hidden="true" />
         <span class="game__hotkeys-rule" aria-hidden="true">
           <span class="game__hotkeys-rule__line" />
           <span class="game__hotkeys-rule__diamond" />
         </span>
-        <span class="game__hotkey">
-          <kbd>Esc</kbd>
-          <span>{t("pause.escHint")}</span>
-        </span>
+        <div class="game__hotkeys-row">
+          <button
+            type="button"
+            class="game__hotkey"
+            data-testid="hotkey-back"
+            onClick={() => {
+              window.dispatchEvent(
+                new KeyboardEvent("keydown", {
+                  key: "Escape",
+                  bubbles: true,
+                }),
+              );
+            }}
+          >
+            <kbd>Esc</kbd>
+            <span>{t("common.back")}</span>
+          </button>
+          <button
+            type="button"
+            class="game__hotkey game__hotkey--primary"
+            data-testid="hotkey-start"
+            onClick={() => {
+              session.gather.gather();
+            }}
+          >
+            <kbd>R</kbd>
+            <span>{t("common.start")}</span>
+          </button>
+          <button
+            type="button"
+            class="game__hotkey"
+            data-testid="hotkey-fragments"
+            onClick={() => {
+              setCategory("archiv");
+            }}
+          >
+            <kbd>F</kbd>
+            <span>{t("hub.fragments")}</span>
+          </button>
+        </div>
       </footer>
     </main>
   );
