@@ -67,10 +67,10 @@
 .hub-panel {
   display: grid;
   gap: 1rem;
-  padding: 1rem 1.05rem;
+  padding: 1.1rem 1.15rem 1.2rem;
   background: var(--shell-glass-bg);
   border: var(--shell-glass-border);
-  border-radius: var(--border-radius-lg);
+  border-radius: 0;
   box-shadow: var(--shell-glass-shadow);
   backdrop-filter: var(--shell-glass-blur);
   -webkit-backdrop-filter: var(--shell-glass-blur);
@@ -88,10 +88,11 @@
 .hub-card {
   padding: 0.85rem 0.95rem;
   border: var(--shell-glass-border-soft);
-  border-radius: var(--border-radius-lg);
+  border-radius: 0;
   background: var(--shell-glass-bg-soft);
   box-shadow:
     0 8px 22px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(197, 160, 89, 0.1),
     inset 0 0 16px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
@@ -109,8 +110,9 @@
 .hub-card__title {
   margin: 0;
   font-family: var(--font-header);
-  font-size: 0.88rem;
-  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--color-gold-hover);
 }
 
@@ -123,7 +125,7 @@
 .hub-skill-node {
   padding: 0.65rem;
   border: var(--shell-glass-border-soft);
-  border-radius: var(--border-radius-md);
+  border-radius: 0;
   background: rgba(0, 0, 0, 0.35);
   display: grid;
   gap: 0.25rem;
