@@ -23,3 +23,5 @@ You work on **Archiv des Vergessens v2** (`archiv-des-vergessens-2`) with **Gemi
 ## Load skills when relevant
 
 Use `.agents/skills/*/SKILL.md` for the matching domain (safe-change, client-feature, protocol-ws, save-envelope, sim-balancing, i18n-content, server-module, ui-hub, gate-verify, alpha-bugfix).
+
+Cross-tool: root `AGENTS.md`. In Cursor also use `.cursor/skills/` (`safe-ui-patch`, `hard-stop-architecture`, `pre-done-gate`) and obey `.cursor/hooks.json` (branch/force-push/`rm -rf`/gate-skip blocks + high-risk stop audit).
