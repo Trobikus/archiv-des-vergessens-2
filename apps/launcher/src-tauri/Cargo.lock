@@ -69,7 +69,7 @@ dependencies = [
 
 [[package]]
 name = "archiv-launcher"
-version = "0.2.3-alpha"
+version = "0.2.4-alpha"
 dependencies = [
  "dirs 5.0.1",
  "ed25519-dalek",

@@ -5,7 +5,7 @@ All notable changes to Archiv des Vergessens v2 are documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 project follows [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.2.4-alpha] — 2026-08-02
 
 ### Added
 
