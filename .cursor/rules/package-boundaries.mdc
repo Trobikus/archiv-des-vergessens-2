@@ -1,0 +1,33 @@
+---
+description: Enforce ADV monorepo package boundaries and persistence rules
+alwaysApply: true
+---
+
+# Package boundaries (STRICT)
+
+Violating boundaries is a defect, not a style issue.
+
+## Allowed roles
+
+| Area | May contain | Must NOT contain |
+|---|---|---|
+| `@adv/sim` | Pure math, CONFIG, combat/idle formulas | DOM, Preact, I/O, Node APIs, WS |
+| `@adv/content` | Data, i18n strings, content tables | UI components, network, filesystem writes |
+| `@adv/protocol` | Messages, save types, mini-validators (~no zod) | UI, sim math, DB access |
+| `@adv/core` | DI, EventBus, Store, Ticker, Logger, Result | Game UI, protocol transport, SQL |
+| `apps/client` | Preact UI, session, IndexedDB offline queue, WsClient | Server authority, SQLite game DB |
+| `apps/server` | Auth, cloud authority, chat/social, SQLite | Client rendering, Tauri APIs |
+| `apps/desktop` / `apps/launcher` | Tauri shell only | Rust game loop, rusqlite for saves |
+
+## Persistence (non-negotiable)
+
+- **One** save-envelope strategy: client IndexedDB + offline queue; server SQLite = account authority.
+- **No** second game database in Tauri.
+- Balancing numbers stay **v1-identical**. Do not "tune" values. Golden snapshot gate is law.
+- TypeScript strict: no `any`, respect `noUncheckedIndexedAccess`.
+
+## UI / studio
+
+- Studio brand marks: `site/assets/studio-mark.png` / `site/assets/studio-icon.png` only — never revive the old triangle SVG sigil.
+- Game art (`archiv-cover.png`, `keyart.png`, `hero.png`) stays for game/atmosphere contexts only.
+- Preserve existing Hub chrome patterns; do not invent a new visual system mid-task.

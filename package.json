@@ -25,6 +25,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "gate": "node tools/gates/gate.mjs",
+    "gate:lite": "node tools/gates/agent-lite.mjs",
     "migrate:v1-saves": "node --experimental-strip-types tools/migrate-v1-saves/migrate-v1-saves.ts",
     "build:site": "wrangler pages functions build --outdir=./dist/site-worker/",
     "dev:site": "npm run build:site && wrangler dev",
