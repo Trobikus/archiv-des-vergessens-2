@@ -1,4 +1,5 @@
 import type { GameSession } from "../../services/game-session";
+import { Tip } from "../Tip";
 import { useStore } from "../useStore";
 
 type Props = {
@@ -46,17 +47,19 @@ export function ChallengePanel({ session }: Props) {
                   Abort
                 </button>
               ) : (
-                <button
-                  type="button"
-                  class="game__btn game__btn--primary"
-                  data-testid={`start-challenge-${challenge.id}`}
-                  disabled={state.challenges.active !== null}
-                  onClick={() => {
-                    session.challenges.startChallenge(challenge.id);
-                  }}
-                >
-                  Start
-                </button>
+                <Tip text={session.i18n.translate("challenges.startTip")}>
+                  <button
+                    type="button"
+                    class="game__btn game__btn--primary"
+                    data-testid={`start-challenge-${challenge.id}`}
+                    disabled={state.challenges.active !== null}
+                    onClick={() => {
+                      session.challenges.startChallenge(challenge.id);
+                    }}
+                  >
+                    Start
+                  </button>
+                </Tip>
               )}
             </li>
           );

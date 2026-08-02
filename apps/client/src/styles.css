@@ -597,6 +597,28 @@
   transform: translateY(0);
 }
 
+.game__topbar-resources > .tip {
+  z-index: 6;
+}
+
+.game__topbar-resources > .tip > .tip__bubble {
+  left: auto;
+  right: 0;
+  min-width: 10rem;
+  text-align: left;
+}
+
+.game__status-card__tip {
+  display: inline-block;
+}
+
+.phase6-stats > .tip:hover,
+.phase6-stats > .tip:focus-within,
+.game__focus-panel__stats > .tip:hover,
+.game__focus-panel__stats > .tip:focus-within {
+  z-index: 5;
+}
+
 /* ---- Character select (WoW-like structure, Abyss & Gold) ---- */
 .char-select {
   position: absolute;

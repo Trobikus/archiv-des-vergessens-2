@@ -1,11 +1,20 @@
+import type { I18nKey } from "@adv/content";
 import { formatAmount } from "@adv/core";
 
 import type { GameSession } from "../../services/game-session";
+import { Tip } from "../Tip";
 import { useStore } from "../useStore";
 
 type Props = {
   readonly session: GameSession;
 };
+
+const VAULT_RESOURCES = [
+  ["particles", "resource.particles", "resource.tip.particles"],
+  ["relics", "resource.relics", "resource.tip.relics"],
+  ["artifacts", "resource.artifacts", "resource.tip.artifacts"],
+  ["memoryDust", "resource.memoryDust", "resource.tip.memoryDust"],
+] as const satisfies ReadonlyArray<readonly [string, I18nKey, I18nKey]>;
 
 export function VaultPanel({ session }: Props) {
   const state = useStore(session.store);
@@ -13,11 +22,12 @@ export function VaultPanel({ session }: Props) {
   const vault = session.accountVault.getVaultResources();
   const items = session.accountVault.getSharedVaultItems();
   const guestBlocked = authState.user?.isGuest === true;
+  const t = session.i18n.translate.bind(session.i18n);
 
   return (
     <section class="phase6-panel" data-testid="vault-panel">
-      <h2 class="game__heading">{session.i18n.translate("hub.vault")}</h2>
-      <p class="game__meta">{session.i18n.translate("hub.vaultDesc")}</p>
+      <h2 class="game__heading">{t("hub.vault")}</h2>
+      <p class="game__meta">{t("hub.vaultDesc")}</p>
       {guestBlocked ? (
         <p class="phase6-panel__message" data-testid="vault-guest-block">
           Gastkonten können das Account-Lager nicht nutzen.
@@ -25,16 +35,11 @@ export function VaultPanel({ session }: Props) {
       ) : null}
 
       <div class="phase6-vault-grid">
-        {(
-          [
-            ["particles", "Partikel"],
-            ["relics", "Relikte"],
-            ["artifacts", "Artefakte"],
-            ["memoryDust", "Gedächtnisstaub"],
-          ] as const
-        ).map(([key, label]) => (
+        {VAULT_RESOURCES.map(([key, labelKey, tipKey]) => (
           <div key={key} class="phase6-vault-row">
-            <span>{label}</span>
+            <Tip title={t(labelKey)} text={t(tipKey)}>
+              <span>{t(labelKey)}</span>
+            </Tip>
             <span data-testid={`vault-${key}`}>
               {formatAmount(vault[key])}
             </span>

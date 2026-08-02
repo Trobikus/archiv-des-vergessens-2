@@ -1,4 +1,5 @@
 import type { GameSession } from "../../services/game-session";
+import { Tip } from "../Tip";
 import { useStore } from "../useStore";
 
 type Props = {
@@ -11,6 +12,7 @@ export function StoryBranchPanel({ session }: Props) {
   const options = session.storyBranch.getAvailableOptions();
   const affinity = session.storyBranch.getAffinity();
   const progress = session.storyBranch.getProgress();
+  const t = session.i18n.translate.bind(session.i18n);
 
   if (!node) {
     return null;
@@ -18,10 +20,16 @@ export function StoryBranchPanel({ session }: Props) {
 
   return (
     <section class="phase6-panel" data-testid="story-branch-panel">
-      <h3 class="panel__sub">{session.i18n.translate("hub.story")}</h3>
+      <h3 class="panel__sub">{t("hub.story")}</h3>
       <p class="game__meta">
-        {node.title} · {String(progress)}% · Aethel {String(affinity.aethel)} /
-        Lethe {String(affinity.lethe)}
+        {node.title} · {String(progress)}% ·{" "}
+        <Tip title="Aethel" text={t("story.affinityTip.aethel")}>
+          Aethel {String(affinity.aethel)}
+        </Tip>
+        {" / "}
+        <Tip title="Lethe" text={t("story.affinityTip.lethe")}>
+          Lethe {String(affinity.lethe)}
+        </Tip>
       </p>
       <p class="phase6-panel__text">{node.text}</p>
       {node.isEnding ? (
