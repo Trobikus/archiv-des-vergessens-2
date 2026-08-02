@@ -235,11 +235,7 @@ export function createGameSession(
   const auth = createAuthService({ ws });
   const accountVault = createAccountVaultService(store, eventBus, auth);
   const tutorial = createTutorialService(store, eventBus);
-  const friends = createFriendService(store, eventBus, {
-    now: nowFn,
-    ws,
-    auth,
-  });
+  const friends = createFriendService(store, eventBus, { ws, auth });
   const guild = createGuildService(store, eventBus, { ws, auth });
   const clan = createClanService(store, eventBus, resources, library);
   const chat = createChatService(store, eventBus, ws);

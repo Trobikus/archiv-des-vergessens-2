@@ -216,7 +216,7 @@ npm run clippy:launcher # Rust-Lint Launcher
 | **HTTP-Banner** | `GET /` → Klartext „Multiplayer-Server läuft“ (kein separates Health-API) |
 
 Server-Module: **Auth**, **Cloud-Save**, **Chat**, **Leaderboard**.  
-NPC-Clan bleibt clientseitig (lokale Idle-Simulation). Freunde und Multiplayer-Gilde laufen über WebSocket (registrierte Konten).
+NPC-Clan bleibt clientseitiges Idle-Gameplay. Freunde, Gilde und Chat laufen ausschließlich über WebSocket (registrierte Konten) — ohne Client-Simulation.
 
 Produktionsstart (Beispiel):
 

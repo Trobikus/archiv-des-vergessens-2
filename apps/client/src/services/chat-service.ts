@@ -36,10 +36,6 @@ export type ChatService = {
   destroy(): void;
 };
 
-function createLocalId(): string {
-  return `local_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
-}
-
 function trimMessages<T>(messages: readonly T[]): T[] {
   if (messages.length <= MAX_MESSAGES) {
     return [...messages];
@@ -169,19 +165,16 @@ export function createChatService(
         return { success: false, message };
       }
 
-      if (ws.status() === "open" && ws.send(WS_EVENTS.CHAT_GLOBAL, { message: clean })) {
-        setError(null);
-        return { success: true };
+      if (ws.status() !== "open") {
+        const message = "Keine Verbindung zum Server.";
+        setError(message);
+        return { success: false, message };
       }
-
-      const player = store.getState().hero.name || "Gast";
-      appendGlobal({
-        id: createLocalId(),
-        player,
-        message: clean,
-        timestamp: Date.now(),
-        type: "global",
-      });
+      if (!ws.send(WS_EVENTS.CHAT_GLOBAL, { message: clean })) {
+        const message = "Nachricht konnte nicht gesendet werden.";
+        setError(message);
+        return { success: false, message };
+      }
       setError(null);
       return { success: true };
     },
@@ -194,32 +187,25 @@ export function createChatService(
         return { success: false, message };
       }
 
-      const guildId = store.getState().guild.guild?.id ?? null;
-      if (
-        guildId !== null &&
-        ws.status() === "open" &&
-        ws.send(WS_EVENTS.CHAT_GUILD, { message: clean })
-      ) {
-        setError(null);
-        return { success: true };
+      if (ws.status() !== "open") {
+        const message = "Keine Verbindung zum Server.";
+        setError(message);
+        return { success: false, message };
       }
 
-      if (guildId === null && ws.status() === "open") {
+      const guildId = store.getState().guild.guild?.id ?? null;
+      if (guildId === null) {
         const message =
           "Tritt einer Gilde bei, um den Gilden-Chat zu nutzen.";
         setError(message);
         return { success: false, message };
       }
 
-      const player = store.getState().hero.name || "Gast";
-      appendClan({
-        id: createLocalId(),
-        player,
-        message: clean,
-        timestamp: Date.now(),
-        type: guildId !== null ? "guild" : "clan",
-        ...(guildId !== null ? { guildId } : {}),
-      });
+      if (!ws.send(WS_EVENTS.CHAT_GUILD, { message: clean })) {
+        const message = "Nachricht konnte nicht gesendet werden.";
+        setError(message);
+        return { success: false, message };
+      }
       setError(null);
       return { success: true };
     },

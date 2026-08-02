@@ -14,15 +14,22 @@ import type { WsClient, WsClientStatus } from "./ws-client";
 
 function createListenerWs(): WsClient & {
   emit(type: string, payload: Record<string, unknown>): void;
+  readonly sent: Array<{ type: string; payload: Record<string, unknown> }>;
+  setStatus(next: WsClientStatus): void;
 } {
   let status: WsClientStatus = "open";
   const handlers = new Map<
     string,
     Set<(payload: Record<string, unknown>) => void>
   >();
+  const sent: Array<{ type: string; payload: Record<string, unknown> }> = [];
   return {
     url: "ws://fake",
+    sent,
     status: () => status,
+    setStatus(next) {
+      status = next;
+    },
     connect() {
       status = "open";
       return Promise.resolve();
@@ -30,7 +37,11 @@ function createListenerWs(): WsClient & {
     close() {
       status = "disconnected";
     },
-    send() {
+    send(type, payload = {}) {
+      if (status !== "open") {
+        return false;
+      }
+      sent.push({ type, payload });
       return true;
     },
     on(type, handler) {
@@ -62,6 +73,33 @@ function createListenerWs(): WsClient & {
   };
 }
 
+function createRegisteredAuth(ws: WsClient) {
+  const auth = createAuthService({
+    ws,
+    storage: {
+      getItem: () => null,
+      setItem: () => undefined,
+      removeItem: () => undefined,
+    },
+  });
+  auth.store.setState((prev) => ({
+    ...prev,
+    user: {
+      id: "u1",
+      username: "Tester",
+      email: "t@example.com",
+      avatar: "A",
+      createdAt: 1,
+      lastLogin: 1,
+      isGuest: false,
+    },
+    token: "tok",
+    ready: true,
+    lastError: null,
+  }));
+  return auth;
+}
+
 describe("phase 7 social services", () => {
   const sessions: Array<ReturnType<typeof createGameSession>> = [];
 
@@ -89,54 +127,31 @@ describe("phase 7 social services", () => {
     return session;
   }
 
-  it("friend add simulates accept for NPC names after 5s", () => {
-    vi.useFakeTimers();
-    const base = createInitialGameState();
-    const store = createStore({
-      initialState: {
-        ...base,
-        hero: { ...base.hero, name: "Tester" },
-      },
-    });
+  it("friend actions send wire events when registered", () => {
+    const store = createStore({ initialState: createInitialGameState() });
     const eventBus = createEventBus();
-    const friends = createFriendService(store, eventBus);
+    const ws = createListenerWs();
+    const auth = createRegisteredAuth(ws);
+    const friends = createFriendService(store, eventBus, { ws, auth });
 
-    const result = friends.addFriend("Eldor");
-    expect(result.success).toBe(true);
-    expect(friends.getSentRequests()).toHaveLength(1);
-    expect(friends.getFriends()).toHaveLength(0);
-
-    vi.advanceTimersByTime(5_000);
-
-    expect(friends.getSentRequests()).toHaveLength(0);
-    expect(friends.getFriends()).toHaveLength(1);
-    expect(friends.getFriends()[0]?.name).toBe("Eldor");
+    expect(friends.addFriend("Ada").success).toBe(true);
+    expect(ws.sent.some((f) => f.type === WS_EVENTS.FRIEND_REQUEST)).toBe(true);
+    expect(friends.acceptFriend("Ada").success).toBe(true);
+    expect(friends.declineFriendRequest("Ada").success).toBe(true);
+    expect(friends.cancelSentRequest("Ada").success).toBe(true);
+    expect(friends.removeFriend("Ada").success).toBe(true);
 
     friends.destroy();
+    auth.destroy();
     eventBus.destroy();
     store.destroy();
   });
 
-  it("friend accept/decline/cancel/remove work locally", async () => {
+  it("friend actions reject without registered online session", async () => {
     const session = await bootSession();
-    session.friends.simulateIncomingRequest("Chronos");
-    expect(session.friends.getPendingRequests()).toHaveLength(1);
-
-    expect(session.friends.declineFriendRequest("Chronos").success).toBe(true);
-    expect(session.friends.getPendingRequests()).toHaveLength(0);
-
-    session.friends.simulateIncomingRequest("Aria");
-    expect(session.friends.acceptFriend("Aria").success).toBe(true);
-    expect(session.friends.getFriends().some((f) => f.name === "Aria")).toBe(
-      true,
-    );
-
-    expect(session.friends.addFriend("Luminos").success).toBe(true);
-    expect(session.friends.cancelSentRequest("Luminos").success).toBe(true);
-    expect(session.friends.getSentRequests()).toHaveLength(0);
-
-    expect(session.friends.removeFriend("Aria").success).toBe(true);
-    expect(session.friends.getFriends()).toHaveLength(0);
+    expect(session.friends.addFriend("Ada").success).toBe(false);
+    expect(session.friends.acceptFriend("Ada").success).toBe(false);
+    expect(session.friends.removeFriend("Ada").success).toBe(false);
   });
 
   it("clan recruit costs scale and deduct particles", async () => {
@@ -156,20 +171,15 @@ describe("phase 7 social services", () => {
     expect(session.clan.getRecruitCost("weaver")).toBe(25);
   });
 
-  it("chat falls back to local global messages when offline", async () => {
+  it("chat rejects send when offline", async () => {
     const session = await bootSession();
     expect(session.ws.status()).not.toBe("open");
 
     const result = session.chat.sendGlobal("Hallo Archiv");
-    expect(result.success).toBe(true);
-    const messages = session.chat.getGlobalMessages();
-    expect(messages).toHaveLength(1);
-    expect(messages[0]?.message).toBe("Hallo Archiv");
-    expect(messages[0]?.player).toBe("Tester");
-    expect(messages[0]?.type).toBe("global");
-
-    expect(session.chat.sendClan("Clan hallo").success).toBe(true);
-    expect(session.chat.getClanMessages()[0]?.type).toBe("clan");
+    expect(result.success).toBe(false);
+    expect(session.chat.getGlobalMessages()).toHaveLength(0);
+    expect(session.chat.sendClan("Gilde hallo").success).toBe(false);
+    expect(session.chat.getClanMessages()).toHaveLength(0);
   });
 
   it("leaderboard syncs prestige from ewigeMneme and bosses from bossProgress", async () => {
@@ -203,29 +213,7 @@ describe("phase 7 social services", () => {
     const store = createStore({ initialState: createInitialGameState() });
     const eventBus = createEventBus();
     const ws = createListenerWs();
-    const auth = createAuthService({
-      ws,
-      storage: {
-        getItem: () => null,
-        setItem: () => undefined,
-        removeItem: () => undefined,
-      },
-    });
-    auth.store.setState((prev) => ({
-      ...prev,
-      user: {
-        id: "u1",
-        username: "Tester",
-        email: "t@example.com",
-        avatar: "A",
-        createdAt: 1,
-        lastLogin: 1,
-        isGuest: false,
-      },
-      token: "tok",
-      ready: true,
-      lastError: null,
-    }));
+    const auth = createRegisteredAuth(ws);
     const friends = createFriendService(store, eventBus, { ws, auth });
     const guild = createGuildService(store, eventBus, { ws, auth });
     const chat = createChatService(store, eventBus, ws);

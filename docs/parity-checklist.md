@@ -48,7 +48,7 @@ Legend: `[ ]` pending · `[x]` done · `n/a` intentionally dropped
 | auth-service | 4 | [x] |
 | network-service | 4 | [x] WsClient |
 | chat-service | 7 | [x] |
-| friend-service | 7 | [x] multiplayer WS + offline local sim fallback |
+| friend-service | 7 | [x] multiplayer WS only (registered) |
 | guild-service | 7 | [x] multiplayer create/invite/chat |
 | clan-service | 7 | [x] local idle / raid / expedition |
 | leaderboard-service | 7 | [x] personal + global WS |

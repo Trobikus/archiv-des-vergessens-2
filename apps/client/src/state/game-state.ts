@@ -82,7 +82,7 @@ export type ClanChatMessage = {
   readonly player: string;
   readonly message: string;
   readonly timestamp: number;
-  readonly type: "clan" | "guild";
+  readonly type: "guild";
   readonly guildId?: string;
 };
 

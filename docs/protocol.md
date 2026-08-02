@@ -57,7 +57,7 @@ Server validates envelope + Phase2 payload before upsert. Size cap: 240 KiB. Gue
 | `chat:history` | S→C | `{ messages: ChatMessage[] }` (last 50 global or guild) |
 | `chat:error` | S→C | `{ error }` |
 
-Guild history requires an active registered session and membership in `guildId`. Offline clan-tab messages may still fall back to local client state.
+Guild history requires an active registered session and membership in `guildId`. Chat send fails closed when offline (no local fake messages).
 
 ## Leaderboard events (Phase 7)
 
@@ -80,7 +80,7 @@ Server clamps values, rejects implausible jumps (+50 prestige / +200 bosses / +1
 | `friend:update` | S→C | `{ list, pending, sent }` |
 | `friend:error` | S→C | `{ error }` |
 
-Server tables: `friend_requests`, `friendships`. Cap: 50 friends. Offline/guest clients keep the local simulation fallback.
+Server tables: `friend_requests`, `friendships`. Cap: 50 friends. Registered session + open WebSocket required; no client-side simulation.
 
 ## Guild events (Phase 7 multiplayer)
 
