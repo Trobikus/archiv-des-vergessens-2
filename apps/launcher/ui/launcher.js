@@ -1,10 +1,21 @@
 /* global __TAURI__ */
 
-function parseVersion(v) {
+function normalizeTag(v) {
   return String(v || "")
+    .trim()
     .replace(/^v/i, "")
-    .split(".")
-    .map((n) => parseInt(n, 10) || 0);
+    .toLowerCase();
+}
+
+function parseVersion(v) {
+  const core = normalizeTag(v).split(/[-+]/)[0] || "";
+  return core.split(".").map((n) => parseInt(n, 10) || 0);
+}
+
+/** Legacy v1 used 1.x; the v2 rewrite ships 0.2.x — never treat 1.x as "up to date". */
+function isLegacyV1Install(ver) {
+  const major = parseVersion(ver)[0] || 0;
+  return major >= 1;
 }
 
 function isNewerVersion(currentVer, latestVer) {
@@ -19,6 +30,16 @@ function isNewerVersion(currentVer, latestVer) {
     if (l < c) return false;
   }
   return false;
+}
+
+/** True when the bound install should be replaced by the GitHub latest release. */
+function needsUpdate(currentVer, latestVer) {
+  if (!currentVer) return true;
+  const latestTag = normalizeTag(latestVer);
+  if (!latestTag) return false;
+  // Track the published release tag — numeric compare alone wrongly keeps v1 (1.x) over v2 (0.2.x).
+  if (normalizeTag(currentVer) === latestTag) return false;
+  return true;
 }
 
 function getTauri() {
@@ -393,8 +414,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (!installedVersion) {
         setUIState("not-installed");
-      } else if (isNewerVersion(installedVersion, latestTag)) {
-        showToast(`Neue Fassung verfügbar: ${latestTag}`, "info");
+      } else if (needsUpdate(installedVersion, latestTag)) {
+        if (isLegacyV1Install(installedVersion)) {
+          showToast(
+            `v1-Installation erkannt (v${normalizeTag(installedVersion)}) — bitte auf ${latestTag} erneuern.`,
+            "info",
+          );
+        } else {
+          showToast(`Neue Fassung verfügbar: ${latestTag}`, "info");
+        }
         setUIState("update-available");
       } else {
         setUIState("ready-to-play");

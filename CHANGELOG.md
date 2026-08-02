@@ -5,6 +5,13 @@ All notable changes to Archiv des Vergessens v2 are documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 project follows [Semantic Versioning](https://semver.org/).
 
+## [0.2.2-alpha] — 2026-08-02
+
+### Fixed
+
+- Launcher no longer treats legacy v1 installs (`1.x`) as newer than v2 (`0.2.x`); forces Siegel renew to GitHub latest
+- Default portable install folder is now `%APPDATA%\ArchivDesVergessens\app-v2` (avoids silently launching leftover v1 binaries)
+
 ## [0.2.1-alpha] — 2026-08-02
 
 ### Fixed

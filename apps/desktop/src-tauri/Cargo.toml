@@ -1,6 +1,6 @@
 [package]
 name = "adv-desktop"
-version = "0.2.1-alpha"
+version = "0.2.2-alpha"
 description = "Archiv des Vergessens v2 — Tauri desktop shell"
 authors = ["Grimoire Interactive"]
 edition = "2021"

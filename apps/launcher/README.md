@@ -4,7 +4,7 @@ Standalone **Siegel-Portal** launcher for Archiv des Vergessens v2.
 
 This is the **only player-facing EXE**. It asks for an install directory, downloads
 the signed portable ZIP from GitHub Releases, verifies the Ed25519 signature,
-extracts into the chosen folder (default `%APPDATA%\ArchivDesVergessens\app\`),
+extracts into the chosen folder (default `%APPDATA%\ArchivDesVergessens\app-v2\`),
 optionally creates a **Desktop shortcut to the launcher**, and starts the game.
 
 ## Commands

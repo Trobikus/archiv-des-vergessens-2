@@ -66,7 +66,8 @@ fn get_config_path() -> Result<PathBuf, String> {
 }
 
 fn default_install_dir() -> Result<PathBuf, String> {
-    Ok(get_config_dir()?.join("app"))
+    // v2 portable root — keep separate from legacy v1 `%APPDATA%\ArchivDesVergessens\app`.
+    Ok(get_config_dir()?.join("app-v2"))
 }
 
 fn load_config() -> LauncherConfig {
