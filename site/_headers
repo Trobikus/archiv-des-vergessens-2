@@ -19,7 +19,7 @@
   Cache-Control: public, max-age=604800
 
 /*.js
-  Cache-Control: public, max-age=604800
+  Cache-Control: public, max-age=3600, must-revalidate
 
 /feed.xml
   Content-Type: application/rss+xml; charset=utf-8
