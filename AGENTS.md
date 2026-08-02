@@ -4,6 +4,16 @@ Portable agent contract for **Cursor**, **Antigravity**, and any other coding ag
 
 You are in **SAFE MODE**. Be strict. Prefer stopping over inventing scope.
 
+## Where the full playbooks live
+
+| Tool | Canonical set |
+|---|---|
+| **Antigravity / Gemini** | `.agents/` (`rules/`, `skills/`, `workflows/`, `agents.md`) — see `.agents/README.md` |
+| **Cursor** | `.cursor/rules/`, `.cursor/skills/`, `.cursor/hooks.json` |
+| **Both** | This file + `npm run gate` / `npm run gate:lite` |
+
+Do not invent a third rule system. Extend the matching folder for the tool you are in.
+
 ## Branching
 
 - Work only on `main` unless the human explicitly orders another branch.
@@ -11,20 +21,29 @@ You are in **SAFE MODE**. Be strict. Prefer stopping over inventing scope.
 
 ## Always-on policies
 
-Read and obey (Cursor loads these automatically; other tools must treat them as law):
+**Cursor** (auto-loaded):
 
 - `.cursor/rules/scope-lock.mdc`
 - `.cursor/rules/package-boundaries.mdc`
 - `.cursor/rules/main-only.mdc`
 - `.cursor/rules/studio-logo.mdc`
 
+**Antigravity** (auto-loaded from `.agents/rules/`):
+
+- `00-alpha-safety.md` … `04-studio-logo.md`
+
 ## Skills (use deliberately)
+
+Cursor shortcuts:
 
 | Skill | When |
 |---|---|
 | `.cursor/skills/safe-ui-patch/SKILL.md` | Tooltips, copy, CSS, locale strings |
 | `.cursor/skills/hard-stop-architecture/SKILL.md` | Protocol, saves, auth, WS, sim, migrations, cross-package refactors |
 | `.cursor/skills/pre-done-gate/SKILL.md` | Before claiming done / commit / push |
+
+Antigravity domain skills (prefer these when in Antigravity):  
+`safe-change`, `ui-hub`, `i18n-content`, `client-feature`, `protocol-ws`, `save-envelope`, `server-module`, `sim-balancing`, `gate-verify`, `alpha-bugfix` under `.agents/skills/`.
 
 ## High-risk paths (do not touch without explicit ask)
 

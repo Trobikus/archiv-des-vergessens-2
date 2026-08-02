@@ -34,8 +34,11 @@ Ship the smallest correct diff that matches **existing** architecture. Zero spec
 - “Improving” architecture without being asked
 - Adding dependencies unless unavoidable and approved
 - Changing balancing numbers without explicit user Freigabe
+- Editing `balancing.golden.json` to silence a failing gate
 - Silent `schemaVersion` bumps
 - Fake offline social (chat/friends/guild) behavior
+- Force-push / hard-reset “cleanup”
+- Implementing save/protocol/auth/sim under a weak model without explicit override
 
 ## When stuck
 

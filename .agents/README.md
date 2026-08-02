@@ -35,6 +35,17 @@ Rule- und Skill-Set für **Google Antigravity** mit **Gemini 3.1 Pro**, damit Ag
 - Feature-Branches trotz main-only
 - Hub-/Logo-Wildwuchs
 
+## Cursor-Spiegel
+
+Dasselbe Repo hat ein paralleles **Cursor**-Set:
+
+- Rules/Skills: `.cursor/rules/`, `.cursor/skills/`
+- Enforceable Hooks: `.cursor/hooks.json` (high-risk edits, shell blocks, stop-audit)
+- Portable Vertrag: Root-`AGENTS.md`
+- Lite-Gate: `npm run gate:lite` (pre-push auf `main`)
+
+Antigravity bleibt kanonisch unter `.agents/`. Cursor-Hooks sind die mechanische Absicherung dort. Bei Policy-Änderungen **beide** Seiten syncen (mindestens `00-alpha-safety` ↔ `scope-lock` + `AGENTS.md`).
+
 ## Pflege
 
 - Rules kurz und stabil halten (Always-on-Budget).
