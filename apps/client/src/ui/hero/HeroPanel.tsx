@@ -5,6 +5,7 @@ import type { GameSession } from "../../services/game-session";
 import type { EquipmentState, InventoryItem } from "../../state/game-state";
 import { TipBubble } from "../Tip";
 import { useStore } from "../useStore";
+import { useId } from "preact/hooks";
 
 export type HeroSubTab = "stats" | "inventory" | "equipment";
 
@@ -117,6 +118,7 @@ export function HeroPanel({ session, subTab }: Props) {
   const attrs = session.hero.getAttributes();
   const combat = session.hero.getCombatStats();
   const hero = state.hero;
+  const ring2TipId = useId();
 
   return (
     <section class="panel" data-testid="hero-panel">
@@ -259,6 +261,8 @@ export function HeroPanel({ session, subTab }: Props) {
                       ? "hero__item tip"
                       : "hero__item"
                   }
+                  tabIndex={emptyRing2Tip ? 0 : undefined}
+                  aria-describedby={emptyRing2Tip ? ring2TipId : undefined}
                   data-testid={`equip-slot-${slot}`}
                 >
                   <div class="hero__item-main">
@@ -287,7 +291,7 @@ export function HeroPanel({ session, subTab }: Props) {
                     </>
                   ) : null}
                   {emptyRing2Tip ? (
-                    <TipBubble title={t("hero.slot.ring2")}>
+                    <TipBubble id={ring2TipId} title={t("hero.slot.ring2")}>
                       {t("hero.slotTip.ring2")}
                     </TipBubble>
                   ) : null}

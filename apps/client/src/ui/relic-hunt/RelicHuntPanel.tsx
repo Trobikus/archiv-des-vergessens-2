@@ -44,8 +44,8 @@ export function RelicHuntPanel({ session }: Props) {
       <p class="game__meta">
         Kosten: {formatAmount(CONFIG.RELIC_HUNT.COST)}{" "}
         {t("resource.particles")} ·{" "}
-        <Tip title="Chance" text={t("relicHunt.chanceTip")}>
-          Chance {String(chance)}%
+        <Tip title={t("relicHunt.chance")} text={t("relicHunt.chanceTip")}>
+          {t("relicHunt.chance")} {String(chance)}%
         </Tip>
       </p>
       {cooldown.ready ? (

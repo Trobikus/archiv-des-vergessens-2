@@ -1,5 +1,5 @@
 import type { GameSession } from "../../services/game-session";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useId, useState } from "preact/hooks";
 
 import { TipBubble } from "../Tip";
 
@@ -10,6 +10,10 @@ type Props = {
 export function CombatAnalyticsPanel({ session }: Props) {
   const [, setTick] = useState(0);
   const t = session.i18n.translate.bind(session.i18n);
+  const dpsTipId = useId();
+  const totalTipId = useId();
+  const maxHitTipId = useId();
+  const critTipId = useId();
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -27,22 +31,26 @@ export function CombatAnalyticsPanel({ session }: Props) {
       <h2 class="game__heading">{t("hub.analytics")}</h2>
       <p class="game__meta">{t("hub.analyticsDesc")}</p>
       <dl class="phase6-stats">
-        <div class="tip tip--below">
-          <dt>DPS (10s)</dt>
+        <div class="tip tip--below" tabIndex={0} aria-describedby={dpsTipId}>
+          <dt>{t("analytics.dps")}</dt>
           <dd data-testid="analytics-dps">{String(stats.dps)}</dd>
-          <TipBubble title="DPS (10s)">{t("analytics.dpsTip")}</TipBubble>
+          <TipBubble id={dpsTipId} title={t("analytics.dps")}>
+            {t("analytics.dpsTip")}
+          </TipBubble>
         </div>
-        <div class="tip tip--below">
-          <dt>Gesamtschaden</dt>
+        <div class="tip tip--below" tabIndex={0} aria-describedby={totalTipId}>
+          <dt>{t("analytics.totalDamage")}</dt>
           <dd>{String(stats.totalDamage)}</dd>
-          <TipBubble title="Gesamtschaden">
+          <TipBubble id={totalTipId} title={t("analytics.totalDamage")}>
             {t("analytics.totalDamageTip")}
           </TipBubble>
         </div>
-        <div class="tip tip--below">
-          <dt>Max Treffer</dt>
+        <div class="tip tip--below" tabIndex={0} aria-describedby={maxHitTipId}>
+          <dt>{t("analytics.maxHit")}</dt>
           <dd>{String(stats.maxHit)}</dd>
-          <TipBubble title="Max Treffer">{t("analytics.maxHitTip")}</TipBubble>
+          <TipBubble id={maxHitTipId} title={t("analytics.maxHit")}>
+            {t("analytics.maxHitTip")}
+          </TipBubble>
         </div>
         <div>
           <dt>Ø Treffer</dt>
@@ -52,10 +60,12 @@ export function CombatAnalyticsPanel({ session }: Props) {
           <dt>Treffer</dt>
           <dd>{String(stats.totalHits)}</dd>
         </div>
-        <div class="tip tip--below">
-          <dt>Krit %</dt>
+        <div class="tip tip--below" tabIndex={0} aria-describedby={critTipId}>
+          <dt>{t("analytics.critRate")}</dt>
           <dd>{String(stats.critRatePercent)}</dd>
-          <TipBubble title="Krit %">{t("analytics.critTip")}</TipBubble>
+          <TipBubble id={critTipId} title={t("analytics.critRate")}>
+            {t("analytics.critTip")}
+          </TipBubble>
         </div>
         <div>
           <dt>Heilung</dt>

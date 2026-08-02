@@ -1,6 +1,6 @@
 import { formatAmount, formatDuration } from "@adv/core";
 import type { I18nKey } from "@adv/content";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useId, useState } from "preact/hooks";
 
 import { nextGedankenArchivCost } from "../services/idle-service";
 import type { GameSession } from "../services/game-session";
@@ -203,6 +203,12 @@ export function GameView({ session }: Props) {
   const [collectionNav, setCollectionNav] =
     useState<CollectionNavId>("relicHunt");
   const [socialNav, setSocialNav] = useState<SocialNavId>("chat");
+  const mnemeStatTipId = useId();
+  const idleLevelTipId = useId();
+  const yieldTipId = useId();
+  const particlesRowTipId = useId();
+  const mnemeRowTipId = useId();
+  const clickPowerTipId = useId();
 
   const yieldPerSec = session.idle.getYieldPerSecond();
   const clickGain = session.gather.getClickGain();
@@ -351,9 +357,11 @@ export function GameView({ session }: Props) {
         </nav>
 
         <div class="game__topbar-resources" aria-label="Resources">
-          <span
-            class="game__resource tip tip--below"
-            aria-label={t("resource.particles")}
+          <Tip
+            className="game__resource"
+            ariaLabel={t("resource.particles")}
+            title={t("resource.particles")}
+            text={t("resource.tip.particles")}
           >
             <span class="game__resource-icon" aria-hidden="true">
               <ParticleIcon />
@@ -361,13 +369,12 @@ export function GameView({ session }: Props) {
             <span class="game__resource-value" data-testid="topbar-particles">
               {formatAmount(state.resources.particles)}
             </span>
-            <TipBubble title={t("resource.particles")}>
-              {t("resource.tip.particles")}
-            </TipBubble>
-          </span>
-          <span
-            class="game__resource tip tip--below"
-            aria-label={t("resource.mneme")}
+          </Tip>
+          <Tip
+            className="game__resource"
+            ariaLabel={t("resource.mneme")}
+            title={t("resource.mneme")}
+            text={t("resource.tip.mneme")}
           >
             <span class="game__resource-icon" aria-hidden="true">
               <MnemeIcon />
@@ -375,10 +382,7 @@ export function GameView({ session }: Props) {
             <span class="game__resource-value" data-testid="topbar-mneme">
               {formatAmount(state.resources.mnemeFragmente)}
             </span>
-            <TipBubble title={t("resource.mneme")}>
-              {t("resource.tip.mneme")}
-            </TipBubble>
-          </span>
+          </Tip>
           <span
             class="game__resource game__resource--level"
             aria-label={`${t("hero.level")} ${String(state.hero.level)}`}
@@ -423,7 +427,12 @@ export function GameView({ session }: Props) {
                 {t(key)}
               </button>
             ) : (
-              <Tip key={id} className="game__subtab-tip" text={t(tipKey)}>
+              <Tip
+                key={id}
+                className="game__subtab-tip"
+                below={false}
+                text={t(tipKey)}
+              >
                 <button
                   type="button"
                   class={
@@ -473,7 +482,12 @@ export function GameView({ session }: Props) {
                 {t(key)}
               </button>
             ) : (
-              <Tip key={id} className="game__subtab-tip" text={t(tipKey)}>
+              <Tip
+                key={id}
+                className="game__subtab-tip"
+                below={false}
+                text={t(tipKey)}
+              >
                 <button
                   type="button"
                   class={
@@ -717,16 +731,19 @@ export function GameView({ session }: Props) {
                 <p class="game__focus-panel__flavor">
                   Alpha — Mneme sammelt sich, sobald das Archiv steht.
                 </p>
-                <Tip
-                  className="game__stat-tip"
-                  title={t("resource.mneme")}
-                  text={t("resource.tip.mneme")}
+                <div
+                  class="tip tip--below game__stat-tip"
+                  tabIndex={0}
+                  aria-describedby={mnemeStatTipId}
                 >
                   <p class="game__stat" data-testid="mneme">
                     {formatAmount(state.resources.mnemeFragmente)}
                     <span class="game__unit"> {t("resource.mneme")}</span>
                   </p>
-                </Tip>
+                  <TipBubble id={mnemeStatTipId} title={t("resource.mneme")}>
+                    {t("resource.tip.mneme")}
+                  </TipBubble>
+                </div>
                 <div
                   class="shell-progress-rail"
                   aria-hidden="true"
@@ -739,19 +756,27 @@ export function GameView({ session }: Props) {
                   <span class="shell-progress-rail__diamond" />
                 </div>
                 <dl class="game__focus-panel__stats">
-                  <div class="tip tip--below">
-                    <dt>Idle-Stufe</dt>
+                  <div
+                    class="tip tip--below"
+                    tabIndex={0}
+                    aria-describedby={idleLevelTipId}
+                  >
+                    <dt>{t("archiv.idleLevel")}</dt>
                     <dd>
                       {String(state.idleGenerators.gedankenArchiv.level)}
                     </dd>
-                    <TipBubble title="Idle-Stufe">
+                    <TipBubble id={idleLevelTipId} title={t("archiv.idleLevel")}>
                       {t("archiv.idleLevelTip")}
                     </TipBubble>
                   </div>
-                  <div class="tip tip--below">
-                    <dt>Yield / s</dt>
+                  <div
+                    class="tip tip--below"
+                    tabIndex={0}
+                    aria-describedby={yieldTipId}
+                  >
+                    <dt>{t("archiv.yieldPerSec")}</dt>
                     <dd>{formatAmount(yieldPerSec)}</dd>
-                    <TipBubble title="Yield / s">
+                    <TipBubble id={yieldTipId} title={t("archiv.yieldPerSec")}>
                       {t("archiv.yieldTip")}
                     </TipBubble>
                   </div>
@@ -792,7 +817,11 @@ export function GameView({ session }: Props) {
                   {t("resource.particles")}
                 </h3>
                 <ul class="game__resource-rows">
-                  <li class="tip tip--below">
+                  <li
+                    class="tip tip--below"
+                    tabIndex={0}
+                    aria-describedby={particlesRowTipId}
+                  >
                     <span class="game__resource-rows__label">
                       {t("resource.particles")}
                     </span>
@@ -802,18 +831,25 @@ export function GameView({ session }: Props) {
                     >
                       {formatAmount(state.resources.particles)}
                     </span>
-                    <TipBubble title={t("resource.particles")}>
+                    <TipBubble
+                      id={particlesRowTipId}
+                      title={t("resource.particles")}
+                    >
                       {t("resource.tip.particles")}
                     </TipBubble>
                   </li>
-                  <li class="tip tip--below">
+                  <li
+                    class="tip tip--below"
+                    tabIndex={0}
+                    aria-describedby={mnemeRowTipId}
+                  >
                     <span class="game__resource-rows__label">
                       {t("resource.mneme")}
                     </span>
                     <span class="game__resource-rows__value">
                       {formatAmount(state.resources.mnemeFragmente)}
                     </span>
-                    <TipBubble title={t("resource.mneme")}>
+                    <TipBubble id={mnemeRowTipId} title={t("resource.mneme")}>
                       {t("resource.tip.mneme")}
                     </TipBubble>
                   </li>
@@ -827,11 +863,18 @@ export function GameView({ session }: Props) {
               <section class="game__rail-panel shell-frame">
                 <span class="shell-frame__corners" aria-hidden="true" />
 
-                <div class="game__rail-section tip tip--below">
+                <div
+                  class="game__rail-section tip tip--below"
+                  tabIndex={0}
+                  aria-describedby={clickPowerTipId}
+                >
                   <h3 class="game__status-card__title shell-heading">
-                    Klickkraft
+                    {t("archiv.clickPower")}
                   </h3>
-                  <TipBubble title="Klickkraft">
+                  <TipBubble
+                    id={clickPowerTipId}
+                    title={t("archiv.clickPower")}
+                  >
                     {t("archiv.clickPowerTip")}
                   </TipBubble>
                   <p class="game__status-card__value">
