@@ -21,7 +21,6 @@ export type RelicHuntService = {
   performHunt(): RelicHuntResult;
   getCooldownStatus(now?: number): RelicHuntCooldown;
   getSuccessChance(): number;
-  resetCooldown(): void;
 };
 
 function clamp(value: number, min: number, max: number): number {
@@ -131,13 +130,6 @@ export function createRelicHuntService(
 
     getSuccessChance() {
       return computeChance();
-    },
-
-    resetCooldown() {
-      store.setState((prev) => ({
-        ...prev,
-        relicHunt: { cooldownEnd: 0 },
-      }));
     },
   };
 }
