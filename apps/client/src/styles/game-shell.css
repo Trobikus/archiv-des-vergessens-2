@@ -23,43 +23,31 @@
   container-name: cinematic-shell;
 }
 
-/* ---- Atmospheric backdrop (placeholder art) ---- */
+/* ---- Atmospheric backdrop (mock scene art, Phase M1) ---- */
 .game--cinematic .game__scene {
   position: absolute;
   inset: -3%;
   z-index: 0;
   pointer-events: none;
   background-color: var(--color-bg);
-  background-image:
-    radial-gradient(
-      ellipse 55% 40% at 50% 18%,
-      rgba(197, 160, 89, 0.12) 0%,
-      transparent 58%
-    ),
-    radial-gradient(
-      ellipse 70% 55% at 18% 78%,
-      rgba(74, 139, 153, 0.08) 0%,
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse 50% 45% at 82% 70%,
-      rgba(139, 123, 158, 0.07) 0%,
-      transparent 50%
-    ),
-    linear-gradient(180deg, #0e0e14 0%, #08080c 42%, #050507 100%);
+  /* background-image set inline from GameView (BASE_URL-safe public/scenes/) */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   transform-origin: center center;
   animation: shellSceneDrift 48s ease-in-out infinite alternate;
   will-change: transform;
 }
 
+/* Soft vignette so UI rails stay readable without crushing mock atmosphere */
 .game--cinematic .game__scene::after {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(0, 0, 0, 0.55) 0%, transparent 55%),
-    linear-gradient(90deg, rgba(5, 5, 8, 0.45) 0%, transparent 28%, transparent 72%, rgba(5, 5, 8, 0.45) 100%);
-  opacity: 0.9;
+    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(0, 0, 0, 0.4) 0%, transparent 55%),
+    linear-gradient(90deg, rgba(5, 5, 8, 0.32) 0%, transparent 28%, transparent 72%, rgba(5, 5, 8, 0.32) 100%);
+  opacity: 0.85;
 }
 
 .game--cinematic .game__veil {
@@ -67,20 +55,21 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  /* Lighter than Phase-1 placeholder veil so mock scenes stay visible */
   background:
     linear-gradient(
       180deg,
-      rgba(5, 5, 8, 0.72) 0%,
-      rgba(5, 5, 8, 0.28) 18%,
-      rgba(5, 5, 8, 0.12) 42%,
-      rgba(5, 5, 8, 0.35) 78%,
-      rgba(5, 5, 8, 0.7) 100%
+      rgba(5, 5, 8, 0.55) 0%,
+      rgba(5, 5, 8, 0.18) 18%,
+      rgba(5, 5, 8, 0.06) 42%,
+      rgba(5, 5, 8, 0.22) 78%,
+      rgba(5, 5, 8, 0.52) 100%
     ),
     radial-gradient(
       circle at center,
       transparent 0%,
-      transparent 48%,
-      rgba(0, 0, 0, 0.35) 100%
+      transparent 52%,
+      rgba(0, 0, 0, 0.22) 100%
     );
   animation: shellVeilBreathe 14s ease-in-out infinite alternate;
 }

@@ -37,6 +37,9 @@ type CategoryId =
   | "collection"
   | "social";
 
+/** Scene keys matching `public/scenes/` art (Phase M1). */
+type SceneId = "archiv" | "forschung" | "kodex" | "rituale" | "karte";
+
 type HeroNavId = HeroSubTab | "skilltree" | "vault";
 type StoryNavId = "fights" | "challenges" | "analytics";
 type MissionsNavId = "quests" | "achievements";
@@ -59,6 +62,32 @@ const CATEGORIES: readonly CategoryDef[] = [
   { id: "collection", labelKey: "hub.collection", testId: "tab-collection" },
   { id: "social", labelKey: "hub.guild", testId: "tab-social" },
 ];
+
+/**
+ * Hub category → cinematic scene asset.
+ * Defaults without dedicated mock art: hero → archiv, social → karte.
+ */
+const SCENE_BY_CATEGORY: Record<CategoryId, SceneId> = {
+  archiv: "archiv",
+  workshop: "forschung",
+  collection: "kodex",
+  story: "rituale",
+  missions: "karte",
+  hero: "archiv",
+  social: "karte",
+};
+
+const SCENE_FILES: Record<SceneId, string> = {
+  archiv: "scenes/game-banner-archiv.png",
+  forschung: "scenes/scene-forschung.png",
+  kodex: "scenes/scene-kodex.png",
+  rituale: "scenes/scene-rituale.png",
+  karte: "scenes/scene-karte.png",
+};
+
+function sceneBackgroundUrl(sceneId: SceneId): string {
+  return `url("${import.meta.env.BASE_URL}${SCENE_FILES[sceneId]}")`;
+}
 
 export function GameView({ session }: Props) {
   const state = useStore(session.store);
@@ -83,6 +112,7 @@ export function GameView({ session }: Props) {
   const canBuyArchiv =
     archivCost > 0 && state.resources.particles >= BigInt(archivCost);
   const offline = state.meta.offlineReport;
+  const sceneId = SCENE_BY_CATEGORY[category];
 
   const openCategory = (id: CategoryId): void => {
     if (id === "story") {
@@ -97,7 +127,13 @@ export function GameView({ session }: Props) {
 
   return (
     <main class="game game--cinematic">
-      <div class="game__scene" aria-hidden="true" />
+      <div
+        class={`game__scene game__scene--${sceneId}`}
+        data-testid="game-scene"
+        data-scene={sceneId}
+        style={{ backgroundImage: sceneBackgroundUrl(sceneId) }}
+        aria-hidden="true"
+      />
       <div class="game__veil" aria-hidden="true" />
 
       <header class="game__topbar">
