@@ -79,4 +79,13 @@ describe("config", () => {
     expect(cfg.cloudVersion).toBe("2.0.0-test");
     rmSync(dir, { recursive: true, force: true });
   });
+
+  it("includes Windows Tauri WebView origins by default", () => {
+    const dir = mkdtempSync(join(tmpdir(), "adv2-cfg-origins-"));
+    const cfg = loadConfig({ DATA_DIR: dir });
+    expect(cfg.allowedOrigins).toContain("tauri://localhost");
+    expect(cfg.allowedOrigins).toContain("http://tauri.localhost");
+    expect(cfg.allowedOrigins).toContain("https://tauri.localhost");
+    rmSync(dir, { recursive: true, force: true });
+  });
 });

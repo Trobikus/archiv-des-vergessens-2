@@ -5,6 +5,20 @@ All notable changes to Archiv des Vergessens v2 are documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 project follows [Semantic Versioning](https://semver.org/).
 
+## [0.2.1-alpha] — 2026-08-02
+
+### Fixed
+
+- Launcher UI: controls and title stay visible (no `opacity: 0` / clipped-text vanish in WebView2)
+- Launcher window drag on frameless chrome (`start-dragging` permission + drag regions)
+- Launcher GitHub release check: clearer 404 guidance; publish releases non-draft
+- Server: allow Windows Tauri origins `http://tauri.localhost` / `https://tauri.localhost`
+
+### Changed
+
+- Repo visibility public so the unauthenticated launcher can resolve `/releases/latest`
+- Product version bump to `0.2.1-alpha`
+
 ## [2.0.0] — 2026-08-01
 
 ### Added

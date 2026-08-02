@@ -182,7 +182,9 @@ jobs:
         with:
           tag_name: ${{ steps.meta.outputs.tag }}
           name: Archiv des Vergessens ${{ steps.meta.outputs.tag }}
-          draft: true
+          # Must be published (not draft) so the launcher can resolve /releases/latest
+          # without auth. Keep prerelease=false so GitHub treats it as "latest".
+          draft: false
           prerelease: false
           # Launcher first — this is the only player-facing EXE.
           files: |

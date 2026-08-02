@@ -130,6 +130,10 @@ fn game_is_installed() -> bool {
 fn build_headers() -> HeaderMap {
     let mut headers = HeaderMap::new();
     headers.insert(USER_AGENT, HeaderValue::from_static(USER_AGENT_VALUE));
+    headers.insert(
+        reqwest::header::ACCEPT,
+        HeaderValue::from_static("application/vnd.github+json"),
+    );
     headers
 }
 
@@ -293,7 +297,15 @@ async fn check_github_release() -> Result<ReleaseInfo, String> {
         .map_err(|e| format!("GitHub-API-Anfrage fehlgeschlagen: {e}"))?;
 
     if !res.status().is_success() {
-        return Err(format!("GitHub-API HTTP-Status: {}", res.status()));
+        let status = res.status();
+        if status.as_u16() == 404 {
+            return Err(
+                "Kein veröffentlichtes Release gefunden (GitHub /releases/latest → 404). \
+                 Repo muss öffentlich sein und das Release darf kein Draft sein."
+                    .to_string(),
+            );
+        }
+        return Err(format!("GitHub-API HTTP-Status: {status}"));
     }
 
     let json: serde_json::Value = res

@@ -39,3 +39,10 @@ No NSIS / Windows setup EXE is published. Updates go through this launcher.
 
 Signing uses `tools/sign_release.mjs` + secret `ED25519_PRIVATE_KEY`
 (64-char hex seed; must match `RELEASE_PUBKEY_HEX` in `src-tauri/src/main.rs`).
+
+## Requirements
+
+- The GitHub repository must be **public** (the launcher calls
+  `/repos/.../releases/latest` without a token).
+- The release must be **published** (not draft) and not only a prerelease, or
+  `/releases/latest` returns 404.

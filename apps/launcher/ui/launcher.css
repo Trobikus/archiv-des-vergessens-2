@@ -27,7 +27,7 @@ html,
 body {
   width: 1000px;
   height: 480px;
-  background: transparent;
+  background: var(--color-bg);
   overflow: hidden;
   font-family: var(--font-body);
   color: var(--color-text-main);
@@ -55,8 +55,9 @@ body {
   top: 0;
   left: 0;
   right: 48px;
-  height: 40px;
+  height: 120px;
   z-index: 30;
+  cursor: grab;
 }
 
 .close-btn {
@@ -176,6 +177,8 @@ body {
 }
 
 .studio {
+  position: relative;
+  z-index: 11;
   font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
@@ -183,26 +186,28 @@ body {
   text-transform: uppercase;
   color: var(--color-dust);
   margin-bottom: 10px;
-  opacity: 0;
-  animation: rise-in 0.7s var(--transition) 0.05s forwards;
+  opacity: 1;
+  animation: rise-in 0.7s var(--transition) 0.05s both;
 }
 
 .brand {
+  position: relative;
+  z-index: 11;
   font-family: var(--font-header);
   font-size: 34px;
   font-weight: 700;
   letter-spacing: 0.12em;
   line-height: 1.15;
-  background: linear-gradient(to bottom, #ffffff, var(--color-gold));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.9));
-  opacity: 0;
-  animation: rise-in 0.8s var(--transition) 0.12s forwards;
+  /* Solid fill only — background-clip:text + transparent fill can vanish in WebView2. */
+  color: var(--color-gold-hover);
+  text-shadow: 0 2px 0 rgba(197, 160, 89, 0.35), 0 4px 14px rgba(0, 0, 0, 0.9);
+  opacity: 1;
+  animation: rise-in 0.8s var(--transition) 0.12s both;
 }
 
 .tagline {
+  position: relative;
+  z-index: 11;
   margin-top: 10px;
   margin-bottom: 28px;
   font-family: var(--font-body);
@@ -211,12 +216,13 @@ body {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-text-muted);
-  opacity: 0;
-  animation: rise-in 0.8s var(--transition) 0.22s forwards;
+  opacity: 1;
+  animation: rise-in 0.8s var(--transition) 0.22s both;
 }
 
 .seal-btn {
   position: relative;
+  z-index: 12;
   min-width: 240px;
   padding: 12px 36px;
   font-family: var(--font-header);
@@ -226,30 +232,27 @@ body {
   text-transform: uppercase;
   color: var(--color-gold);
   cursor: pointer;
-  border: 1px solid transparent;
+  border: 1px solid var(--color-gold);
   border-radius: 2px;
-  background-image:
-    linear-gradient(var(--color-surface), var(--color-surface)),
-    linear-gradient(135deg, var(--color-gold), var(--color-gold-hover), var(--color-gold));
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
+  background: var(--color-surface);
   box-shadow:
     0 4px 14px rgba(0, 0, 0, 0.55),
     inset 0 0 12px rgba(197, 160, 89, 0.08);
-  transition: color var(--transition), transform var(--transition), box-shadow var(--transition);
-  opacity: 0;
-  animation: rise-in 0.75s var(--transition) 0.32s forwards;
+  transition: color var(--transition), transform var(--transition), box-shadow var(--transition),
+    filter var(--transition), background var(--transition), border-color var(--transition);
+  /* Visible by default — entrance motion must never leave controls at opacity 0. */
+  opacity: 1;
+  animation: rise-in 0.75s var(--transition) 0.32s both;
 }
 
 .seal-btn:hover:not(:disabled) {
   color: #fff;
+  border-color: var(--color-gold-hover);
+  background: var(--color-surface-light);
   transform: translateY(-1px);
   box-shadow:
     0 0 22px var(--color-gold-glow),
     inset 0 0 14px rgba(235, 213, 118, 0.18);
-  background-image:
-    linear-gradient(var(--color-surface-light), var(--color-surface-light)),
-    linear-gradient(135deg, #fff, var(--color-gold-hover), #fff);
 }
 
 .seal-btn:active:not(:disabled) {
@@ -257,15 +260,16 @@ body {
 }
 
 .seal-btn:disabled {
-  opacity: 0.55;
   cursor: wait;
+  filter: saturate(0.65) brightness(0.85);
+  animation: none;
+  opacity: 1;
 }
 
 .seal-btn-muted {
   color: var(--color-text-muted);
-  background-image:
-    linear-gradient(var(--color-surface), var(--color-surface)),
-    linear-gradient(135deg, #3a3a44, #6e6e7a, #3a3a44);
+  border-color: #6e6e7a;
+  background: var(--color-surface);
 }
 
 .seal-btn-muted:hover:not(:disabled) {
@@ -334,7 +338,6 @@ body {
   padding: 10px 16px;
   font-size: 11px;
   letter-spacing: 0.1em;
-  opacity: 1;
   animation: none;
 }
 
@@ -363,8 +366,7 @@ body {
 
 .progress-container {
   width: 380px;
-  opacity: 0;
-  animation: rise-in 0.45s ease forwards;
+  animation: rise-in 0.45s ease both;
 }
 
 .progress-label {
@@ -422,13 +424,16 @@ body {
   letter-spacing: 0.06em;
   color: var(--color-text-muted);
   opacity: 0;
+  visibility: hidden;
   transform: translateY(6px);
-  transition: opacity var(--transition), transform var(--transition), color var(--transition);
+  transition: opacity var(--transition), transform var(--transition), color var(--transition),
+    visibility var(--transition);
 }
 
 .status-toast.show,
 .version-indicator.show {
   opacity: 0.9;
+  visibility: visible;
   transform: translateY(0);
 }
 
@@ -442,12 +447,37 @@ body {
 
 @keyframes rise-in {
   from {
-    opacity: 0;
     transform: translateY(10px);
   }
   to {
-    opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio,
+  .brand,
+  .tagline,
+  .seal-btn,
+  .setup-panel,
+  .progress-container,
+  .error-container,
+  .fog-a,
+  .fog-b,
+  .rune-ring,
+  .dust {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none;
+  }
+
+  .brand {
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.9));
+  }
+
+  .seal-btn:disabled {
+    filter: saturate(0.65) brightness(0.85);
   }
 }
 

@@ -1,7 +1,7 @@
 {
   "name": "archiv-des-vergessens-2",
   "private": true,
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "type": "module",
   "description": "Archiv des Vergessens v2 — greenfield rewrite",
   "workspaces": [

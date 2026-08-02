@@ -174,6 +174,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // Frameless window: data-tauri-drag-region + explicit startDragging fallback.
+  const appWindow = tauri?.window?.getCurrentWindow?.();
+  if (appWindow?.startDragging) {
+    document.querySelectorAll("[data-tauri-drag-region]").forEach((el) => {
+      el.addEventListener("mousedown", (event) => {
+        if (event.button !== 0) return;
+        event.preventDefault();
+        appWindow.startDragging().catch(() => {
+          /* ignore */
+        });
+      });
+    });
+  }
+
   if (listen) {
     try {
       await listen("download_progress", (event) => {
@@ -385,14 +399,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else {
         setUIState("ready-to-play");
       }
-    } catch {
+    } catch (err) {
       if (installedVersion) {
         showToast("Siegel-Prüfung offline — lokale Fassung verfügbar.", "info");
         setUIState("ready-to-play");
       } else {
+        const detail = err != null ? String(err) : "";
         setUIState(
           "error",
-          "Keine gebundene Fassung und Release nicht erreichbar. Prüfe die Verbindung.",
+          detail
+            ? `Release nicht erreichbar: ${detail}`
+            : "Keine gebundene Fassung und Release nicht erreichbar. Prüfe die Verbindung zu GitHub.",
         );
       }
     }
