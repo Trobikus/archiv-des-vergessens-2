@@ -2,63 +2,71 @@
   <img src="docs/assets/banner.png" alt="Archiv des Vergessens" width="100%" />
 </p>
 
-# 📜 Archiv des Vergessens
+# Archiv des Vergessens
 
 ### *Der Mneme-Bund* — Idle-/Progression-RPG
 
 > Atmosphäre. Fortschritt. Archiv.  
-> Ein vollständiger Greenfield-Rewrite — gleiche Welt, neue Grundlage.
+> Ein vollständiger Greenfield-Rewrite — gleiche Welt, neue Grundlage.  
+> **Frühe Alpha** — Systeme ändern sich, Inhalte fehlen, Fehler sind normal.
 
 | | |
 |---|---|
-| **Version** | [![release](https://img.shields.io/github/v/release/Trobikus/archiv-des-vergessens-2?include_prereleases&sort=semver&label=release)](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest) [![tag](https://img.shields.io/github/v/tag/Trobikus/archiv-des-vergessens-2?sort=semver&label=tag)](https://github.com/Trobikus/archiv-des-vergessens-2/tags) |
-| **Stand** | Phase **0–9 abgeschlossen** · inkl. v1-Save-Importer |
-| **Stack** | TypeScript strict · Preact · Vite · Tauri 2 · Node WS |
-| **Als Nächstes** | Draft veröffentlichen · Playtest |
+| **Studio** | [Grimoire Interactive](https://grimoire-interactive.de/) |
+| **Version** | `0.2.0-alpha` · [![release](https://img.shields.io/github/v/release/Trobikus/archiv-des-vergessens-2?include_prereleases&sort=semver&label=release)](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest) [![tag](https://img.shields.io/github/v/tag/Trobikus/archiv-des-vergessens-2?sort=semver&label=tag)](https://github.com/Trobikus/archiv-des-vergessens-2/tags) |
+| **Stand** | Rewrite-Phasen **0–9** code-seitig fertig · öffentlich **frühe Alpha** |
+| **Stack** | TypeScript strict · Preact · Vite · Tauri 2 · Node WebSocket · SQLite |
+| **Live-Server** | `wss://archiv.grimoire-interactive.de` |
+| **Spieler-Download** | [`ArchivDesVergessens-Launcher.exe`](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest/download/ArchivDesVergessens-Launcher.exe) (Windows, portabel) |
 | **Repo** | [Trobikus/archiv-des-vergessens-2](https://github.com/Trobikus/archiv-des-vergessens-2) |
 
-Spieler-Patch Notes → [`docs/patch-notes-2.0.0.md`](docs/patch-notes-2.0.0.md)  
-Changelog → [`CHANGELOG.md`](CHANGELOG.md)
+Spieler-Patch Notes (Rewrite-Meilenstein) → [`docs/patch-notes-2.0.0.md`](docs/patch-notes-2.0.0.md)  
+Changelog → [`CHANGELOG.md`](CHANGELOG.md)  
+Studio-Site → [grimoire-interactive.de](https://grimoire-interactive.de/)
 
 ---
 
-## 🎮 Das Spiel
+## Das Spiel
 
-**Archiv des Vergessens** ist ein atmosphärisches Idle-RPG: Charakterfortschritt, Kampf, Crafting, Quests und Story — lokal offline-fähig, mit Cloud-Sync und Live-Social auf dem Server, als Web-Client und native Desktop-App.
+**Archiv des Vergessens** ist ein atmosphärisches Idle-RPG: Charakterfortschritt, Kampf, Crafting, Quests und Story — lokal offline-fähig, mit optionalem Cloud-Sync und Live-Diensten auf dem Server. Spielbar als Web-Client und als native Windows-Desktop-App über das **Siegel-Portal** (Launcher).
 
-Die v2-Codebasis ist kein Refactor von v1, sondern ein **kompletter Neuaufbau** mit striktem TypeScript, klaren Paketgrenzen und einer gemeinsamen Protokollschicht für Web und Desktop.
+Die v2-Codebasis ist kein Refactor von v1, sondern ein **kompletter Neuaufbau** mit striktem TypeScript, klaren Paketgrenzen und einer gemeinsamen Protokollschicht für Web und Desktop. Balancing-Zahlen bleiben wortgleich zu v1 (Golden-Snapshot-Gate).
 
-### Spielsysteme
+Die veröffentlichte Produktversion ist **`0.2.0-alpha`**. Dokumente mit der Bezeichnung „2.0.0“ beschreiben den Rewrite-Meilenstein (Feature-Parität / Cutover), nicht zwingend die aktuelle GitHub-Release-Nummer.
+
+### Hub & Spielsysteme
+
+Der Client organisiert den Hub in sieben Bereiche: **Archiv** · **Held** · **Story** · **Missionen** · **Werkstatt** · **Sammlung** · **Social**.
 
 | Säule | Inhalte |
 |---|---|
-| ⚙️ **Idle & Fortschritt** | Klick / Tick, Offline-Produktion, Autosave, Cloud-Envelope |
-| ⚔️ **Kampf & Held** | Combat-Sim, Floating Damage, Hero-Stats, Equip, Analytics |
-| 🗡️ **Hub & Craft** | Quests, Achievements, Daily, Schmiede, Crafting, Gather |
-| 🧠 **Wissen & Macht** | Talente, Challenges, Bibliothek, Codex, Reliktjagd, Account-Tresor |
-| 📖 **Story** | Story-Kämpfe, Branches, Dialoge, Intro / Tutorial |
-| 🌐 **Social / Live** | Globaler Chat, Freunde, Clan (Idle / Raid / Expedition), Bestenliste |
-| 🖥️ **Desktop** | Tauri-2-Shell, signierter Auto-Updater, Chrome-Lockdown |
+| **Idle & Fortschritt** | Klick / Tick, Gather-Upgrades, Offline-Produktion, Autosave, Cloud-Envelope |
+| **Kampf & Held** | Combat-Sim, Floating Damage, Hero-Stats, Equip, Skilltree, Analytics |
+| **Missionen & Craft** | Quests, Achievements, Daily, Schmiede, Crafting, Bibliothek |
+| **Wissen & Macht** | Talente, Challenges, Codex, Reliktjagd, Account-Tresor |
+| **Story** | Story-Kämpfe, Branches, Dialoge, Intro / Tutorial |
+| **Social** | Globaler Chat & Bestenliste **live** (Server); Freunde & Clan (Idle / Raid / Expedition) **lokal im Client** |
+| **Desktop** | Tauri-2-Shell, Siegel-Portal-Launcher, signierte portable ZIP, Chrome-Lockdown |
 
 ---
 
-## 🏛️ Studio-Architektur
+## Studio-Architektur
 
 Eine Persistenzstrategie. Eine Protokollschicht. Klare Grenzen.
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
 │  apps/launcher (Tauri 2) — Siegel-Portal · portable ZIP     │
-│  apps/desktop  (Tauri 2)  — Fenster · Updater · quit_app    │
+│  apps/desktop  (Tauri 2)  — Fenster · quit_app · Lockdown   │
 │         └─ webview ──────────────────────────────────────┐  │
 │  apps/client   (Preact + Vite)  — UI · Session · Offline │  │
 │         │  Save-Envelope (IndexedDB + Offline-Queue)     │  │
-│         │  WsClient                                      │  │
+│         │  WsClient → wss://archiv.grimoire-interactive.de│ │
 └─────────┼────────────────────────────────────────────────┼──┘
           │              @adv/protocol                     │
           ▼                                                ▼
-   packages/core · sim · content              apps/server (WS)
-   DI · Events · Ticker · Math                Auth · Cloud · Chat
+   packages/core · sim · content              apps/server (WS :8080)
+   DI · Events · Ticker · Math                Auth · Cloud-Save · Chat
    i18n DE/EN · Balancing                     Leaderboard · SQLite
 ```
 
@@ -67,68 +75,75 @@ Eine Persistenzstrategie. Eine Protokollschicht. Klare Grenzen.
 | Entscheidung | Umsetzung |
 |---|---|
 | **Eine Persistenz** | Client-Save-Envelope (IndexedDB / Offline-Queue); Server-SQLite = Account-Autorität — **keine** Spiel-DB in Tauri |
-| **Tauri nur Shell** | Fenster, Updater, `quit_app` — keine Rust-Game-Loop |
+| **Tauri nur Shell** | Fenster, Quit, Lockdown — keine Rust-Game-Loop; Updates über den Launcher |
 | **Auth bei jedem Start** | Optional nur Benutzername merken; Passwort immer manuell |
 | **Desktop-Feel** | ESC → Spielmenü; Kontextmenü, Reload, Zoom und DevTools-Shortcuts in der Shell deaktiviert |
 | **Balancing-Parität** | Zahlen/Formeln wortgleich zu v1 — Golden-Snapshot-Gate in CI |
-| **Quality-first** | Jede Änderung hält `npm run gate` grün (tsc · eslint · vitest · build) |
+| **Quality-first** | Jede Änderung hält `npm run gate` grün |
+| **Branching** | Arbeit nur auf `main` |
 
 Details: [`docs/REWRITE_PLAN.md`](docs/REWRITE_PLAN.md) · [`docs/adr/`](docs/adr/)
 
 ---
 
-## 📦 Monorepo
+## Monorepo
 
 | Fläche | Paket | Rolle |
 |---|---|---|
-| 🎮 Spiel-Client | `@adv/client` | Preact-UI, Game-Session, Save / Offline |
-| 🛰️ Live-Server | `@adv/server` | Auth, Cloud-Sync, Chat, Leaderboard |
-| 🪟 Desktop-Shell | `@adv/desktop` | Tauri 2, Updater, Quit |
-| 🔏 Launcher | `@adv/launcher` | Siegel-Portal, portable ZIP, Ed25519 |
-| 🧮 Simulation | `@adv/sim` | Balancing, Combat- / Idle-Mathe |
-| ⚙️ Kernel | `@adv/core` | Store, Events, Ticker, DI, Pools |
-| 📡 Protokoll | `@adv/protocol` | WS-Events, Validierung, Save-Typen |
-| 📚 Content | `@adv/content` | i18n (DE/EN), Spieldaten |
-| ✅ Gates | `@adv/gates` | CI- / DoD-Gate |
-| 🧪 E2E | `@adv/e2e` | Playwright-Smoke |
+| Spiel-Client | `@adv/client` | Preact-UI, Game-Session, Save / Offline |
+| Live-Server | `@adv/server` | Auth, Cloud-Sync, Chat, Leaderboard, SQLite |
+| Desktop-Shell | `@adv/desktop` | Tauri 2, Quit, Lockdown |
+| Launcher | `@adv/launcher` | Siegel-Portal, portable ZIP, Ed25519-Verify |
+| Simulation | `@adv/sim` | Balancing, Combat- / Idle-Mathe |
+| Kernel | `@adv/core` | Store, Events, Ticker, DI, Pools |
+| Protokoll | `@adv/protocol` | WS-Events, Validierung, Save-Typen |
+| Content | `@adv/content` | i18n (DE/EN), Spieldaten |
+| Gates | `@adv/gates` | CI- / DoD-Gate |
+| E2E | `@adv/e2e` | Playwright-Smoke |
 
 ### Repository-Struktur
 
 ```text
 archiv-des-vergessens-2/
 ├─ apps/
-│  ├─ client/          Preact-Spielclient (Vite)
-│  ├─ server/          Modularer WebSocket-Server
-│  ├─ desktop/         Tauri-2-Shell
-│  └─ launcher/        Siegel-Portal (portable)
+│  ├─ client/            Preact-Spielclient (Vite)
+│  ├─ server/            WebSocket-Server (Auth / Cloud / Chat / Leaderboard)
+│  ├─ desktop/           Tauri-2-Spielshell
+│  └─ launcher/          Siegel-Portal (Spieler-EXE)
 ├─ packages/
-│  ├─ core/            Runtime-Kernel
-│  ├─ sim/             Spielsimulation & Balancing
-│  ├─ protocol/        Netzwerkvertrag & Save-Envelope
-│  └─ content/         Texte & Content-Pipeline
+│  ├─ core/              Runtime-Kernel
+│  ├─ sim/               Spielsimulation & Balancing
+│  ├─ protocol/          Netzwerkvertrag & Save-Envelope
+│  └─ content/           Texte & Content-Pipeline
 ├─ tools/
-│  ├─ gates/           CI- / DoD-Gate (`npm run gate`)
-│  ├─ e2e/             Playwright-Smoke
-│  └─ migrate-v1-users/  Account-Migration v1 → v2
-├─ docs/
-│  ├─ REWRITE_PLAN.md
-│  ├─ patch-notes-2.0.0.md
-│  ├─ protocol.md · save-format.md · cutover-v1.md
-│  ├─ parity- / playtest- / a11y-checklist.md
-│  └─ adr/             Architekturentscheidungen
+│  ├─ gates/             CI- / DoD-Gate (`npm run gate`)
+│  ├─ e2e/               Playwright-Smoke
+│  ├─ migrate-v1-saves/  Spielstand-Migration v1 → v2
+│  ├─ migrate-v1-users/  Account-Migration v1 → v2
+│  └─ sign_release.mjs   Ed25519-Signatur portable ZIP
+├─ deploy/
+│  ├─ nginx/             TLS + WSS Reverse-Proxy
+│  └─ caddy/             Alternative Proxy-Config
+├─ site/                 Studio-Website (Cloudflare Pages)
+├─ workers/
+│  └─ contact/           Kontaktformular → kontakt@grimoire-interactive.de
+├─ design/               Design-Referenzen / Szenen
+├─ docs/                 Plan, ADRs, Legal, Checklisten
+├─ .env.example
+├─ wrangler.toml         Cloudflare Pages → ./site
 ├─ CHANGELOG.md
 └─ README.md
 ```
 
 ---
 
-## 🚀 Schnellstart
+## Schnellstart
 
 ### Voraussetzungen
 
 - **Node.js** ≥ 22
 - **npm** (Workspaces)
-- Optional Desktop: **Rust** + [Tauri 2](https://v2.tauri.app/) Prerequisites (unter Windows: WebView2)
+- Optional Desktop / Launcher: **Rust** + [Tauri 2](https://v2.tauri.app/) Prerequisites (unter Windows: WebView2)
 
 ### Web-Client & Server
 
@@ -136,47 +151,86 @@ archiv-des-vergessens-2/
 npm install
 npm run gate          # Typecheck, Lint, Tests, Build — DoD
 npm run dev:client    # → http://localhost:5173
-npm run dev:server    # WS-Server (Auth / Cloud / Social)
+npm run dev:server    # WS-Server auf Port 8080
 ```
 
-### Desktop
+Lokal verbindet der Client in der Vite-Dev-Session typischerweise auf `ws://localhost:8080`.  
+Produktion / Release-Builds nutzen `wss://archiv.grimoire-interactive.de` (siehe `.env.example`, `VITE_WS_URL`).
+
+### Desktop & Launcher
 
 ```bash
-npm run tauri:dev     # Client + natives Fenster
+npm run tauri:dev       # Spiel-Client im nativen Fenster
+npm run launcher:dev    # Siegel-Portal lokal
+npm run launcher:build  # Release-EXE des Launchers
 ```
 
-Shell-Details: [`apps/desktop/README.md`](apps/desktop/README.md)
+Shell-Details: [`apps/desktop/README.md`](apps/desktop/README.md) · Launcher: [`apps/launcher/README.md`](apps/launcher/README.md)
 
 ### Qualität & E2E
 
 ```bash
 npm test
 npm run test:coverage
-npm run e2e           # Playwright-Smoke (Client-Build nötig)
-npm run clippy        # Rust-Lint der Desktop-Shell
+npm run e2e             # Playwright-Smoke (Client-Build nötig)
+npm run clippy          # Rust-Lint Desktop-Shell
+npm run clippy:launcher # Rust-Lint Launcher
 ```
 
 ---
 
-## 🛠️ Skripte (Root)
+## Skripte (Root)
 
 | Befehl | Beschreibung |
 |---|---|
-| `npm run gate` | DoD-Gate (tsc, eslint, vitest, build, a11y-Basis) |
+| `npm run gate` | DoD-Gate (Snapshots, i18n, Version-Parity, a11y, Perf, tsc, eslint, vitest, build, optional clippy/e2e) |
 | `npm run dev:client` | Vite-Devserver Client |
-| `npm run dev:server` | Auth- / Cloud- / Social-Server |
-| `npm run tauri:dev` | Native Desktop-Session |
+| `npm run dev:server` | Auth- / Cloud- / Social-Server (`tsx watch`) |
+| `npm run tauri:dev` | Native Desktop-Session (Spiel) |
+| `npm run launcher:dev` | Siegel-Portal Dev |
+| `npm run launcher:build` | Siegel-Portal Release-EXE |
 | `npm run build` | Client-Production-Build |
-| `npm test` | Unit- / Integrationstests |
+| `npm test` | Unit- / Integrationstests (Vitest) |
 | `npm run test:coverage` | Coverage-Report |
 | `npm run e2e` | Playwright-Smoke |
 | `npm run clippy` | Desktop Rust-Lint (`-D warnings`) |
+| `npm run clippy:launcher` | Launcher Rust-Lint |
 | `npm run typecheck` | Projektweite TypeScript-Build-Graph |
 | `npm run lint` | ESLint, max-warnings = 0 |
+| `npm run migrate:v1-saves` | CLI: v1-JSON → v2-Envelope |
+
+`npm install` setzt per `prepare` den Git-Hook-Pfad auf `.githooks` (Release-Tags erzwingen lokal `npm run gate`).
 
 ---
 
-## 🗺️ Roadmap — Phasen 0 → 9
+## Live-Server & Deploy
+
+| Thema | Detail |
+|---|---|
+| **Öffentliche WSS-URL** | `wss://archiv.grimoire-interactive.de` |
+| **Lokaler Default** | `ws://localhost:8080` (`PORT`, Default `8080`) |
+| **Runtime-Override** | `localStorage["archiv_server_url"]` |
+| **Build-Zeit** | `VITE_WS_URL` (siehe `.env.example`; in Releases fest gebacken) |
+| **Upstream** | Node lauscht auf `127.0.0.1:8080`; Nginx/Caddy terminieren TLS auf 443 |
+| **Proxy-Vorlagen** | [`deploy/nginx/nginx.conf`](deploy/nginx/nginx.conf) · [`deploy/caddy/Caddyfile`](deploy/caddy/Caddyfile) |
+| **Server-Env** | `PORT`, `DATA_DIR`, `ALLOWED_ORIGINS`, `TRUST_PROXY=true` (hinter Proxy), `CLOUD_SAVE_VERSION` (Default `2.0.0`) |
+| **Daten** | SQLite `database.db` unter `DATA_DIR` (Default `apps/server/data`) |
+| **HTTP-Banner** | `GET /` → Klartext „Multiplayer-Server läuft“ (kein separates Health-API) |
+
+Server-Module: **Auth**, **Cloud-Save**, **Chat**, **Leaderboard**.  
+Freunde und Clan bleiben clientseitig (lokale Simulation), auch wenn die UI sie im Social-Hub zeigt.
+
+Produktionsstart (Beispiel):
+
+```bash
+npm run start -w @adv/server
+# bzw. mit Proxy:
+TRUST_PROXY=true PORT=8080 npm run start -w @adv/server
+```
+
+---
+
+## Roadmap — Phasen 0 → 9
 
 | Phase | Status | Inhalt |
 |---|---|---|
@@ -185,10 +239,10 @@ npm run clippy        # Rust-Lint der Desktop-Shell
 | **2** Vertical Slice | ✅ | Klick / Tick / Save / Offline |
 | **3** Content + Kampf / Story | ✅ | Combat, Hero, Story, i18n DE/EN |
 | **4** Server + Auth + Cloud | ✅ | WS-Auth, Cloud-Sync, User-Migrationstool |
-| **5** Tauri + E2E | ✅ | Desktop-Shell, Updater-Pfad, Playwright |
+| **5** Tauri + E2E | ✅ | Desktop-Shell, Playwright |
 | **6** Feature-Parität A–F | ✅ | Hub, Quests, Forge, Talente, Story, Tutorial |
 | **7** Social / Live | ✅ | Chat, Freunde, Clan, Leaderboard |
-| **8** Release 2.0.0 | ✅ | Perf, a11y, Patch Notes, Updater-Rollout, Cutover |
+| **8** Release-Meilenstein | ✅ | Perf, a11y, Patch Notes, Cutover-Docs |
 | **9** v1-Save-Importer | ✅ | `importV1Save`, Options-UI, CLI `migrate-v1-saves` |
 
 ```mermaid
@@ -200,45 +254,50 @@ graph LR
   P4 --> P5["P5 Tauri ✅"]
   P5 --> P6["P6 Parität ✅"]
   P6 --> P7["P7 Social ✅"]
-  P7 --> P8["P8 Release 2.0.0 ✅"]
+  P7 --> P8["P8 Release-Meilenstein ✅"]
   P8 --> P9["P9 v1 Importer ✅"]
 ```
 
-### Phase 8 — geliefert
-
-- ⚡ `PERFORMANCE_BUDGETS` + `FrameBudgetMonitor` (Degradation bei Rucklern)
-- 🧩 `ObjectPool` / `DomPool` für Floating-Combat-Text; Leak-Tests
-- ♿ a11y-Basis-Checkliste + Gate + Playwright-Landmark-Smoke
-- 📝 `CHANGELOG.md` + spielerseitige Patch Notes
-- 🔐 Updater: `createUpdaterArtifacts`, v2-`latest.json`-Feed, `release.yml`
-- 📋 Cutover-Runbook [`docs/cutover-v1.md`](docs/cutover-v1.md); Versionen vereinheitlicht auf `2.0.0`
+**Produktstatus danach:** frühe Alpha (`0.2.0-alpha`) — Playtest, Feinschliff, Inhalte.
 
 Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-checklist.md) · [a11y](docs/a11y-checklist.md) · [Cutover](docs/cutover-v1.md)
 
 ---
 
-## 🔐 Release & Desktop-Updater
+## Release & Siegel-Portal
 
 | Thema | Detail |
 |---|---|
-| **App-ID** | `com.grimoire.archivdesvergessens` (aus v1 portiert) |
-| **Player-EXE** | **`ArchivDesVergessens-Launcher.exe`** (Siegel-Portal — einziger Download für Spieler) |
-| **Artifacts** | Launcher · portable ZIP + `.sig` (kein NSIS / Windows-Setup) |
-| **Workflow** | [`.github/workflows/release.yml`](.github/workflows/release.yml) |
-| **CI** | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — Gate + Desktop-Job |
-| **Launcher** | [`apps/launcher`](apps/launcher) — lokal: `npm run launcher:dev` / Release: `npm run launcher:build` |
-| **Version im README** | Shields.io-Badges oben (Release + Tag) — kein manueller Versions-Bump nötig |
+| **App-ID** | `com.grimoire.archivdesvergessens` |
+| **Spieler-EXE** | **`ArchivDesVergessens-Launcher.exe`** — einziger Download für Spieler |
+| **Artifacts** | Launcher · `archiv-des-vergessens.zip` · `.sig` — **kein** NSIS / Windows-Setup |
+| **Installationspfad** | Standard `%APPDATA%\ArchivDesVergessens\app\` (im Launcher wählbar) |
+| **Updates** | Über den Launcher (GitHub Releases, Ed25519-Verify) — nicht über einen NSIS/`latest.json`-Setup-Pfad |
+| **Workflow** | [`.github/workflows/release.yml`](.github/workflows/release.yml) — Tag `v*` oder `workflow_dispatch` |
+| **CI** | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — Gate + Desktop + E2E |
+| **Signatur** | `tools/sign_release.mjs` + Secret `ED25519_PRIVATE_KEY` |
+| **Release-Draft** | Workflow veröffentlicht Releases als **Draft** — danach manuell publishen |
 
 > **Cutover-Hinweis:** Cloud-Spielstände aus v1 werden serverseitig **nicht** automatisch übernommen.  
 > Accounts (Benutzername + PBKDF2-Passwort) können migriert werden — Spieler melden sich neu an.  
-> Spieler wechseln über den **v2-Launcher** (`ArchivDesVergessens-Launcher.exe`).  
-> Lokale v1-Spielstände kannst du über den Phase-9-Importer weiternutzen (siehe unten).
+> Spieler wechseln über den **v2-Launcher**. Lokale v1-Spielstände: Phase-9-Importer (unten).
 
 Account-Migration: [`tools/migrate-v1-users/`](tools/migrate-v1-users/)
 
 ---
 
-## 💾 v1-Spielstände in v2 weiternutzen
+## Studio-Website & Kontakt
+
+| Thema | Detail |
+|---|---|
+| **Site** | [`site/`](site/) — static HTML, Deploy per Cloudflare Pages (`wrangler.toml`) |
+| **Domain** | [https://grimoire-interactive.de/](https://grimoire-interactive.de/) |
+| **Kontakt-API** | [`workers/contact/`](workers/contact/) → `kontakt@grimoire-interactive.de` |
+| **Rechtliches (Docs)** | `grimoire.interactive@gmail.com` |
+
+---
+
+## v1-Spielstände in v2 weiternutzen
 
 v2 speichert in einem anderen Format (`SaveEnvelope`, `schemaVersion: 1`). Fortschritt aus v1 wird **nicht** still im Hintergrund übernommen — du importierst einen JSON-Dump einmalig.
 
@@ -294,12 +353,12 @@ Cutover-Runbook: [`docs/cutover-v1.md`](docs/cutover-v1.md)
 
 ---
 
-## 📖 Dokumentation
+## Dokumentation
 
 | Dokument | Zweck |
 |---|---|
 | [`docs/REWRITE_PLAN.md`](docs/REWRITE_PLAN.md) | Gesamtplan, Phasen, Architektur |
-| [`docs/patch-notes-2.0.0.md`](docs/patch-notes-2.0.0.md) | Spieler-Patch Notes 2.0.0 |
+| [`docs/patch-notes-2.0.0.md`](docs/patch-notes-2.0.0.md) | Spieler-Patch Notes (Rewrite-Meilenstein) |
 | [`CHANGELOG.md`](CHANGELOG.md) | Keep a Changelog |
 | [`docs/protocol.md`](docs/protocol.md) | WebSocket-Vertrag |
 | [`docs/save-format.md`](docs/save-format.md) | Save-Envelope + v1-Import |
@@ -310,20 +369,23 @@ Cutover-Runbook: [`docs/cutover-v1.md`](docs/cutover-v1.md)
 | [`docs/a11y-checklist.md`](docs/a11y-checklist.md) | Accessibility-Basis |
 | [`docs/adr/`](docs/adr/) | Architecture Decision Records |
 | [`apps/desktop/README.md`](apps/desktop/README.md) | Desktop-Shell & Lockdown |
+| [`apps/launcher/README.md`](apps/launcher/README.md) | Siegel-Portal |
+| [`site/README.md`](site/README.md) | Studio-Website Deploy |
 
 ---
 
-## 🧭 Entwicklungshinweise
+## Entwicklungshinweise
 
 1. **Gate zuerst** — jede Änderung hält `npm run gate` grün.
 2. **Vertrag spiegeln** — Protokoll- und Save-Format-Änderungen immer in `@adv/protocol` und den Docs nachziehen.
 3. **v1 ist Referenz** — `archiv-des-vergessens-1` ist read-only; kein aktiver Feature-Port außer dokumentierter Parität.
 4. **Paketgrenzen respektieren** — reine Sim-/Content-Logik bleibt frei von UI und I/O.
 5. **Balancing schützen** — Zahlenänderungen brauchen grünen Golden-Snapshot.
+6. **Nur `main`** — keine Feature-Branches, außer ausdrücklich gewünscht.
 
 ---
 
-## 📜 Lizenz & Projekt
+## Lizenz & Projekt
 
 Privates Studio-Projekt von **Grimoire Interactive** (Mneme-Bund).
 
@@ -335,7 +397,7 @@ Privates Studio-Projekt von **Grimoire Interactive** (Mneme-Bund).
 | [`docs/legal/THIRD_PARTY_NOTICES.md`](docs/legal/THIRD_PARTY_NOTICES.md) | OSS- & Dritthinweise |
 
 Offizielle Release-Builds dürfen persönlich und nicht-kommerziell gespielt werden; Source, Assets und Weitergabe sind ohne schriftliche Freigabe nicht gestattet.  
-Rechtliches: **grimoire.interactive@gmail.com**
+Rechtliches: **grimoire.interactive@gmail.com** · Kontaktformular: **kontakt@grimoire-interactive.de**
 
 Repository: [github.com/Trobikus/archiv-des-vergessens-2](https://github.com/Trobikus/archiv-des-vergessens-2)
 
