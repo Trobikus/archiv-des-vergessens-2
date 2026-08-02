@@ -20,7 +20,7 @@ export const TALENT_NODES = {
       maxHpPercent: 2,
       mnemeGainPercent: 2
     },
-    description: "Der Nexus des Bewusstseins. Verbindet alle Pfade der Macht.",
+    description: "Nexus des Bewusstseins. Ausgangspunkt aller Talentpfade.",
     icon: "🌀"
   },
   str_1: {
@@ -37,7 +37,7 @@ export const TALENT_NODES = {
     stats: {
       damagePercent: 4
     },
-    description: "+4% Physikalischer Schaden.",
+    description: "Schärft den Schlag. +4% phys. Schaden.",
     icon: "⚔️"
   },
   str_2: {
@@ -55,7 +55,7 @@ export const TALENT_NODES = {
     stats: {
       damagePercent: 6
     },
-    description: "+6% Physikalischer Schaden.",
+    description: "Verstärkte Kraft. +6% phys. Schaden.",
     icon: "⚔️"
   },
   str_notable_1: {
@@ -73,7 +73,7 @@ export const TALENT_NODES = {
       damagePercent: 12,
       critChancePercent: 5
     },
-    description: "+12% Physikalischer Schaden und +5% Kritische Trefferchance.",
+    description: "Klinge des Schicksals. +12% Schaden, +5% Krit.",
     icon: "🗡️"
   },
   str_crit_1: {
@@ -90,7 +90,7 @@ export const TALENT_NODES = {
     stats: {
       critMultiplierPercent: 15
     },
-    description: "+15% Kritischer Schadensmultiplikator.",
+    description: "Trifft die Schwachstelle. +15% Krit-Schaden.",
     icon: "🎯"
   },
   str_3: {
@@ -109,7 +109,7 @@ export const TALENT_NODES = {
       damagePercent: 8,
       attackSpeedPercent: 5
     },
-    description: "+8% Schaden und +5% Angriffsgeschwindigkeit.",
+    description: "Kampferfahrung. +8% Schaden, +5% Tempo.",
     icon: "⚡"
   },
   keystone_berserk: {
@@ -127,7 +127,7 @@ export const TALENT_NODES = {
       critMultiplierPercent: 25,
       defensePercent: -10
     },
-    description: "SCHLÜSSELKNOTEN: +30% Schaden & +25% Krit-Schaden, aber -10% Rüstung.",
+    description: "Raserei um jeden Preis. +30% Schaden, +25% Krit-Schaden, -10% Rüstung.",
     icon: "🔥"
   },
   mneme_1: {
@@ -144,7 +144,7 @@ export const TALENT_NODES = {
     stats: {
       mnemeGainPercent: 8
     },
-    description: "+8% Mneme-Ertrag.",
+    description: "Mehr Erinnerungsstaub. +8% Mneme.",
     icon: "✨"
   },
   mneme_2: {
@@ -162,7 +162,7 @@ export const TALENT_NODES = {
     stats: {
       mnemeGainPercent: 12
     },
-    description: "+12% Mneme-Ertrag.",
+    description: "Stärkerer Fluss. +12% Mneme.",
     icon: "✨"
   },
   mneme_notable_1: {
@@ -180,7 +180,7 @@ export const TALENT_NODES = {
       mnemeGainPercent: 25,
       xpGainPercent: 10
     },
-    description: "+25% Mneme-Ertrag und +10% Erfahrungs-Bonus.",
+    description: "Zieht Macht an. +25% Mneme, +10% EXP.",
     icon: "🌟"
   },
   mneme_cd_1: {
@@ -197,7 +197,7 @@ export const TALENT_NODES = {
     stats: {
       cooldownReductionPercent: 5
     },
-    description: "+5% Abklingzeit-Reduktion.",
+    description: "Klarer Fokus. +5% Abklingzeit-Reduktion.",
     icon: "⌛"
   },
   mneme_3: {
@@ -216,7 +216,7 @@ export const TALENT_NODES = {
       mnemeGainPercent: 15,
       damagePercent: 5
     },
-    description: "+15% Mneme-Ertrag und +5% Schaden.",
+    description: "Geist und Faust. +15% Mneme, +5% Schaden.",
     icon: "🔮"
   },
   keystone_mindstorm: {
@@ -234,7 +234,7 @@ export const TALENT_NODES = {
       cooldownReductionPercent: 10,
       maxHpPercent: -15
     },
-    description: "SCHLÜSSELKNOTEN: +50% Mneme-Ertrag & +10% Abklingzeit-Reduktion, aber -15% Max HP.",
+    description: "Überladener Geist. +50% Mneme, +10% CDR, -15% Max-HP.",
     icon: "🌩️"
   },
   dex_1: {
@@ -251,7 +251,7 @@ export const TALENT_NODES = {
     stats: {
       attackSpeedPercent: 4
     },
-    description: "+4% Angriffsgeschwindigkeit.",
+    description: "Schnellere Hand. +4% Angriffsgeschwindigkeit.",
     icon: "🏹"
   },
   dex_2: {
@@ -269,7 +269,7 @@ export const TALENT_NODES = {
     stats: {
       attackSpeedPercent: 6
     },
-    description: "+6% Angriffsgeschwindigkeit.",
+    description: "Geschärfte Reflexe. +6% Angriffsgeschwindigkeit.",
     icon: "🏹"
   },
   dex_notable_1: {
@@ -287,7 +287,7 @@ export const TALENT_NODES = {
       attackSpeedPercent: 10,
       critChancePercent: 8
     },
-    description: "+10% Angriffsgeschwindigkeit und +8% Kritische Trefferchance.",
+    description: "Tanz der Klingen. +10% Tempo, +8% Krit.",
     icon: "⚡"
   },
   dex_crit_1: {
@@ -305,7 +305,7 @@ export const TALENT_NODES = {
       critChancePercent: 5,
       critMultiplierPercent: 10
     },
-    description: "+5% Kritische Trefferchance und +10% Krit-Schaden.",
+    description: "Ziel im Dunkeln. +5% Krit, +10% Krit-Schaden.",
     icon: "🗡️"
   },
   dex_3: {
@@ -324,7 +324,7 @@ export const TALENT_NODES = {
       attackSpeedPercent: 8,
       damagePercent: 6
     },
-    description: "+8% Angriffsgeschwindigkeit und +6% Schaden.",
+    description: "Klingenbeherrschung. +8% Tempo, +6% Schaden.",
     icon: "🌪️"
   },
   keystone_shadow: {
@@ -342,7 +342,7 @@ export const TALENT_NODES = {
       attackSpeedPercent: 15,
       damagePercent: -10
     },
-    description: "SCHLÜSSELKNOTEN: +15% Krit-Chance & +15% Tempo, aber -10% Basis-Schaden.",
+    description: "Schnelligkeit vor Kraft. +15% Krit, +15% Tempo, -10% Schaden.",
     icon: "👤"
   },
   def_1: {
@@ -359,7 +359,7 @@ export const TALENT_NODES = {
     stats: {
       maxHpPercent: 5
     },
-    description: "+5% Maximale Gesundheit.",
+    description: "Zäher Körper. +5% Max-HP.",
     icon: "🛡️"
   },
   def_2: {
@@ -377,7 +377,7 @@ export const TALENT_NODES = {
     stats: {
       maxHpPercent: 8
     },
-    description: "+8% Maximale Gesundheit.",
+    description: "Gefestigte Vitalität. +8% Max-HP.",
     icon: "🛡️"
   },
   def_notable_1: {
@@ -395,7 +395,7 @@ export const TALENT_NODES = {
       maxHpPercent: 15,
       defensePercent: 15
     },
-    description: "+15% Maximale Gesundheit und +15% Rüstung.",
+    description: "Unbeugsame Bastion. +15% Max-HP, +15% Rüstung.",
     icon: "🏰"
   },
   def_armor_1: {
@@ -413,7 +413,7 @@ export const TALENT_NODES = {
       defensePercent: 10,
       hpRegenPercent: 1
     },
-    description: "+10% Rüstung und +1% Lebensregeneration.",
+    description: "Erinnerung als Schild. +10% Rüstung, +1% HP-Regen.",
     icon: "🧱"
   },
   def_3: {
@@ -432,7 +432,7 @@ export const TALENT_NODES = {
       maxHpPercent: 10,
       defensePercent: 10
     },
-    description: "+10% Maximale Gesundheit und +10% Rüstung.",
+    description: "Hält stand. +10% Max-HP, +10% Rüstung.",
     icon: "⛰️"
   },
   keystone_titan: {
@@ -450,7 +450,7 @@ export const TALENT_NODES = {
       defensePercent: 30,
       attackSpeedPercent: -15
     },
-    description: "SCHLÜSSELKNOTEN: +40% Max HP & +30% Rüstung, aber -15% Angriffsgeschwindigkeit.",
+    description: "Lebende Festung. +40% Max-HP, +30% Rüstung, -15% Tempo.",
     icon: "🗿"
   }
 } as const satisfies Record<string, TalentNode>;
