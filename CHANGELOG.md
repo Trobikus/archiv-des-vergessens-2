@@ -5,6 +5,24 @@ All notable changes to Archiv des Vergessens v2 are documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 project follows [Semantic Versioning](https://semver.org/).
 
+## [0.3.0-alpha] — 2026-08-02
+
+### Added
+
+- Multiplayer social: friends, guilds, and guild chat over the live server (client-side simulation removed)
+- Hero talent hover tooltips with definition text
+- Cinematic hub chrome pixel-matched to design mocks (top bar, rails/panels, footer)
+
+### Fixed
+
+- Release clients connect only to the live WSS endpoint
+- In-game top tabs no longer require horizontal scroll to reach all entries
+- Relic-hunt release API no longer exposes `resetCooldown` cheat
+
+### Changed
+
+- Hub scene art wired from mock assets into the cinematic hub
+
 ## [0.2.4-alpha] — 2026-08-02
 
 ### Added

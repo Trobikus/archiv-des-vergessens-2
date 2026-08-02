@@ -13,7 +13,7 @@
 | | |
 |---|---|
 | **Studio** | [Grimoire Interactive](https://grimoire-interactive.de/) |
-| **Version** | `0.2.4-alpha` · [![release](https://img.shields.io/github/v/release/Trobikus/archiv-des-vergessens-2?include_prereleases&sort=semver&label=release)](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest) [![tag](https://img.shields.io/github/v/tag/Trobikus/archiv-des-vergessens-2?sort=semver&label=tag)](https://github.com/Trobikus/archiv-des-vergessens-2/tags) |
+| **Version** | `0.3.0-alpha` · [![release](https://img.shields.io/github/v/release/Trobikus/archiv-des-vergessens-2?include_prereleases&sort=semver&label=release)](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest) [![tag](https://img.shields.io/github/v/tag/Trobikus/archiv-des-vergessens-2?sort=semver&label=tag)](https://github.com/Trobikus/archiv-des-vergessens-2/tags) |
 | **Stand** | Rewrite-Phasen **0–9** code-seitig fertig · öffentlich **frühe Alpha** |
 | **Stack** | TypeScript strict · Preact · Vite · Tauri 2 · Node WebSocket · SQLite |
 | **Live-Server** | `wss://archiv.grimoire-interactive.de` |
@@ -32,7 +32,7 @@ Studio-Site → [grimoire-interactive.de](https://grimoire-interactive.de/)
 
 Die v2-Codebasis ist kein Refactor von v1, sondern ein **kompletter Neuaufbau** mit striktem TypeScript, klaren Paketgrenzen und einer gemeinsamen Protokollschicht für Web und Desktop. Balancing-Zahlen bleiben wortgleich zu v1 (Golden-Snapshot-Gate).
 
-Die veröffentlichte Produktversion ist **`0.2.4-alpha`**. Dokumente mit der Bezeichnung „2.0.0“ beschreiben den Rewrite-Meilenstein (Feature-Parität / Cutover), nicht zwingend die aktuelle GitHub-Release-Nummer.
+Die veröffentlichte Produktversion ist **`0.3.0-alpha`**. Dokumente mit der Bezeichnung „2.0.0“ beschreiben den Rewrite-Meilenstein (Feature-Parität / Cutover), nicht zwingend die aktuelle GitHub-Release-Nummer.
 
 ### Hub & Spielsysteme
 
@@ -256,7 +256,7 @@ graph LR
   P8 --> P9["P9 v1 Importer ✅"]
 ```
 
-**Produktstatus danach:** frühe Alpha (`0.2.4-alpha`) — Playtest, Feinschliff, Inhalte.
+**Produktstatus danach:** frühe Alpha (`0.3.0-alpha`) — Playtest, Feinschliff, Inhalte.
 
 Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-checklist.md) · [a11y](docs/a11y-checklist.md) · [Cutover](docs/cutover-v1.md)
 
