@@ -149,21 +149,34 @@
       particleRoot.style.height = h + "px";
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      var target = Math.round(Math.min(72, Math.max(28, (w * h) / 28000)));
+      var target = Math.round(Math.min(110, Math.max(40, (w * h) / 18000)));
       while (particles.length < target) particles.push(spawn(true));
       if (particles.length > target) particles.length = target;
     };
 
+    /* Bias X toward left/right gutters so the center stays quieter. */
+    var edgeX = function () {
+      var t = Math.pow(Math.random(), 0.45);
+      var band = Math.min(w * 0.28, 320);
+      if (Math.random() < 0.82) {
+        return Math.random() < 0.5
+          ? t * band
+          : w - t * band;
+      }
+      return band + Math.random() * Math.max(1, w - band * 2);
+    };
+
     var spawn = function (randomY) {
+      var nearEdge = Math.random() < 0.7;
       return {
-        x: Math.random() * w,
+        x: edgeX(),
         y: randomY ? Math.random() * h : h + 4 + Math.random() * 40,
-        r: 0.4 + Math.random() * 1.6,
+        r: 0.45 + Math.random() * (nearEdge ? 2.1 : 1.4),
         vx: (Math.random() - 0.5) * 0.18,
         vy: -(0.08 + Math.random() * 0.22),
         phase: Math.random() * Math.PI * 2,
         sway: 0.15 + Math.random() * 0.45,
-        alpha: 0.08 + Math.random() * 0.18,
+        alpha: 0.1 + Math.random() * (nearEdge ? 0.28 : 0.14),
         warm: Math.random() > 0.55,
       };
     };
@@ -171,6 +184,7 @@
     var tick = function () {
       if (!running) return;
       ctx.clearRect(0, 0, w, h);
+      var edgeBand = Math.min(w * 0.28, 320);
 
       for (var i = 0; i < particles.length; i++) {
         var p = particles[i];
@@ -183,15 +197,19 @@
           continue;
         }
 
+        var distEdge = Math.min(p.x, w - p.x);
+        var edgeBoost = distEdge < edgeBand
+          ? 1 + 1.35 * (1 - distEdge / edgeBand)
+          : 0.55;
         var pulse = 0.65 + 0.35 * Math.sin(p.phase * 1.4);
-        var a = p.alpha * pulse;
+        var a = Math.min(0.55, p.alpha * pulse * edgeBoost);
         if (p.warm) {
           ctx.fillStyle = "rgba(197, 160, 89, " + a.toFixed(3) + ")";
         } else {
-          ctx.fillStyle = "rgba(233, 226, 208, " + (a * 0.75).toFixed(3) + ")";
+          ctx.fillStyle = "rgba(233, 226, 208, " + (a * 0.8).toFixed(3) + ")";
         }
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.r * (distEdge < edgeBand ? 1 + 0.25 * edgeBoost : 1), 0, Math.PI * 2);
         ctx.fill();
       }
 
