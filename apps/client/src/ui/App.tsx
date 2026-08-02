@@ -393,6 +393,7 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
               logOutLabel={t("pause.logOut")}
               exitLabel={t("pause.exitGame")}
               resumeLabel={t("pause.resume")}
+              escHintLabel={t("pause.resume")}
               onOptions={() => {
                 setPauseOpen(false);
                 setReturnScreen("game");

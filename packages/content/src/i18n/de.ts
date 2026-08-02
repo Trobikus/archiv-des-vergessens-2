@@ -17,6 +17,7 @@ export const DE = {
     'pause.resume': 'Zum Spiel zurück',
     'pause.logOut': 'Ausloggen',
     'pause.exitGame': 'Spiel beenden',
+    'pause.escHint': 'Spielmenü',
 
     // ===== SERVER / REALM SELECT =====
     'serverSelect.title': 'Realm-Auswahl',

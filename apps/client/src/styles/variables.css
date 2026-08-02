@@ -34,6 +34,24 @@
     --border-radius-md: 2px;
     --border-radius-sm: 0px;
 
+    /* Shell panel chrome (Archiv rails + hub overlays) */
+    --shell-glass-bg: linear-gradient(
+      155deg,
+      rgba(12, 12, 18, 0.78) 0%,
+      rgba(6, 6, 10, 0.58) 100%
+    );
+    --shell-glass-bg-soft: linear-gradient(
+      155deg,
+      rgba(12, 12, 18, 0.62) 0%,
+      rgba(6, 6, 10, 0.42) 100%
+    );
+    --shell-glass-border: 1px solid rgba(197, 160, 89, 0.32);
+    --shell-glass-border-soft: 1px solid rgba(197, 160, 89, 0.22);
+    --shell-glass-shadow:
+      0 14px 36px rgba(0, 0, 0, 0.72),
+      inset 0 0 22px rgba(0, 0, 0, 0.55);
+    --shell-glass-blur: blur(10px);
+
     /* Fonts */
     --font-body: 'Inter', sans-serif;
     --font-header: 'Cinzel', serif;

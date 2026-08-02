@@ -4,6 +4,7 @@ type Props = {
   readonly logOutLabel: string;
   readonly exitLabel: string;
   readonly resumeLabel: string;
+  readonly escHintLabel?: string;
   readonly onOptions: () => void;
   readonly onLogOut: () => void;
   readonly onExit: () => void;
@@ -16,6 +17,7 @@ export function PauseMenu({
   logOutLabel,
   exitLabel,
   resumeLabel,
+  escHintLabel,
   onOptions,
   onLogOut,
   onExit,
@@ -69,6 +71,12 @@ export function PauseMenu({
             {resumeLabel}
           </button>
         </nav>
+        {escHintLabel !== undefined ? (
+          <p class="pause-menu__hint">
+            <kbd>Esc</kbd>
+            {escHintLabel}
+          </p>
+        ) : null}
       </div>
     </div>
   );

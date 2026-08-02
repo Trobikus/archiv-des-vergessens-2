@@ -17,6 +17,7 @@ export const EN = {
     'pause.resume': 'Return to Game',
     'pause.logOut': 'Log Out',
     'pause.exitGame': 'Exit Game',
+    'pause.escHint': 'Game Menu',
 
     // ===== SERVER / REALM SELECT =====
     'serverSelect.title': 'Realm Selection',

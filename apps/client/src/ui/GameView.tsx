@@ -95,14 +95,14 @@ export function GameView({ session }: Props) {
   };
 
   return (
-    <main class="game">
-      <div class="game__chrome">
-        <header class="game__hero">
+    <main class="game game--cinematic">
+      <div class="game__scene" aria-hidden="true" />
+      <div class="game__veil" aria-hidden="true" />
+
+      <header class="game__topbar">
+        <div class="game__topbar-brand">
           <p class="game__brand">{t("menu.title")}</p>
-          <p class="game__tagline">
-            {state.hero.name} · {state.hero.title}
-          </p>
-        </header>
+        </div>
 
         <nav class="game__tabs" aria-label="Game sections">
           {CATEGORIES.map((def) => (
@@ -121,353 +121,424 @@ export function GameView({ session }: Props) {
           ))}
         </nav>
 
-        {category === "hero" ? (
-          <nav class="game__subtabs" aria-label={t("hub.hero")}>
-            {(
-              [
-                ["stats", "hero.stats", "hero-subtab-stats"],
-                ["inventory", "hero.inventory", "hero-subtab-inventory"],
-                ["equipment", "hero.equipment", "hero-subtab-equipment"],
-                ["skilltree", "hub.skilltree", "tab-skilltree"],
-                ["vault", "hub.vault", "tab-vault"],
-              ] as const
-            ).map(([id, key, testId]) => (
-              <button
-                key={id}
-                type="button"
-                class={
-                  heroNav === id ? "game__subtab is-active" : "game__subtab"
-                }
-                data-testid={testId}
-                aria-current={heroNav === id ? "page" : undefined}
-                onClick={() => {
-                  setHeroNav(id);
-                }}
-              >
-                {t(key)}
-              </button>
-            ))}
-          </nav>
-        ) : null}
+        <div class="game__topbar-resources" aria-label="Resources">
+          <span class="game__resource">
+            <span class="game__resource-label">Partikel</span>
+            <span class="game__resource-value">
+              {formatAmount(state.resources.particles)}
+            </span>
+          </span>
+          <span class="game__resource">
+            <span class="game__resource-label">Mneme</span>
+            <span class="game__resource-value">
+              {formatAmount(state.resources.mnemeFragmente)}
+            </span>
+          </span>
+          <span class="game__resource game__resource--level">
+            <span class="game__resource-label">{t("hero.level")}</span>
+            <span class="game__resource-value">{String(state.hero.level)}</span>
+          </span>
+        </div>
+      </header>
 
-        {category === "story" ? (
-          <nav class="game__subtabs" aria-label={t("hub.story")}>
-            {(
-              [
-                ["fights", "hub.battles", "tab-story-fights"],
-                ["challenges", "hub.challenges", "tab-challenges"],
-                ["analytics", "hub.analytics", "tab-analytics"],
-              ] as const
-            ).map(([id, key, testId]) => (
-              <button
-                key={id}
-                type="button"
-                class={
-                  storyNav === id ? "game__subtab is-active" : "game__subtab"
-                }
-                data-testid={testId}
-                aria-current={storyNav === id ? "page" : undefined}
-                onClick={() => {
-                  setStoryNav(id);
-                }}
-              >
-                {t(key)}
-              </button>
-            ))}
-          </nav>
-        ) : null}
-
-        {category === "missions" ? (
-          <nav class="game__subtabs" aria-label={t("hub.missions")}>
-            {(
-              [
-                ["quests", "hub.quests", "tab-quests"],
-                ["achievements", "hub.achievements", "tab-achievements"],
-              ] as const
-            ).map(([id, key, testId]) => (
-              <button
-                key={id}
-                type="button"
-                class={
-                  missionsNav === id ? "game__subtab is-active" : "game__subtab"
-                }
-                data-testid={testId}
-                aria-current={missionsNav === id ? "page" : undefined}
-                onClick={() => {
-                  setMissionsNav(id);
-                }}
-              >
-                {t(key)}
-              </button>
-            ))}
-          </nav>
-        ) : null}
-
-        {category === "workshop" ? (
-          <nav class="game__subtabs" aria-label={t("hub.workshop")}>
-            {(
-              [
-                ["forge", "hub.forge", "tab-forge"],
-                ["crafting", "hub.crafting", "tab-crafting"],
-                ["library", "hub.library", "tab-library"],
-              ] as const
-            ).map(([id, key, testId]) => (
-              <button
-                key={id}
-                type="button"
-                class={
-                  workshopNav === id ? "game__subtab is-active" : "game__subtab"
-                }
-                data-testid={testId}
-                aria-current={workshopNav === id ? "page" : undefined}
-                onClick={() => {
-                  setWorkshopNav(id);
-                }}
-              >
-                {t(key)}
-              </button>
-            ))}
-          </nav>
-        ) : null}
-
-        {category === "collection" ? (
-          <nav class="game__subtabs" aria-label={t("hub.collection")}>
-            {(
-              [
-                ["relicHunt", "hub.relicHunt", "tab-relicHunt"],
-                ["codex", "hub.codex", "tab-codex"],
-              ] as const
-            ).map(([id, key, testId]) => (
-              <button
-                key={id}
-                type="button"
-                class={
-                  collectionNav === id
-                    ? "game__subtab is-active"
-                    : "game__subtab"
-                }
-                data-testid={testId}
-                aria-current={collectionNav === id ? "page" : undefined}
-                onClick={() => {
-                  setCollectionNav(id);
-                }}
-              >
-                {t(key)}
-              </button>
-            ))}
-          </nav>
-        ) : null}
-
-        {category === "social" ? (
-          <nav class="game__subtabs" aria-label={t("hub.guild")}>
-            {(
-              [
-                ["chat", "hub.chat", "tab-chat"],
-                ["friends", "hub.friends", "tab-friends"],
-                ["clan", "hub.clan", "tab-clan"],
-                ["leaderboard", "hub.leaderboard", "tab-leaderboard"],
-              ] as const
-            ).map(([id, key, testId]) => (
-              <button
-                key={id}
-                type="button"
-                class={
-                  socialNav === id ? "game__subtab is-active" : "game__subtab"
-                }
-                data-testid={testId}
-                aria-current={socialNav === id ? "page" : undefined}
-                onClick={() => {
-                  setSocialNav(id);
-                }}
-              >
-                {t(key)}
-              </button>
-            ))}
-          </nav>
-        ) : null}
-
-        {offline !== null &&
-        (offline.mnemeGained > 0 ||
-          (offline.clanParticlesGained ?? 0) > 0 ||
-          (offline.clanRelicsGained ?? 0) > 0) ? (
-          <section class="game__offline" aria-live="polite">
-            <p>
-              Offline {formatDuration(offline.clampedSeconds * 1000)}
-              {offline.mnemeGained > 0
-                ? ` · +${formatAmount(offline.mnemeGained)} Mneme-Fragmente`
-                : ""}
-              {(offline.clanParticlesGained ?? 0) > 0
-                ? ` · +${formatAmount(offline.clanParticlesGained ?? 0)} Clan-Partikel`
-                : ""}
-              {(offline.clanRelicsGained ?? 0) > 0
-                ? ` · +${formatAmount(offline.clanRelicsGained ?? 0)} Clan-Relikte`
-                : ""}
-            </p>
+      {category === "hero" ? (
+        <nav class="game__subtabs" aria-label={t("hub.hero")}>
+          {(
+            [
+              ["stats", "hero.stats", "hero-subtab-stats"],
+              ["inventory", "hero.inventory", "hero-subtab-inventory"],
+              ["equipment", "hero.equipment", "hero-subtab-equipment"],
+              ["skilltree", "hub.skilltree", "tab-skilltree"],
+              ["vault", "hub.vault", "tab-vault"],
+            ] as const
+          ).map(([id, key, testId]) => (
             <button
+              key={id}
               type="button"
-              class="game__btn game__btn--ghost"
+              class={
+                heroNav === id ? "game__subtab is-active" : "game__subtab"
+              }
+              data-testid={testId}
+              aria-current={heroNav === id ? "page" : undefined}
               onClick={() => {
-                session.dismissOfflineReport();
+                setHeroNav(id);
               }}
             >
-              {t("common.close")}
+              {t(key)}
             </button>
-          </section>
-        ) : null}
-      </div>
+          ))}
+        </nav>
+      ) : null}
 
-      <div class="game__body">
-        {category === "hero" &&
-        (heroNav === "stats" ||
-          heroNav === "inventory" ||
-          heroNav === "equipment") ? (
-          <HeroPanel session={session} subTab={heroNav} />
-        ) : null}
-        {category === "hero" && heroNav === "skilltree" ? (
-          <SkillTreePanel session={session} />
-        ) : null}
-        {category === "hero" && heroNav === "vault" ? (
-          <VaultPanel session={session} />
-        ) : null}
+      {category === "story" ? (
+        <nav class="game__subtabs" aria-label={t("hub.story")}>
+          {(
+            [
+              ["fights", "hub.battles", "tab-story-fights"],
+              ["challenges", "hub.challenges", "tab-challenges"],
+              ["analytics", "hub.analytics", "tab-analytics"],
+            ] as const
+          ).map(([id, key, testId]) => (
+            <button
+              key={id}
+              type="button"
+              class={
+                storyNav === id ? "game__subtab is-active" : "game__subtab"
+              }
+              data-testid={testId}
+              aria-current={storyNav === id ? "page" : undefined}
+              onClick={() => {
+                setStoryNav(id);
+              }}
+            >
+              {t(key)}
+            </button>
+          ))}
+        </nav>
+      ) : null}
 
-        {category === "story" && storyNav === "fights" ? (
-          <StoryPanel session={session} />
-        ) : null}
-        {category === "story" && storyNav === "challenges" ? (
-          <ChallengePanel session={session} />
-        ) : null}
-        {category === "story" && storyNav === "analytics" ? (
-          <CombatAnalyticsPanel session={session} />
-        ) : null}
+      {category === "missions" ? (
+        <nav class="game__subtabs" aria-label={t("hub.missions")}>
+          {(
+            [
+              ["quests", "hub.quests", "tab-quests"],
+              ["achievements", "hub.achievements", "tab-achievements"],
+            ] as const
+          ).map(([id, key, testId]) => (
+            <button
+              key={id}
+              type="button"
+              class={
+                missionsNav === id ? "game__subtab is-active" : "game__subtab"
+              }
+              data-testid={testId}
+              aria-current={missionsNav === id ? "page" : undefined}
+              onClick={() => {
+                setMissionsNav(id);
+              }}
+            >
+              {t(key)}
+            </button>
+          ))}
+        </nav>
+      ) : null}
 
-        {category === "missions" && missionsNav === "quests" ? (
-          <QuestPanel session={session} />
-        ) : null}
-        {category === "missions" && missionsNav === "achievements" ? (
-          <AchievementPanel session={session} />
-        ) : null}
+      {category === "workshop" ? (
+        <nav class="game__subtabs" aria-label={t("hub.workshop")}>
+          {(
+            [
+              ["forge", "hub.forge", "tab-forge"],
+              ["crafting", "hub.crafting", "tab-crafting"],
+              ["library", "hub.library", "tab-library"],
+            ] as const
+          ).map(([id, key, testId]) => (
+            <button
+              key={id}
+              type="button"
+              class={
+                workshopNav === id ? "game__subtab is-active" : "game__subtab"
+              }
+              data-testid={testId}
+              aria-current={workshopNav === id ? "page" : undefined}
+              onClick={() => {
+                setWorkshopNav(id);
+              }}
+            >
+              {t(key)}
+            </button>
+          ))}
+        </nav>
+      ) : null}
 
-        {category === "workshop" && workshopNav === "forge" ? (
-          <ForgePanel session={session} />
-        ) : null}
-        {category === "workshop" && workshopNav === "crafting" ? (
-          <CraftingPanel session={session} />
-        ) : null}
-        {category === "workshop" && workshopNav === "library" ? (
-          <LibraryPanel session={session} />
-        ) : null}
+      {category === "collection" ? (
+        <nav class="game__subtabs" aria-label={t("hub.collection")}>
+          {(
+            [
+              ["relicHunt", "hub.relicHunt", "tab-relicHunt"],
+              ["codex", "hub.codex", "tab-codex"],
+            ] as const
+          ).map(([id, key, testId]) => (
+            <button
+              key={id}
+              type="button"
+              class={
+                collectionNav === id
+                  ? "game__subtab is-active"
+                  : "game__subtab"
+              }
+              data-testid={testId}
+              aria-current={collectionNav === id ? "page" : undefined}
+              onClick={() => {
+                setCollectionNav(id);
+              }}
+            >
+              {t(key)}
+            </button>
+          ))}
+        </nav>
+      ) : null}
 
-        {category === "collection" && collectionNav === "relicHunt" ? (
-          <RelicHuntPanel session={session} />
-        ) : null}
-        {category === "collection" && collectionNav === "codex" ? (
-          <CodexPanel session={session} />
-        ) : null}
+      {category === "social" ? (
+        <nav class="game__subtabs" aria-label={t("hub.guild")}>
+          {(
+            [
+              ["chat", "hub.chat", "tab-chat"],
+              ["friends", "hub.friends", "tab-friends"],
+              ["clan", "hub.clan", "tab-clan"],
+              ["leaderboard", "hub.leaderboard", "tab-leaderboard"],
+            ] as const
+          ).map(([id, key, testId]) => (
+            <button
+              key={id}
+              type="button"
+              class={
+                socialNav === id ? "game__subtab is-active" : "game__subtab"
+              }
+              data-testid={testId}
+              aria-current={socialNav === id ? "page" : undefined}
+              onClick={() => {
+                setSocialNav(id);
+              }}
+            >
+              {t(key)}
+            </button>
+          ))}
+        </nav>
+      ) : null}
 
-        {category === "social" && socialNav === "chat" ? (
-          <ChatPanel session={session} />
-        ) : null}
-        {category === "social" && socialNav === "friends" ? (
-          <FriendsPanel session={session} />
-        ) : null}
-        {category === "social" && socialNav === "clan" ? (
-          <ClanPanel session={session} />
-        ) : null}
-        {category === "social" && socialNav === "leaderboard" ? (
-          <LeaderboardPanel session={session} />
+      {offline !== null &&
+      (offline.mnemeGained > 0 ||
+        (offline.clanParticlesGained ?? 0) > 0 ||
+        (offline.clanRelicsGained ?? 0) > 0) ? (
+        <section class="game__offline" aria-live="polite">
+          <p>
+            Offline {formatDuration(offline.clampedSeconds * 1000)}
+            {offline.mnemeGained > 0
+              ? ` · +${formatAmount(offline.mnemeGained)} Mneme-Fragmente`
+              : ""}
+            {(offline.clanParticlesGained ?? 0) > 0
+              ? ` · +${formatAmount(offline.clanParticlesGained ?? 0)} Clan-Partikel`
+              : ""}
+            {(offline.clanRelicsGained ?? 0) > 0
+              ? ` · +${formatAmount(offline.clanRelicsGained ?? 0)} Clan-Relikte`
+              : ""}
+          </p>
+          <button
+            type="button"
+            class="game__btn game__btn--ghost"
+            onClick={() => {
+              session.dismissOfflineReport();
+            }}
+          >
+            {t("common.close")}
+          </button>
+        </section>
+      ) : null}
+
+      <div
+        class={
+          category === "archiv"
+            ? "game__stage game__stage--archiv"
+            : "game__stage game__stage--panels"
+        }
+      >
+        {category !== "archiv" ? (
+          <div class="game__stage-surface" key={`stage-${category}`}>
+            {category === "hero" &&
+            (heroNav === "stats" ||
+              heroNav === "inventory" ||
+              heroNav === "equipment") ? (
+              <HeroPanel session={session} subTab={heroNav} />
+            ) : null}
+            {category === "hero" && heroNav === "skilltree" ? (
+              <SkillTreePanel session={session} />
+            ) : null}
+            {category === "hero" && heroNav === "vault" ? (
+              <VaultPanel session={session} />
+            ) : null}
+
+            {category === "story" && storyNav === "fights" ? (
+              <StoryPanel session={session} />
+            ) : null}
+            {category === "story" && storyNav === "challenges" ? (
+              <ChallengePanel session={session} />
+            ) : null}
+            {category === "story" && storyNav === "analytics" ? (
+              <CombatAnalyticsPanel session={session} />
+            ) : null}
+
+            {category === "missions" && missionsNav === "quests" ? (
+              <QuestPanel session={session} />
+            ) : null}
+            {category === "missions" && missionsNav === "achievements" ? (
+              <AchievementPanel session={session} />
+            ) : null}
+
+            {category === "workshop" && workshopNav === "forge" ? (
+              <ForgePanel session={session} />
+            ) : null}
+            {category === "workshop" && workshopNav === "crafting" ? (
+              <CraftingPanel session={session} />
+            ) : null}
+            {category === "workshop" && workshopNav === "library" ? (
+              <LibraryPanel session={session} />
+            ) : null}
+
+            {category === "collection" && collectionNav === "relicHunt" ? (
+              <RelicHuntPanel session={session} />
+            ) : null}
+            {category === "collection" && collectionNav === "codex" ? (
+              <CodexPanel session={session} />
+            ) : null}
+
+            {category === "social" && socialNav === "chat" ? (
+              <ChatPanel session={session} />
+            ) : null}
+            {category === "social" && socialNav === "friends" ? (
+              <FriendsPanel session={session} />
+            ) : null}
+            {category === "social" && socialNav === "clan" ? (
+              <ClanPanel session={session} />
+            ) : null}
+            {category === "social" && socialNav === "leaderboard" ? (
+              <LeaderboardPanel session={session} />
+            ) : null}
+          </div>
         ) : null}
 
         {category === "archiv" ? (
-          <>
-            <section class="game__panel">
-              <h1 class="game__heading">Partikel</h1>
-              <p class="game__stat" data-testid="particles">
-                {formatAmount(state.resources.particles)}
-              </p>
-              <p class="game__meta">
-                Klickkraft Stufe {String(state.gather.clickPowerLevel)} · +
-                {formatAmount(clickGain)} / Klick
-              </p>
-              <div class="game__actions">
-                <button
-                  type="button"
-                  class="game__btn game__btn--primary"
-                  data-testid="gather-click"
-                  onClick={() => {
-                    session.gather.gather();
-                  }}
-                >
-                  Sammeln
-                </button>
-                <button
-                  type="button"
-                  class="game__btn"
-                  data-testid="gather-upgrade"
-                  disabled={!canUpgradeGather}
-                  title={
-                    canUpgradeGather
-                      ? undefined
-                      : `Benötigt ${formatAmount(clickUpgradeCost)} Partikel`
-                  }
-                  onClick={() => {
-                    session.gather.upgradeClickPower();
-                  }}
-                >
-                  Klickkraft ({formatAmount(clickUpgradeCost)})
-                </button>
-              </div>
-            </section>
+          <div class="game__archiv" key="stage-archiv" data-testid="archiv-layout">
+            <aside class="game__rail game__rail--left" aria-label="GedankenArchiv">
+              <section class="game__focus-panel">
+                <h2 class="game__focus-panel__title">GedankenArchiv</h2>
+                <p class="game__focus-panel__flavor">
+                  Alpha — Mneme sammelt sich, sobald das Archiv steht.
+                </p>
+                <p class="game__stat" data-testid="mneme">
+                  {formatAmount(state.resources.mnemeFragmente)}
+                  <span class="game__unit"> Mneme</span>
+                </p>
+                <dl class="game__focus-panel__stats">
+                  <div>
+                    <dt>Idle-Stufe</dt>
+                    <dd>
+                      {String(state.idleGenerators.gedankenArchiv.level)}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Yield / s</dt>
+                    <dd>{formatAmount(yieldPerSec)}</dd>
+                  </div>
+                </dl>
+                <div class="game__actions game__actions--stack">
+                  <button
+                    type="button"
+                    class="game__btn game__btn--primary"
+                    data-testid="archiv-buy"
+                    disabled={!canBuyArchiv}
+                    title={
+                      canBuyArchiv
+                        ? undefined
+                        : `Benötigt ${formatAmount(archivCost)} Partikel`
+                    }
+                    onClick={() => {
+                      session.idle.buyLevel(1);
+                    }}
+                  >
+                    Ausbauen ({formatAmount(archivCost)})
+                  </button>
+                  <button
+                    type="button"
+                    class="game__btn game__btn--primary"
+                    data-testid="gather-click"
+                    onClick={() => {
+                      session.gather.gather();
+                    }}
+                  >
+                    Sammeln
+                  </button>
+                </div>
+              </section>
+            </aside>
 
-            <section class="game__panel">
-              <h2 class="game__heading">GedankenArchiv</h2>
-              <p class="game__stat" data-testid="mneme">
-                {formatAmount(state.resources.mnemeFragmente)}
-                <span class="game__unit"> Mneme</span>
-              </p>
-              <p class="game__meta">
-                Stufe {String(state.idleGenerators.gedankenArchiv.level)} ·{" "}
-                {formatAmount(yieldPerSec)} / s
-                {state.idleGenerators.gedankenArchiv.level === 0
-                  ? " · Idle aktiv nach erstem Ausbau"
-                  : " · Idle läuft"}
-              </p>
-              <div class="game__actions">
-                <button
-                  type="button"
-                  class="game__btn game__btn--primary"
-                  data-testid="archiv-buy"
-                  disabled={!canBuyArchiv}
-                  title={
-                    canBuyArchiv
-                      ? undefined
-                      : `Benötigt ${formatAmount(archivCost)} Partikel`
-                  }
-                  onClick={() => {
-                    session.idle.buyLevel(1);
-                  }}
-                >
-                  Ausbauen ({formatAmount(archivCost)})
-                </button>
-                <button
-                  type="button"
-                  class="game__btn"
-                  data-testid="manual-save"
-                  onClick={() => {
-                    void session.saveNow();
-                  }}
-                >
-                  {t("common.save")}
-                </button>
-              </div>
-              <p class="game__save" data-testid="save-status">
-                {state.meta.lastSavedAt === null
-                  ? "Noch nicht gespeichert"
-                  : `Gespeichert ${new Date(state.meta.lastSavedAt).toLocaleTimeString()}`}
-              </p>
-            </section>
-          </>
+            <div class="game__archiv-center" aria-hidden="true" />
+
+            <aside class="game__rail game__rail--right" aria-label="Status">
+              <section class="game__status-card">
+                <h3 class="game__status-card__title">Klickkraft</h3>
+                <p class="game__status-card__value">
+                  Stufe {String(state.gather.clickPowerLevel)}
+                </p>
+                <p class="game__meta">
+                  +{formatAmount(clickGain)} / Klick
+                </p>
+                <div class="game__actions">
+                  <button
+                    type="button"
+                    class="game__btn"
+                    data-testid="gather-upgrade"
+                    disabled={!canUpgradeGather}
+                    title={
+                      canUpgradeGather
+                        ? undefined
+                        : `Benötigt ${formatAmount(clickUpgradeCost)} Partikel`
+                    }
+                    onClick={() => {
+                      session.gather.upgradeClickPower();
+                    }}
+                  >
+                    Upgrade ({formatAmount(clickUpgradeCost)})
+                  </button>
+                </div>
+              </section>
+
+              <section class="game__status-card">
+                <h3 class="game__status-card__title">Partikel</h3>
+                <p class="game__status-card__value" data-testid="particles">
+                  {formatAmount(state.resources.particles)}
+                </p>
+              </section>
+
+              <section class="game__status-card">
+                <h3 class="game__status-card__title">Idle-Status</h3>
+                <p class="game__meta">
+                  {state.idleGenerators.gedankenArchiv.level === 0
+                    ? "Wartet auf ersten Ausbau"
+                    : `Läuft · ${formatAmount(yieldPerSec)} Mneme / s`}
+                </p>
+              </section>
+
+              <section class="game__status-card">
+                <h3 class="game__status-card__title">Save-Status</h3>
+                <p class="game__save" data-testid="save-status">
+                  {state.meta.lastSavedAt === null
+                    ? "Noch nicht gespeichert"
+                    : `Gespeichert ${new Date(state.meta.lastSavedAt).toLocaleTimeString()}`}
+                </p>
+                <div class="game__actions">
+                  <button
+                    type="button"
+                    class="game__btn"
+                    data-testid="manual-save"
+                    onClick={() => {
+                      void session.saveNow();
+                    }}
+                  >
+                    {t("common.save")}
+                  </button>
+                </div>
+              </section>
+            </aside>
+          </div>
         ) : null}
       </div>
+
+      <footer class="game__hotkeys" aria-label={t("pause.title")}>
+        <span class="game__hotkey">
+          <kbd>Esc</kbd>
+          <span>{t("pause.escHint")}</span>
+        </span>
+      </footer>
     </main>
   );
 }

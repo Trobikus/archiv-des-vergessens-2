@@ -415,7 +415,9 @@
   .screen-transition__scan,
   .screen-transition__label,
   .login-screen__realm,
-  .login-realm-row__signal {
+  .login-realm-row__signal,
+  .fade-in,
+  .pause-menu {
     animation: none !important;
   }
 
