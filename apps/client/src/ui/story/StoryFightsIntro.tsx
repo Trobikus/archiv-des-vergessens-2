@@ -1,4 +1,5 @@
 import {
+  STORY_FIGHTS_INTRO_CROSSFADE_MS,
   STORY_FIGHTS_INTRO_FRAMES,
   type Locale,
 } from "@adv/content";
@@ -9,6 +10,11 @@ type Props = {
   readonly skipLabel: string;
   readonly onDone: () => void;
 };
+
+function frameArtUrl(src: string): string {
+  const path = src.replace(/^\//, "");
+  return `${import.meta.env.BASE_URL}${path}`;
+}
 
 /** Fullscreen cinematic overlay shown once on first Story → Fights open. */
 export function StoryFightsIntro({ locale, skipLabel, onDone }: Props) {
@@ -39,6 +45,7 @@ export function StoryFightsIntro({ locale, skipLabel, onDone }: Props) {
   }
 
   const lines = locale === "en" ? frame.linesEn : frame.linesDe;
+  const artUrl = frameArtUrl(frame.src);
 
   return (
     <section
@@ -48,9 +55,17 @@ export function StoryFightsIntro({ locale, skipLabel, onDone }: Props) {
       aria-label={lines[0]}
       data-testid="story-intro"
     >
+      <div
+        key={frame.id}
+        class="intro__art"
+        style={{
+          backgroundImage: `url("${artUrl}")`,
+          animationDuration: `${String(STORY_FIGHTS_INTRO_CROSSFADE_MS)}ms`,
+        }}
+        aria-hidden="true"
+      />
       <div class="intro__veil" aria-hidden="true" />
-      <div class="intro__plane" aria-hidden="true" />
-      <div class="intro__copy" key={frame.id}>
+      <div class="intro__copy" key={`copy-${frame.id}`}>
         {lines.map((line) => (
           <p key={line} class="intro__line">
             {line}
