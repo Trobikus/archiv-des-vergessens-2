@@ -98,9 +98,7 @@ export function TutorialUI({ session }: Props) {
           dangerouslySetInnerHTML={{ __html: text }}
         />
         <div class="game__actions">
-          {step.action === "next" ||
-          step.action === "finish" ||
-          step.action === "wait_event" ? (
+          {step.action === "next" || step.action === "finish" ? (
             <button
               type="button"
               class="game__btn game__btn--primary"

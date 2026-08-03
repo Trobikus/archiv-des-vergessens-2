@@ -180,6 +180,33 @@ describe("phase 6 service coverage smoke tests", () => {
     expect(session.store.getState().resources.particles).toBeGreaterThan(before);
   });
 
+  it("tutorial wait_event blocks nextStep until gather threshold", async () => {
+    const session = bootSession();
+    await session.boot();
+    session.hero.createHero({ name: "Waiter", classId: "light_warrior" });
+    session.tutorial.startGuide("archiv");
+
+    // Opening lore + Archiv click steps are next/click_target; jump to wait_event.
+    const steps = session.tutorial.getSteps();
+    const waitIndex = steps.findIndex((step) => step.action === "wait_event");
+    expect(waitIndex).toBeGreaterThanOrEqual(0);
+    session.tutorial.startStep(waitIndex);
+
+    expect(session.tutorial.getCurrentStep()?.action).toBe("wait_event");
+    session.tutorial.nextStep();
+    expect(session.tutorial.getCurrentStep()?.action).toBe("wait_event");
+    expect(session.store.getState().tutorial.step).toBe(waitIndex);
+
+    session.resources.addParticles(50);
+    await new Promise((resolve) => {
+      setTimeout(resolve, 10);
+    });
+
+    expect(session.tutorial.getCurrentStep()?.action).toBe("click_target");
+    expect(session.store.getState().tutorial.step).toBe(waitIndex + 1);
+    session.tutorial.skip();
+  });
+
   it("tutorial skip completes the active guide only", async () => {
     const session = bootSession();
     await session.boot();

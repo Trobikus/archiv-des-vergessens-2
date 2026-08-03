@@ -90,14 +90,20 @@ export function createTutorialService(
 
     if (step.target && step.action === "click_target") {
       const selector = step.target;
+      let onClick: (() => void) | null = null;
+      let targetEl: Element | null = null;
       const interval = setInterval(() => {
         const el = document.querySelector(selector);
         if (!el) {
           return;
         }
         clearInterval(interval);
-        const onClick = (): void => {
-          el.removeEventListener("click", onClick);
+        targetEl = el;
+        onClick = (): void => {
+          if (onClick) {
+            el.removeEventListener("click", onClick);
+            onClick = null;
+          }
           setTimeout(() => {
             if (currentIndex === index) {
               service.nextStep();
@@ -105,25 +111,50 @@ export function createTutorialService(
           }, 100);
         };
         el.addEventListener("click", onClick);
-        clickCleanup = () => {
-          el.removeEventListener("click", onClick);
-        };
       }, 100);
-      setTimeout(() => {
+      const findTimeout = setTimeout(() => {
         clearInterval(interval);
       }, 10_000);
+      clickCleanup = () => {
+        clearInterval(interval);
+        clearTimeout(findTimeout);
+        if (targetEl && onClick) {
+          targetEl.removeEventListener("click", onClick);
+        }
+        targetEl = null;
+        onClick = null;
+      };
     }
 
     if (step.action === "wait_event" && step.target?.includes("gather-click")) {
-      storeSub = store.subscribe((state) => {
+      const maybeAdvanceGather = (state: GameState): void => {
         if (currentIndex !== index) {
           return;
         }
-        if (state.resources.particles >= 50n) {
-          service.nextStep();
+        if (state.resources.particles < 50n) {
+          return;
         }
-      });
+        // Defer past Store notify — nextStep writes tutorial state.
+        setTimeout(() => {
+          if (currentIndex === index) {
+            service.nextStep();
+          }
+        }, 0);
+      };
+      storeSub = store.subscribe(maybeAdvanceGather);
+      // Store.subscribe does not replay; advance immediately if already met.
+      maybeAdvanceGather(store.getState());
     }
+  };
+
+  const waitEventSatisfied = (step: TutorialStep): boolean => {
+    if (step.action !== "wait_event") {
+      return true;
+    }
+    if (step.target?.includes("gather-click")) {
+      return store.getState().resources.particles >= 50n;
+    }
+    return false;
   };
 
   const completeActiveGuide = (): void => {
@@ -231,6 +262,10 @@ export function createTutorialService(
     },
 
     nextStep() {
+      const current = this.getCurrentStep();
+      if (current && !waitEventSatisfied(current)) {
+        return;
+      }
       clearHooks();
       const next = currentIndex + 1;
       const steps = this.getSteps();
