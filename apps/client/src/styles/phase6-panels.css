@@ -33,6 +33,73 @@
   border-top: 1px solid rgba(197, 160, 89, 0.15);
 }
 
+/* Fullscreen cinematic story dialog (active conversation) */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 195;
+  display: grid;
+  place-items: end center;
+  padding: 2rem 1.5rem 2.5rem;
+  overflow: hidden;
+  animation: fadeInEffect 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.dialog-overlay__veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 60% 50% at 50% 35%,
+      rgba(20, 16, 10, 0.45) 0%,
+      rgba(0, 0, 0, 0.82) 100%
+    );
+  pointer-events: none;
+}
+
+.dialog-overlay__stage {
+  position: relative;
+  z-index: 1;
+  width: min(40rem, 100%);
+  padding: 1.35rem 1.45rem 1.4rem;
+  background: var(--shell-glass-bg);
+  border: var(--shell-glass-border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shell-glass-shadow);
+  backdrop-filter: var(--shell-glass-blur);
+  -webkit-backdrop-filter: var(--shell-glass-blur);
+  animation: fadeInEffect 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.dialog-overlay__speaker {
+  margin: 0;
+  font-family: var(--font-header);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gold-hover);
+  text-shadow: 0 0 12px var(--color-gold-glow);
+}
+
+.dialog-overlay__text {
+  margin: 0.85rem 0 0;
+  color: var(--color-text-main);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.dialog-overlay__actions {
+  margin-top: 1.1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog-overlay,
+  .dialog-overlay__stage {
+    animation: none !important;
+  }
+}
+
 .phase6-vault-grid {
   display: grid;
   gap: 0.55rem;

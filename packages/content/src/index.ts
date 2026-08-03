@@ -8,7 +8,13 @@ export { ACHIEVEMENT_DEFINITIONS } from "./achievements";
 export { CHALLENGES_DATA } from "./challenges";
 export { CODEX_ENTRIES } from "./codex-entries";
 export { MASTER_RECIPES } from "./crafting-recipes";
-export { getDialog, getNPC, NPCS } from "./dialogs";
+export {
+  getDialog,
+  getNPC,
+  isNpcUnlocked,
+  listNpcs,
+  NPCS,
+} from "./dialogs";
 export { ENCHANTMENTS, GEMS, RUNES } from "./gems-enchants";
 export { HERO_CLASSES } from "./hero-classes";
 export {

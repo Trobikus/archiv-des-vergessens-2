@@ -240,6 +240,8 @@ export type NpcDefinition = {
   readonly location: string;
   readonly isCinematic?: boolean;
   readonly cinematic?: string;
+  /** Minimum bossProgress required before this NPC can be spoken to. */
+  readonly bossRequired?: number;
   readonly dialogs: readonly DialogDefinition[];
   readonly defaultDialog: string;
 };

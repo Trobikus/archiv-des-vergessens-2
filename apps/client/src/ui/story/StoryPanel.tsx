@@ -135,6 +135,8 @@ export function StoryPanel({ session }: Props) {
         ) : null}
       </div>
 
+      <DialogPanel session={session} />
+
       <ul class="panel__list" data-testid="boss-list">
         {bosses.map((boss) => {
           const defeated = state.hero.prestige.defeatedBosses.includes(boss.id);
@@ -211,7 +213,6 @@ export function StoryPanel({ session }: Props) {
         </div>
       ) : null}
       <StoryBranchPanel session={session} />
-      <DialogPanel session={session} />
     </section>
   );
 }

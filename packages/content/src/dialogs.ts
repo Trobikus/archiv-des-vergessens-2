@@ -279,6 +279,7 @@ export const NPCS = {
     location: "hub",
     isCinematic: true,
     cinematic: "iron-gates",
+    bossRequired: 4,
     dialogs: [
       {
         id: "first_meeting",
@@ -435,6 +436,7 @@ export const NPCS = {
     location: "story",
     isCinematic: true,
     cinematic: "void-whisper",
+    bossRequired: 10,
     dialogs: [
       {
         id: "first_encounter",
@@ -516,6 +518,17 @@ export function getNPC(id: string): NpcDefinition | null {
     return NPCS[id as keyof typeof NPCS];
   }
   return null;
+}
+
+export function listNpcs(): readonly NpcDefinition[] {
+  return Object.values(NPCS);
+}
+
+export function isNpcUnlocked(
+  npc: NpcDefinition,
+  bossProgress: number,
+): boolean {
+  return bossProgress >= (npc.bossRequired ?? 0);
 }
 
 export function getDialog(npcId: string, dialogId: string): DialogDefinition | null {
