@@ -162,6 +162,10 @@ export type AccountVaultSave = {
 export type TutorialSave = {
   readonly step: number;
   readonly finished: boolean;
+  /** Active milestone guide id, or null when idle between guides. */
+  readonly activeGuide: string | null;
+  /** Guide ids the player finished or skipped. */
+  readonly completedGuides: readonly string[];
 };
 
 export type ClanRole =
@@ -583,7 +587,12 @@ export function createDefaultAccountVaultSave(): AccountVaultSave {
 }
 
 export function createDefaultTutorialSave(): TutorialSave {
-  return { step: 0, finished: false };
+  return {
+    step: 0,
+    finished: false,
+    activeGuide: null,
+    completedGuides: [],
+  };
 }
 
 const CLAN_ROLES: readonly ClanRole[] = [
@@ -1615,15 +1624,45 @@ function validateTutorial(value: unknown): ValidationResult<TutorialSave> {
   if (!isRecord(value)) {
     return { ok: false, error: "tutorial must be an object" };
   }
-  if (!isNonNegativeInt(value["step"])) {
+  const stepRaw = value["step"];
+  // Allow -1 (idle / between guides) as well as non-negative step indices.
+  if (
+    typeof stepRaw !== "number" ||
+    !Number.isInteger(stepRaw) ||
+    stepRaw < -1
+  ) {
     return { ok: false, error: "tutorial.step invalid" };
   }
   if (typeof value["finished"] !== "boolean") {
     return { ok: false, error: "tutorial.finished invalid" };
   }
+  const activeRaw = value["activeGuide"];
+  if (
+    activeRaw !== undefined &&
+    activeRaw !== null &&
+    typeof activeRaw !== "string"
+  ) {
+    return { ok: false, error: "tutorial.activeGuide invalid" };
+  }
+  let completedGuides: readonly string[] = [];
+  if (value["completedGuides"] !== undefined) {
+    const completed = validateStringArray(
+      value["completedGuides"],
+      "tutorial.completedGuides",
+    );
+    if (!completed.ok) {
+      return completed;
+    }
+    completedGuides = completed.value;
+  }
   return {
     ok: true,
-    value: { step: value["step"], finished: value["finished"] },
+    value: {
+      step: stepRaw,
+      finished: value["finished"],
+      activeGuide: typeof activeRaw === "string" ? activeRaw : null,
+      completedGuides,
+    },
   };
 }
 

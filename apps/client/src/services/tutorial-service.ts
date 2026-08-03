@@ -1,4 +1,10 @@
-import { TUTORIAL_STEPS, type TutorialStep } from "@adv/content";
+import {
+  TUTORIAL_GUIDE_IDS,
+  TUTORIAL_GUIDES,
+  TUTORIAL_MILESTONES,
+  type TutorialGuideId,
+  type TutorialStep,
+} from "@adv/content";
 import type { EventBus, Store } from "@adv/core";
 
 import type { GameState } from "../state/game-state";
@@ -15,15 +21,22 @@ const V2_TARGET_OVERRIDES: Record<string, string> = {
   "#story-close": '[data-testid="tab-idle"]',
 };
 
+function isGuideId(value: string): value is TutorialGuideId {
+  return (TUTORIAL_GUIDE_IDS as readonly string[]).includes(value);
+}
+
 export type TutorialService = {
   getSteps(): readonly TutorialStep[];
   getCurrentStep(): TutorialStep | null;
+  getActiveGuideId(): TutorialGuideId | null;
   isActive(): boolean;
+  startGuide(guideId: TutorialGuideId): void;
   startStep(index: number): void;
   nextStep(): void;
   finish(): void;
   skip(): void;
   maybeAutoStart(): void;
+  evaluateMilestones(): void;
   destroy(): void;
 };
 
@@ -35,6 +48,7 @@ export function createTutorialService(
   let active = false;
   let clickCleanup: (() => void) | null = null;
   let storeSub: (() => void) | null = null;
+  const subscriptions: number[] = [];
 
   const mapStep = (step: TutorialStep): TutorialStep => {
     if (!step.target) {
@@ -44,8 +58,13 @@ export function createTutorialService(
     return override ? { ...step, target: override } : step;
   };
 
-  const getSteps = (): readonly TutorialStep[] =>
-    TUTORIAL_STEPS.map((step) => mapStep(step));
+  const resolveGuideId = (): TutorialGuideId | null => {
+    const guideId = store.getState().tutorial.activeGuide;
+    return guideId && isGuideId(guideId) ? guideId : null;
+  };
+
+  const guideSteps = (guideId: TutorialGuideId): readonly TutorialStep[] =>
+    TUTORIAL_GUIDES[guideId].steps.map((step) => mapStep(step));
 
   const clearHooks = (): void => {
     clickCleanup?.();
@@ -54,12 +73,15 @@ export function createTutorialService(
     storeSub = null;
   };
 
-  const publishStep = (index: number): void => {
-    const steps = getSteps();
-    const step = steps[index];
-    if (!step) {
-      return;
+  const isCompleted = (guideId: TutorialGuideId): boolean => {
+    const { tutorial } = store.getState();
+    if (tutorial.finished) {
+      return true;
     }
+    return tutorial.completedGuides.includes(guideId);
+  };
+
+  const publishStep = (index: number, step: TutorialStep): void => {
     eventBus.publish("tutorial:step", { index, step });
   };
 
@@ -104,35 +126,106 @@ export function createTutorialService(
     }
   };
 
+  const completeActiveGuide = (): void => {
+    clearHooks();
+    const { tutorial } = store.getState();
+    const guideId = tutorial.activeGuide;
+    const completedGuides =
+      guideId && !tutorial.completedGuides.includes(guideId)
+        ? [...tutorial.completedGuides, guideId]
+        : [...tutorial.completedGuides];
+    const finished = TUTORIAL_GUIDE_IDS.every((id) =>
+      completedGuides.includes(id),
+    );
+    active = false;
+    currentIndex = -1;
+    store.setState((prev) => ({
+      ...prev,
+      tutorial: {
+        step: -1,
+        finished,
+        activeGuide: null,
+        completedGuides,
+      },
+    }));
+    eventBus.publish("tutorial:end", {});
+    service.evaluateMilestones();
+  };
+
+  const milestoneUnlocked = (
+    milestone: (typeof TUTORIAL_MILESTONES)[number],
+    state: GameState,
+  ): boolean => {
+    if (milestone.trigger === "first_enter") {
+      return state.hero.created;
+    }
+    if (milestone.trigger === "boss") {
+      return state.hero.prestige.bossProgress >= milestone.minBossProgress;
+    }
+    return state.quests.mainIndex >= milestone.minMainIndex;
+  };
+
   const service: TutorialService = {
-    getSteps,
+    getSteps() {
+      const guideId = resolveGuideId();
+      return guideId ? guideSteps(guideId) : [];
+    },
 
     getCurrentStep() {
       if (!active || currentIndex < 0) {
         return null;
       }
-      return getSteps()[currentIndex] ?? null;
+      return this.getSteps()[currentIndex] ?? null;
+    },
+
+    getActiveGuideId() {
+      return resolveGuideId();
     },
 
     isActive() {
       return active;
     },
 
+    startGuide(guideId) {
+      if (isCompleted(guideId) || active) {
+        return;
+      }
+      store.setState((prev) => ({
+        ...prev,
+        tutorial: {
+          ...prev.tutorial,
+          activeGuide: guideId,
+          finished: false,
+          step: 0,
+        },
+      }));
+      this.startStep(0);
+    },
+
     startStep(index) {
-      const steps = getSteps();
+      const guideId = resolveGuideId();
+      if (!guideId) {
+        return;
+      }
+      const steps = guideSteps(guideId);
       if (index < 0 || index >= steps.length) {
-        this.finish();
+        completeActiveGuide();
         return;
       }
       active = true;
       currentIndex = index;
       store.setState((prev) => ({
         ...prev,
-        tutorial: { ...prev.tutorial, step: index, finished: false },
+        tutorial: {
+          ...prev.tutorial,
+          step: index,
+          finished: false,
+          activeGuide: guideId,
+        },
       }));
       const step = steps[index];
       if (step) {
-        publishStep(index);
+        publishStep(index, step);
         setupHooks(index, step);
       }
     },
@@ -140,7 +233,7 @@ export function createTutorialService(
     nextStep() {
       clearHooks();
       const next = currentIndex + 1;
-      const steps = getSteps();
+      const steps = this.getSteps();
       if (next >= steps.length) {
         this.finish();
         return;
@@ -149,44 +242,82 @@ export function createTutorialService(
     },
 
     finish() {
-      clearHooks();
-      active = false;
-      currentIndex = -1;
-      store.setState((prev) => ({
-        ...prev,
-        tutorial: { step: -1, finished: true },
-      }));
-      eventBus.publish("tutorial:end", {});
+      if (!resolveGuideId()) {
+        return;
+      }
+      completeActiveGuide();
     },
 
     skip() {
-      this.finish();
+      if (!resolveGuideId()) {
+        return;
+      }
+      completeActiveGuide();
     },
 
     maybeAutoStart() {
       const { tutorial } = store.getState();
-      if (tutorial.finished || tutorial.step < 0) {
+      if (tutorial.finished) {
         return;
       }
-      const index = Math.max(0, tutorial.step);
-      if (!active || currentIndex !== index) {
-        this.startStep(index);
+      if (tutorial.activeGuide && isGuideId(tutorial.activeGuide)) {
+        const index = Math.max(0, tutorial.step);
+        if (!active || currentIndex !== index) {
+          this.startStep(index);
+          return;
+        }
+        const step = this.getSteps()[currentIndex];
+        if (step) {
+          publishStep(currentIndex, step);
+        }
         return;
       }
-      // Session/boot may start the tutorial before TutorialUI mounts.
-      // Re-emit so late subscribers still receive the current step.
-      const step = getSteps()[currentIndex];
-      if (step) {
-        publishStep(currentIndex);
+      this.evaluateMilestones();
+    },
+
+    evaluateMilestones() {
+      const state = store.getState();
+      if (state.tutorial.finished || active || state.tutorial.activeGuide) {
+        return;
+      }
+      for (const milestone of TUTORIAL_MILESTONES) {
+        if (isCompleted(milestone.guideId)) {
+          continue;
+        }
+        if (!milestoneUnlocked(milestone, state)) {
+          continue;
+        }
+        this.startGuide(milestone.guideId);
+        return;
       }
     },
 
     destroy() {
       clearHooks();
+      for (const id of subscriptions) {
+        eventBus.unsubscribe(id);
+      }
+      subscriptions.length = 0;
       active = false;
       currentIndex = -1;
     },
   };
+
+  subscriptions.push(
+    eventBus.subscribe("story:bossDefeated", () => {
+      service.evaluateMilestones();
+    }),
+  );
+  subscriptions.push(
+    eventBus.subscribe("quest:updated", () => {
+      service.evaluateMilestones();
+    }),
+  );
+  subscriptions.push(
+    eventBus.subscribe("quest:completed", () => {
+      service.evaluateMilestones();
+    }),
+  );
 
   return service;
 }

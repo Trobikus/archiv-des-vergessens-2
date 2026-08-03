@@ -38,7 +38,17 @@ export {
   STORY_FIGHTS_INTRO_FRAMES,
 } from "./story-fights-intro";
 export { TALENT_NODES } from "./talent-nodes";
-export { TUTORIAL_STEPS } from "./tutorial-steps";
+export {
+  TUTORIAL_GUIDE_IDS,
+  TUTORIAL_GUIDES,
+  TUTORIAL_MILESTONES,
+  TUTORIAL_STEPS,
+} from "./tutorial-steps";
+export type {
+  TutorialGuide,
+  TutorialGuideId,
+  TutorialMilestone,
+} from "./tutorial-steps";
 export type {
   AchievementDefinition,
   AchievementReward,

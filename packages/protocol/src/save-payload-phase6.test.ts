@@ -114,7 +114,12 @@ const fullPhase6 = {
     memoryDust: "25",
     items: [sampleItem],
   },
-  tutorial: { step: 2, finished: false },
+  tutorial: {
+    step: 2,
+    finished: false,
+    activeGuide: "archiv",
+    completedGuides: [],
+  },
   settings: {
     locale: "en" as const,
     particlesEnabled: false,
@@ -146,6 +151,8 @@ describe("phase-6 save payload validation", () => {
     expect(result.value.relicHunt.cooldownEnd).toBe(1_800_000_000_000);
     expect(result.value.accountVault.items[0]?.id).toBe("vault_item_1");
     expect(result.value.tutorial.step).toBe(2);
+    expect(result.value.tutorial.activeGuide).toBe("archiv");
+    expect(result.value.tutorial.completedGuides).toEqual([]);
     expect(result.value.settings.locale).toBe("en");
     expect(result.value.resources.relics).toBe("5");
     expect(result.value.resources.catalyst).toBe("1");
@@ -167,6 +174,8 @@ describe("phase-6 save payload validation", () => {
     expect(partial.value.crafting.level).toBe(1);
     expect(partial.value.library.upgrades.forge_discount).toBe(0);
     expect(partial.value.tutorial.finished).toBe(true);
+    expect(partial.value.tutorial.activeGuide).toBeNull();
+    expect(partial.value.tutorial.completedGuides).toEqual([]);
 
     const roundTrip = validatePhase2SavePayload(partial.value);
     expect(roundTrip.ok).toBe(true);
@@ -554,6 +563,28 @@ describe("phase-6 save payload validation", () => {
       validatePhase2SavePayload({
         ...base,
         tutorial: { step: 0, finished: "yes" },
+      }).ok,
+    ).toBe(false);
+    expect(
+      validatePhase2SavePayload({
+        ...base,
+        tutorial: {
+          step: -1,
+          finished: true,
+          activeGuide: null,
+          completedGuides: ["archiv"],
+        },
+      }).ok,
+    ).toBe(true);
+    expect(
+      validatePhase2SavePayload({
+        ...base,
+        tutorial: {
+          step: 0,
+          finished: false,
+          activeGuide: 1,
+          completedGuides: [],
+        },
       }).ok,
     ).toBe(false);
 

@@ -40,16 +40,23 @@ describe("phase-3 content combat story slice", () => {
     expect(session.store.getState().tutorial).toEqual({
       step: 0,
       finished: false,
+      activeGuide: null,
+      completedGuides: [],
     });
 
+    session.tutorial.startGuide("archiv");
     session.tutorial.finish();
-    expect(session.store.getState().tutorial.finished).toBe(true);
+    expect(session.store.getState().tutorial.completedGuides).toContain(
+      "archiv",
+    );
     expect(
       session.hero.createHero({ name: "Nova", classId: "light_warrior" }),
     ).toBe(true);
     expect(session.store.getState().tutorial).toEqual({
       step: 0,
       finished: false,
+      activeGuide: null,
+      completedGuides: [],
     });
 
     expect(session.i18n.translate("hero.level")).toBe("Stufe");

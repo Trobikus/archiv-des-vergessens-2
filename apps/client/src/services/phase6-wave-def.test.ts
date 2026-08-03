@@ -94,9 +94,11 @@ describe("phase-6 waves D+E+F", () => {
   it("tutorial nextStep advances persisted step", async () => {
     const session = bootSession();
     await session.boot();
+    session.hero.createHero({ name: "Guide", classId: "light_warrior" });
 
     expect(session.store.getState().tutorial.finished).toBe(false);
-    session.tutorial.startStep(0);
+    session.tutorial.startGuide("archiv");
+    expect(session.store.getState().tutorial.activeGuide).toBe("archiv");
     expect(session.store.getState().tutorial.step).toBe(0);
 
     session.tutorial.nextStep();

@@ -180,22 +180,27 @@ describe("phase 6 service coverage smoke tests", () => {
     expect(session.store.getState().resources.particles).toBeGreaterThan(before);
   });
 
-  it("tutorial skip marks finished", async () => {
+  it("tutorial skip completes the active guide only", async () => {
     const session = bootSession();
     await session.boot();
+    session.hero.createHero({ name: "Skipper", classId: "light_warrior" });
 
-    session.tutorial.startStep(0);
+    session.tutorial.startGuide("archiv");
     expect(session.tutorial.isActive()).toBe(true);
     session.tutorial.skip();
-    expect(session.store.getState().tutorial.finished).toBe(true);
+    expect(session.store.getState().tutorial.completedGuides).toContain(
+      "archiv",
+    );
+    expect(session.store.getState().tutorial.finished).toBe(false);
     expect(session.tutorial.isActive()).toBe(false);
   });
 
   it("tutorial maybeAutoStart re-emits current step for late UI", async () => {
     const session = bootSession();
     await session.boot();
+    session.hero.createHero({ name: "Late", classId: "light_warrior" });
 
-    session.tutorial.startStep(0);
+    session.tutorial.startGuide("archiv");
     expect(session.tutorial.isActive()).toBe(true);
 
     let seenIndex: number | null = null;
@@ -210,6 +215,49 @@ describe("phase 6 service coverage smoke tests", () => {
 
     expect(seenIndex).toBe(0);
     expect(session.tutorial.getCurrentStep()?.title).toBe("Das Erwachen");
+  });
+
+  it("starts combat_hero then workshop after first boss defeat", async () => {
+    const session = bootSession();
+    await session.boot();
+    session.hero.createHero({ name: "Boss", classId: "light_warrior" });
+    session.tutorial.startGuide("archiv");
+    session.tutorial.skip();
+    expect(session.store.getState().tutorial.activeGuide).toBeNull();
+
+    session.store.setState((prev) => ({
+      ...prev,
+      hero: {
+        ...prev.hero,
+        prestige: { ...prev.hero.prestige, bossProgress: 1 },
+      },
+    }));
+    session.eventBus.publish("story:bossDefeated", {
+      bossId: "c1_f1",
+      bossProgress: 1,
+    });
+
+    expect(session.tutorial.getActiveGuideId()).toBe("combat_hero");
+    expect(session.tutorial.isActive()).toBe(true);
+
+    session.tutorial.skip();
+    expect(session.tutorial.getActiveGuideId()).toBe("workshop");
+  });
+
+  it("starts clan guide when main quest index reaches recruit quest", async () => {
+    const session = bootSession();
+    await session.boot();
+    session.hero.createHero({ name: "Clan", classId: "light_warrior" });
+    session.tutorial.startGuide("archiv");
+    session.tutorial.skip();
+
+    session.store.setState((prev) => ({
+      ...prev,
+      quests: { ...prev.quests, mainIndex: 1 },
+    }));
+    session.eventBus.publish("quest:updated", {});
+
+    expect(session.tutorial.getActiveGuideId()).toBe("clan");
   });
 
   it("combat analytics recordHit, getStats, and reset", async () => {

@@ -50,7 +50,12 @@ type Phase2SavePayload = {
   storyBranch: { currentNode: string | null; flags: Record<string, boolean | number | string>; visited: string[]; history: string[]; endingReached: string | null };
   relicHunt: { cooldownEnd: number };
   accountVault: { particles: string; relics: string; artifacts: string; memoryDust: string; items: ItemSave[] };
-  tutorial: { step: number; finished: boolean };
+  tutorial: {
+    step: number;
+    finished: boolean;
+    activeGuide: string | null;
+    completedGuides: string[];
+  };
   friends: { list: FriendEntrySave[]; pending: FriendRequestSave[]; sent: FriendRequestSave[] };
   clan: {
     members: ClanMemberSave[];

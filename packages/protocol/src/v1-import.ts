@@ -937,6 +937,8 @@ export function mapV1StateToPayload(
     tutorial: {
       step: tutorialStep,
       finished: tutorialFinished,
+      activeGuide: null,
+      completedGuides: [],
     },
     friends: mapFriends(state["friends"]),
     clan: mapClan(state["clan"]),

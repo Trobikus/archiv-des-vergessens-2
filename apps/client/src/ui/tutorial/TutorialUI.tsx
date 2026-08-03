@@ -31,7 +31,7 @@ export function TutorialUI({ session }: Props) {
     };
     const stepSub = session.eventBus.subscribe("tutorial:step", onStep);
     const endSub = session.eventBus.subscribe("tutorial:end", onEnd);
-    if (!tutorialState.finished && tutorialState.step >= 0) {
+    if (!tutorialState.finished) {
       session.tutorial.maybeAutoStart();
       const current = session.tutorial.getCurrentStep();
       const index = session.store.getState().tutorial.step;
@@ -43,7 +43,12 @@ export function TutorialUI({ session }: Props) {
       session.eventBus.unsubscribe(stepSub);
       session.eventBus.unsubscribe(endSub);
     };
-  }, [session, tutorialState.finished, tutorialState.step]);
+  }, [
+    session,
+    tutorialState.finished,
+    tutorialState.step,
+    tutorialState.activeGuide,
+  ]);
 
   useEffect(() => {
     if (!active?.step.target) {
