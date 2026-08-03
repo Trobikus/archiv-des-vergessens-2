@@ -1229,19 +1229,33 @@
 .intro__copy {
   position: relative;
   z-index: 4;
-  max-width: min(42rem, 92%);
+  max-width: min(44rem, 94%);
   margin: 0 auto;
+  padding: 1.35rem 1.75rem;
   text-align: center;
+  /* Local abyss plate so gold lines stay readable on bright keyframes */
+  background: radial-gradient(
+    ellipse 72% 70% at 50% 50%,
+    rgba(5, 5, 8, 0.78) 0%,
+    rgba(5, 5, 8, 0.52) 55%,
+    rgba(5, 5, 8, 0) 100%
+  );
   animation: fadeInEffect 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 .intro__line {
-  margin: 0.4rem 0;
+  margin: 0.45rem 0;
   font-family: var(--font-header);
   font-size: clamp(1.15rem, 3.2vw, 1.85rem);
+  font-weight: 600;
   letter-spacing: 0.14em;
-  color: var(--color-gold-hover);
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 18px var(--color-gold-glow);
+  color: #f3e6a8;
+  text-shadow:
+    0 0 1px rgba(0, 0, 0, 1),
+    0 1px 2px rgba(0, 0, 0, 1),
+    0 2px 10px rgba(0, 0, 0, 0.95),
+    0 0 18px rgba(0, 0, 0, 0.85),
+    0 0 22px var(--color-gold-glow);
   animation: fadeInEffect 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
