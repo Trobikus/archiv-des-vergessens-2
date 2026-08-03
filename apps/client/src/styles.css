@@ -11,6 +11,7 @@
 @import "./styles/phase6-panels.css";
 @import "./styles/hub.css";
 @import "./styles/game-shell.css";
+@import "./styles/map-panel.css";
 
 /* ---- Shared brand title (menu h1 look) ---- */
 .boot__brand,

@@ -32,6 +32,11 @@ export {
 } from "./items";
 export { LORE_NODES } from "./lore-nodes";
 export { bootLabel, isLocale } from "./locale";
+export {
+  DEFAULT_MAP_REGION_ID,
+  getMapRegion,
+  MAP_REGIONS,
+} from "./map-regions";
 export { DAILY_QUESTS_DATA, MAIN_QUESTS_DATA } from "./quests";
 export { FORGE_RECIPES } from "./recipes";
 export {
@@ -77,6 +82,7 @@ export type {
   LoreChoice,
   LoreNode,
   MainQuestDefinition,
+  MapRegion,
   MasterRecipe,
   NpcDefinition,
   QuestReward,

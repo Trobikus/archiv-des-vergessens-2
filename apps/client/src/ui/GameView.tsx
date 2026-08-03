@@ -17,6 +17,7 @@ import { GuildPanel } from "./guild/GuildPanel";
 import { HeroPanel, type HeroSubTab } from "./hero/HeroPanel";
 import { LeaderboardPanel } from "./leaderboard/LeaderboardPanel";
 import { LibraryPanel } from "./library/LibraryPanel";
+import { MapPanel } from "./map/MapPanel";
 import { QuestPanel } from "./quest/QuestPanel";
 import { RelicHuntPanel } from "./relic-hunt/RelicHuntPanel";
 import { SkillTreePanel } from "./skilltree/SkillTreePanel";
@@ -144,7 +145,7 @@ type SceneId = "archiv" | "forschung" | "kodex" | "rituale" | "karte";
 
 type HeroNavId = HeroSubTab | "skilltree" | "vault";
 type StoryNavId = "fights" | "challenges" | "analytics";
-type MissionsNavId = "quests" | "achievements";
+type MissionsNavId = "map" | "quests" | "achievements";
 type WorkshopNavId = "forge" | "crafting" | "library";
 type CollectionNavId = "relicHunt" | "codex";
 type SocialNavId = "chat" | "friends" | "guild" | "clan" | "leaderboard";
@@ -200,7 +201,7 @@ export function GameView({ session }: Props) {
   const [category, setCategory] = useState<CategoryId>("archiv");
   const [heroNav, setHeroNav] = useState<HeroNavId>("stats");
   const [storyNav, setStoryNav] = useState<StoryNavId>("fights");
-  const [missionsNav, setMissionsNav] = useState<MissionsNavId>("quests");
+  const [missionsNav, setMissionsNav] = useState<MissionsNavId>("map");
   const [workshopNav, setWorkshopNav] = useState<WorkshopNavId>("forge");
   const [collectionNav, setCollectionNav] =
     useState<CollectionNavId>("relicHunt");
@@ -328,7 +329,13 @@ export function GameView({ session }: Props) {
   );
 
   return (
-    <main class="game game--cinematic">
+    <main
+      class={
+        category === "missions" && missionsNav === "map"
+          ? "game game--cinematic game--map-active"
+          : "game game--cinematic"
+      }
+    >
       <div
         class={`game__scene game__scene--${sceneId}`}
         data-testid="game-scene"
@@ -533,6 +540,7 @@ export function GameView({ session }: Props) {
         <nav class="game__subtabs" aria-label={t("hub.missions")}>
           {(
             [
+              ["map", "hub.map", "tab-map"],
               ["quests", "hub.quests", "tab-quests"],
               ["achievements", "hub.achievements", "tab-achievements"],
             ] as const
@@ -664,7 +672,9 @@ export function GameView({ session }: Props) {
         class={
           category === "archiv"
             ? "game__stage game__stage--archiv"
-            : "game__stage game__stage--panels"
+            : category === "missions" && missionsNav === "map"
+              ? "game__stage game__stage--panels game__stage--map"
+              : "game__stage game__stage--panels"
         }
       >
         {category !== "archiv" ? (
@@ -692,6 +702,9 @@ export function GameView({ session }: Props) {
               <CombatAnalyticsPanel session={session} />
             ) : null}
 
+            {category === "missions" && missionsNav === "map" ? (
+              <MapPanel session={session} />
+            ) : null}
             {category === "missions" && missionsNav === "quests" ? (
               <QuestPanel session={session} />
             ) : null}

@@ -52,6 +52,19 @@ export type StoryFightsIntroFrame = {
   readonly linesEn: readonly string[];
 };
 
+export type MapRegion = {
+  readonly id: string;
+  readonly nameDe: string;
+  readonly nameEn: string;
+  readonly blurbDe: string;
+  readonly blurbEn: string;
+  /** Hotspot center X as percent of map art width. */
+  readonly xPct: number;
+  /** Hotspot center Y as percent of map art height. */
+  readonly yPct: number;
+  readonly locked?: boolean;
+};
+
 export type HeroClassId =
   | "light_warrior"
   | "archmage"

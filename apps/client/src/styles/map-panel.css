@@ -1,0 +1,189 @@
+/* Interactive wasteland map (missions → Karte) */
+
+.map-panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: stretch;
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+  animation: fadeInEffect 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.map-panel__detail {
+  position: relative;
+  z-index: 2;
+  align-self: start;
+  margin: 0;
+  padding: 1rem 1.1rem 1.15rem;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.map-panel__name {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-header);
+  font-size: 1.05rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-gold-hover);
+}
+
+.map-panel__blurb {
+  margin: 0.65rem 0 0;
+  color: var(--color-text-main);
+  line-height: 1.55;
+}
+
+.map-panel__board {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.map-panel__frame {
+  position: relative;
+  width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1536 / 1024;
+  border: 1px solid rgba(197, 160, 89, 0.22);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  background: #050507;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.65);
+}
+
+.map-panel__art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.map-hotspot {
+  position: absolute;
+  z-index: 2;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0;
+  padding: 0;
+  border: 2px solid rgba(197, 160, 89, 0.35);
+  border-radius: 50%;
+  background: rgba(5, 5, 8, 0.2);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  appearance: none;
+  box-shadow: 0 0 0 0 transparent;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.3s ease,
+    transform 0.25s ease;
+}
+
+.map-hotspot:hover:not(:disabled),
+.map-hotspot:focus-visible:not(:disabled) {
+  border-color: rgba(235, 213, 118, 0.85);
+  background: rgba(197, 160, 89, 0.18);
+  box-shadow:
+    0 0 16px rgba(197, 160, 89, 0.45),
+    0 0 32px rgba(197, 160, 89, 0.25);
+  outline: none;
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.map-hotspot.is-active {
+  border-color: var(--color-gold);
+  background: rgba(197, 160, 89, 0.22);
+  box-shadow:
+    0 0 0 2px rgba(197, 160, 89, 0.35),
+    0 0 22px rgba(197, 160, 89, 0.65),
+    0 0 48px rgba(197, 160, 89, 0.35);
+  animation: mapHotspotPulse 2.2s ease-in-out infinite;
+}
+
+.map-hotspot.is-locked,
+.map-hotspot:disabled {
+  border-color: rgba(120, 120, 130, 0.4);
+  background: rgba(0, 0, 0, 0.35);
+  cursor: not-allowed;
+  opacity: 0.72;
+  box-shadow: none;
+  animation: none;
+}
+
+@keyframes mapHotspotPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 2px rgba(197, 160, 89, 0.3),
+      0 0 18px rgba(197, 160, 89, 0.5),
+      0 0 40px rgba(197, 160, 89, 0.28);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgba(235, 213, 118, 0.45),
+      0 0 28px rgba(197, 160, 89, 0.75),
+      0 0 56px rgba(197, 160, 89, 0.4);
+  }
+}
+
+.game--cinematic .game__stage--map {
+  padding: 0.55rem 1rem 1rem;
+}
+
+.game--cinematic .game__stage--map .game__stage-surface {
+  width: 100%;
+  max-width: none;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: 0;
+  overflow: hidden;
+}
+
+.game--cinematic .game__stage--map .game__stage-surface::before {
+  display: none;
+}
+
+.game--map-active .game__scene {
+  animation: none !important;
+  transform: scale(1.02);
+  opacity: 0.35;
+  filter: brightness(0.55);
+}
+
+.game--map-active .game__veil {
+  opacity: 0.4;
+}
+
+@media (max-width: 900px) {
+  .map-panel {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(16rem, 1fr);
+  }
+
+  .map-hotspot {
+    width: 2.35rem;
+    height: 2.35rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-panel,
+  .map-hotspot.is-active {
+    animation: none !important;
+  }
+}
