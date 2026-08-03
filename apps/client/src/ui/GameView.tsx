@@ -769,9 +769,6 @@ export function GameView({ session }: Props) {
                 <h2 class="game__focus-panel__title shell-heading">
                   {t("archiv.title")}
                 </h2>
-                <p class="game__focus-panel__flavor">
-                  {t("archiv.flavor")}
-                </p>
                 <div
                   class="tip tip--below game__stat-tip"
                   tabIndex={0}

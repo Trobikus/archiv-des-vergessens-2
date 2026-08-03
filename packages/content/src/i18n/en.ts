@@ -302,7 +302,6 @@ export const EN = {
     'archiv.yieldTip': 'Mneme fragments per second while idle.',
     'archiv.clickPowerTip': 'Particles per manual gather click.',
     'archiv.title': 'Thought Archive',
-    'archiv.flavor': 'Mneme gathers once the Archive stands.',
     'archiv.needsParticles': 'Needs {amount} particles',
     'archiv.upgrade': 'Expand ({amount})',
     'archiv.gather': 'Gather',

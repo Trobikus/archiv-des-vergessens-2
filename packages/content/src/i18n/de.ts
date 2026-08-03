@@ -302,7 +302,6 @@ export const DE = {
     'archiv.yieldTip': 'Mneme-Fragmente pro Sekunde im Idle.',
     'archiv.clickPowerTip': 'Partikel pro manuellem Sammeln-Klick.',
     'archiv.title': 'GedankenArchiv',
-    'archiv.flavor': 'Mneme sammelt sich, sobald das Archiv steht.',
     'archiv.needsParticles': 'Benötigt {amount} Partikel',
     'archiv.upgrade': 'Ausbauen ({amount})',
     'archiv.gather': 'Sammeln',
