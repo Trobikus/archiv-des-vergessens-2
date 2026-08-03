@@ -315,8 +315,10 @@ export function MenuView({
   onOpenLogin,
 }: Props) {
   const state = useStore(session.store);
+  const authState = useStore(session.auth.store);
   const hasSave = state.hero.created;
   const t = session.i18n.translate.bind(session.i18n);
+  const isGuest = authState.user?.isGuest === true;
 
   return (
     <section
@@ -334,6 +336,7 @@ export function MenuView({
           i18n={session.i18n}
           ws={session.ws}
           cloud={session.cloud}
+          onClaimAccount={onOpenLogin}
         />
         <button
           type="button"
@@ -341,7 +344,7 @@ export function MenuView({
           data-testid="menu-open-login"
           onClick={onOpenLogin}
         >
-          {t("auth.login")}
+          {isGuest ? t("auth.claimAccount") : t("auth.login")}
         </button>
       </div>
 

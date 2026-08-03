@@ -15,6 +15,8 @@ type Props = {
   readonly onOptions?: () => void;
   /** Fired after login/register/guest identity changes so the session can swap save slots. */
   readonly onIdentityChanged?: () => void;
+  /** Fired after convertGuest so the session can keep guest progress. */
+  readonly onGuestConverted?: () => void | Promise<void>;
 };
 
 type Tab = "login" | "register";
@@ -223,9 +225,13 @@ export function LoginView({
   onQuit,
   onOptions,
   onIdentityChanged,
+  onGuestConverted,
 }: Props) {
   const authState = useStore(auth.store);
-  const [tab, setTab] = useState<Tab>("login");
+  const isGuestSession = authState.user?.isGuest === true;
+  const [tab, setTab] = useState<Tab>(() =>
+    auth.store.getState().user?.isGuest === true ? "register" : "login",
+  );
   const [username, setUsername] = useState(
     () => auth.rememberedUsername() ?? "",
   );
@@ -356,6 +362,16 @@ export function LoginView({
         if (ok) {
           setSuccessMessage(t("auth.success.login"));
           onIdentityChanged?.();
+        }
+      } else if (isGuestSession) {
+        ok = await auth.convertGuest({
+          username,
+          email,
+          password,
+        });
+        if (ok) {
+          setSuccessMessage(t("auth.success.converted"));
+          await onGuestConverted?.();
         }
       } else {
         ok = await auth.register({
@@ -505,7 +521,11 @@ export function LoginView({
           ) : (
             <>
               <p class="login-screen__form-heading cinzel text-gold">
-                {showRegister ? t("auth.register") : t("auth.login")}
+                {showRegister
+                  ? isGuestSession
+                    ? t("auth.claimAccount")
+                    : t("auth.register")
+                  : t("auth.login")}
               </p>
 
               {errorText !== null ? (
@@ -618,10 +638,14 @@ export function LoginView({
                 >
                   {busy
                     ? showRegister
-                      ? t("auth.registering")
+                      ? isGuestSession
+                        ? t("auth.converting")
+                        : t("auth.registering")
                       : t("auth.authenticating")
                     : showRegister
-                      ? t("auth.register")
+                      ? isGuestSession
+                        ? t("auth.convertGuest")
+                        : t("auth.register")
                       : t("auth.login")}
                 </button>
               </form>
@@ -632,18 +656,26 @@ export function LoginView({
                 </p>
               ) : null}
 
-              <button
-                type="button"
-                class="glass-btn w-100 login-screen__cta"
-                data-testid="auth-play-guest"
-                disabled={busy}
-                onClick={playAsGuest}
-              >
-                {t("auth.playAsGuest")}
-              </button>
-              <p class="text-muted" data-testid="auth-guest-hint">
-                {t("auth.guestPlayHint")}
-              </p>
+              {isGuestSession ? (
+                <p class="text-muted" data-testid="auth-guest-claim-hint">
+                  {t("auth.guestClaimHint")}
+                </p>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    class="glass-btn w-100 login-screen__cta"
+                    data-testid="auth-play-guest"
+                    disabled={busy}
+                    onClick={playAsGuest}
+                  >
+                    {t("auth.playAsGuest")}
+                  </button>
+                  <p class="text-muted" data-testid="auth-guest-hint">
+                    {t("auth.guestPlayHint")}
+                  </p>
+                </>
+              )}
             </>
           )}
         </div>
@@ -671,7 +703,11 @@ export function LoginView({
               setTab(tab === "register" ? "login" : "register");
             }}
           >
-            {tab === "register" ? t("auth.login") : t("auth.register")}
+            {tab === "register"
+              ? t("auth.login")
+              : isGuestSession
+                ? t("auth.claimAccount")
+                : t("auth.register")}
           </button>
         ) : null}
         {onQuit !== undefined ? (

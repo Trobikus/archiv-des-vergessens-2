@@ -321,6 +321,9 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
           onIdentityChanged={() => {
             void session.reloadActiveSave();
           }}
+          onGuestConverted={async () => {
+            await session.finalizeGuestConversion();
+          }}
         />
       );
       break;
@@ -360,6 +363,11 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
               i18n={session.i18n}
               ws={session.ws}
               cloud={session.cloud}
+              onClaimAccount={() => {
+                setReturnScreen("characterSelect");
+                setLoginFormKey((key) => key + 1);
+                navigateTo("login");
+              }}
             />
           }
           onPlay={() => {

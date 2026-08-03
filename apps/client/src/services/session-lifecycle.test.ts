@@ -77,6 +77,12 @@ describe("offline guest local saves", () => {
     expect(await storage.get(DEFAULT_SAVE_KEY)).toBeNull();
   });
 
+  it("finalizeGuestConversion refuses while still a guest", async () => {
+    const { session } = offlineGuestSession();
+    await session.boot();
+    expect(await session.finalizeGuestConversion()).toBe(false);
+  });
+
   it("does not interval-autosave while guest", async () => {
     const { session, storage } = offlineGuestSession();
     await session.boot();

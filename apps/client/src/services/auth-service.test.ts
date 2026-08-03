@@ -147,4 +147,44 @@ describe("auth-service register/login", () => {
     expect(storage.getItem("adv2_auth_session")).toBeNull();
     second.destroy();
   });
+
+  it("convertGuest promotes the guest session to a registered account", async () => {
+    const converted = {
+      id: "usr_conv",
+      username: "keeper",
+      email: "a@b.co",
+      avatar: "A",
+      createdAt: 1,
+      lastLogin: 2,
+      isGuest: false,
+    };
+    const ws = createFakeWs({
+      [WS_EVENTS.AUTH]: {
+        type: WS_EVENTS.AUTH_SUCCESS,
+        payload: { userId: "guest_local", username: "Gast" },
+      },
+      [WS_EVENTS.AUTH_CONVERT_GUEST]: {
+        type: WS_EVENTS.AUTH_CONVERT_GUEST_SUCCESS,
+        payload: {
+          user: converted,
+          token: "tok_conv",
+          migrated: { save: false, leaderboard: false },
+        },
+      },
+    });
+    const auth = createAuthService({ ws, storage: memoryStorage() });
+    await auth.boot();
+    expect(auth.store.getState().user?.isGuest).toBe(true);
+    expect(
+      await auth.convertGuest({
+        username: "keeper",
+        email: "a@b.co",
+        password: "secret12",
+      }),
+    ).toBe(true);
+    expect(auth.isRegistered()).toBe(true);
+    expect(auth.store.getState().token).toBe("tok_conv");
+    expect(auth.store.getState().user?.username).toBe("keeper");
+    auth.destroy();
+  });
 });

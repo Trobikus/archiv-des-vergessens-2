@@ -190,6 +190,12 @@ export const EN = {
     'auth.cloudPending': 'Cloud pending',
     'auth.playAsGuest': 'Play as Guest',
     'auth.guestPlayHint': 'Local save only (manual). No cloud sync, chat, friends, or guild.',
+    'auth.guestBadge': 'Guest',
+    'auth.claimAccount': 'Save account',
+    'auth.convertGuest': 'Create account & keep progress',
+    'auth.converting': 'Securing account...',
+    'auth.guestClaimHint': 'Create an account to keep your progress and unlock cloud sync, chat, friends, and guild.',
+    'auth.success.converted': 'Guest claimed — progress secured!',
 
     // ===== UI & ACTION KEYS =====
     'ui.bulk_salvage': 'Bulk Salvage',

@@ -147,6 +147,11 @@ export type GameSession = {
   saveNow(): Promise<boolean>;
   /** Load the IndexedDB slot for the current auth identity (guest vs registered). */
   reloadActiveSave(): Promise<boolean>;
+  /**
+   * After auth.convertGuest succeeds: write in-memory progress into the
+   * registered local slot and push cloud so guest progress is not orphaned.
+   */
+  finalizeGuestConversion(): Promise<boolean>;
   resetProgress(): Promise<void>;
   /** Phase 9: map a v1 JSON save into the current slot and persist. */
   importV1Progress(
@@ -502,6 +507,18 @@ export function createGameSession(
     saveNow,
 
     reloadActiveSave,
+
+    async finalizeGuestConversion() {
+      if (destroyed || !auth.isRegistered()) {
+        return false;
+      }
+      const saved = await saveNow();
+      if (!saved) {
+        return false;
+      }
+      await cloud.push(store.getState());
+      return true;
+    },
 
     async resetProgress() {
       const locale = store.getState().settings.locale;

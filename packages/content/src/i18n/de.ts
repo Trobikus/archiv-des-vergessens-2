@@ -190,6 +190,12 @@ export const DE = {
     'auth.cloudPending': 'Cloud ausstehend',
     'auth.playAsGuest': 'Als Gast spielen',
     'auth.guestPlayHint': 'Lokal speichern (manuell). Kein Cloud-Sync, kein Chat/Freunde/Gilde.',
+    'auth.guestBadge': 'Gast',
+    'auth.claimAccount': 'Konto sichern',
+    'auth.convertGuest': 'Konto erstellen & Fortschritt sichern',
+    'auth.converting': 'Konto wird gesichert...',
+    'auth.guestClaimHint': 'Erstelle ein Konto, um deinen Fortschritt zu behalten und Cloud-Sync sowie Chat/Freunde/Gilde freizuschalten.',
+    'auth.success.converted': 'Gastkonto übernommen — Fortschritt gesichert!',
 
     // ===== UI & ACTION KEYS =====
     'ui.bulk_salvage': 'Massen-Verwertung',

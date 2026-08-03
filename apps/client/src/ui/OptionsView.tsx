@@ -73,7 +73,7 @@ export function OptionsView({
               {user !== null && !user.isGuest
                 ? `${t("auth.loggedInAs")}: ${user.username}`
                 : user?.isGuest === true
-                  ? t("auth.playAsGuest")
+                  ? `${t("auth.guestBadge")}: ${user.username}`
                   : t("auth.login")}
             </span>
             <button
@@ -84,7 +84,9 @@ export function OptionsView({
             >
               {user !== null && !user.isGuest
                 ? t("auth.accountDetails")
-                : t("auth.login")}
+                : user?.isGuest === true
+                  ? t("auth.claimAccount")
+                  : t("auth.login")}
             </button>
           </div>
 

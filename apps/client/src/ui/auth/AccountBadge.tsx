@@ -11,9 +11,17 @@ type Props = {
   readonly i18n: I18nService;
   readonly ws: WsClient;
   readonly cloud: CloudSyncService;
+  /** Opens login/convert flow for guests (claim account). */
+  readonly onClaimAccount?: () => void;
 };
 
-export function AccountBadge({ auth, i18n, ws, cloud }: Props) {
+export function AccountBadge({
+  auth,
+  i18n,
+  ws,
+  cloud,
+  onClaimAccount,
+}: Props) {
   const authState = useStore(auth.store);
   const [open, setOpen] = useState(false);
   const [online, setOnline] = useState(() => ws.status() === "open");
@@ -30,7 +38,32 @@ export function AccountBadge({ auth, i18n, ws, cloud }: Props) {
     });
   }, [ws]);
 
-  if (user === null || user.isGuest || authState.token === null) {
+  if (user === null) {
+    return null;
+  }
+
+  if (user.isGuest) {
+    if (onClaimAccount === undefined) {
+      return null;
+    }
+    return (
+      <div class="account">
+        <button
+          type="button"
+          class="account__badge"
+          data-testid="account-claim"
+          onClick={onClaimAccount}
+        >
+          {`${i18n.translate("auth.guestBadge")}: ${user.username}`}
+          <span class="account__dot" data-online={online ? "1" : "0"}>
+            {i18n.translate("auth.claimAccount")}
+          </span>
+        </button>
+      </div>
+    );
+  }
+
+  if (authState.token === null) {
     return null;
   }
 
