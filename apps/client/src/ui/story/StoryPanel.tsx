@@ -35,6 +35,7 @@ export function StoryPanel({ session }: Props) {
     return (
       <StoryFightsIntro
         locale={state.settings.locale}
+        skipLabel={session.i18n.translate("story.fightsIntro.skip")}
         onDone={() => {
           session.story.markIntroSeen();
           setShowIntro(false);

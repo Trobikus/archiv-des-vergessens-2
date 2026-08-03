@@ -282,6 +282,7 @@ export const EN = {
     'forge.salvageTip': 'Common items only. Yields memory dust by level.',
     'story.affinityTip.aethel': 'Path of preservation. Shapes the chronicle ending.',
     'story.affinityTip.lethe': 'Path of forgetting. Shapes the chronicle ending.',
+    'story.fightsIntro.skip': 'Skip',
     'achievements.streak': 'Streak',
     'achievements.streakTip': 'Consecutive daily reward days. A miss resets the streak.',
     'skilltree.pointsTip': 'Talent points from hero levels. Spent to unlock nodes.',

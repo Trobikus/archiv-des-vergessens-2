@@ -6,10 +6,12 @@ import { useEffect, useState } from "preact/hooks";
 
 type Props = {
   readonly locale: Locale;
+  readonly skipLabel: string;
   readonly onDone: () => void;
 };
 
-export function StoryFightsIntro({ locale, onDone }: Props) {
+/** Fullscreen cinematic overlay shown once on first Story → Fights open. */
+export function StoryFightsIntro({ locale, skipLabel, onDone }: Props) {
   const [index, setIndex] = useState(0);
   const frame = STORY_FIGHTS_INTRO_FRAMES[index];
 
@@ -37,11 +39,19 @@ export function StoryFightsIntro({ locale, onDone }: Props) {
   }
 
   const lines = locale === "en" ? frame.linesEn : frame.linesDe;
+  const title = lines[0] ?? skipLabel;
 
   return (
-    <section class="intro" data-testid="story-intro">
+    <section
+      class="intro"
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+      data-testid="story-intro"
+    >
+      <div class="intro__veil" aria-hidden="true" />
       <div class="intro__plane" aria-hidden="true" />
-      <div class="intro__copy">
+      <div class="intro__copy" key={frame.id}>
         {lines.map((line) => (
           <p key={line} class="intro__line">
             {line}
@@ -50,11 +60,11 @@ export function StoryFightsIntro({ locale, onDone }: Props) {
       </div>
       <button
         type="button"
-        class="game__btn game__btn--ghost"
+        class="intro__skip"
         data-testid="skip-intro"
         onClick={onDone}
       >
-        Skip
+        {skipLabel}
       </button>
     </section>
   );

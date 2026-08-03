@@ -282,6 +282,7 @@ export const DE = {
     'forge.salvageTip': 'Nur gewöhnliche Gegenstände. Gibt Gedächtnisstaub je Stufe.',
     'story.affinityTip.aethel': 'Pfad der Bewahrung. Formt das Chronik-Ende.',
     'story.affinityTip.lethe': 'Pfad des Vergessens. Formt das Chronik-Ende.',
+    'story.fightsIntro.skip': 'Überspringen',
     'achievements.streak': 'Serie',
     'achievements.streakTip': 'Tage in Folge mit täglicher Belohnung. Pause setzt zurück.',
     'skilltree.pointsTip': 'Talentpunkte durch Heldenstufen. Zum Freischalten nötig.',
