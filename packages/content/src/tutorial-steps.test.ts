@@ -25,4 +25,18 @@ describe("tutorial guides", () => {
   it("keeps TUTORIAL_STEPS as the archiv guide", () => {
     expect(TUTORIAL_STEPS).toEqual(TUTORIAL_GUIDES.archiv.steps);
   });
+
+  it("provides DE and EN copy on every step", () => {
+    for (const id of TUTORIAL_GUIDE_IDS) {
+      for (const step of TUTORIAL_GUIDES[id].steps) {
+        expect(step.text.length).toBeGreaterThan(0);
+        expect(step.text_en.length).toBeGreaterThan(0);
+        expect(step.text_en).not.toBe(step.text);
+        if ("title" in step && step.title !== undefined) {
+          expect(step.title_en?.length).toBeGreaterThan(0);
+          expect(step.title_en).not.toBe(step.title);
+        }
+      }
+    }
+  });
 });

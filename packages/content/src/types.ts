@@ -286,7 +286,9 @@ export type TutorialStepAction =
 
 export type TutorialStep = {
   readonly title?: string;
+  readonly title_en?: string;
   readonly text: string;
+  readonly text_en: string;
   readonly target: string | null;
   readonly action: TutorialStepAction;
   readonly dialogPosition?: string;

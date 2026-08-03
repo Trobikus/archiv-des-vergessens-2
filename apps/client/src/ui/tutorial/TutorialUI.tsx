@@ -15,8 +15,10 @@ type ActiveStep = {
 
 export function TutorialUI({ session }: Props) {
   const tutorialState = useStore(session.store).tutorial;
+  const locale = useStore(session.store).settings.locale;
   const [active, setActive] = useState<ActiveStep | null>(null);
   const [highlightRect, setHighlightRect] = useState<DOMRect | null>(null);
+  const t = session.i18n.translate.bind(session.i18n);
 
   useEffect(() => {
     const onStep = (data: unknown): void => {
@@ -71,6 +73,9 @@ export function TutorialUI({ session }: Props) {
   }
 
   const { step } = active;
+  const title =
+    locale === "en" && step.title_en ? step.title_en : step.title;
+  const text = locale === "en" ? step.text_en : step.text;
 
   return (
     <div class="tutorial-overlay" data-testid="tutorial-overlay">
@@ -86,12 +91,11 @@ export function TutorialUI({ session }: Props) {
         />
       ) : null}
       <div class="tutorial-overlay__card glass-panel">
-        {step.title ? (
-          <h3 class="glow-text">{step.title}</h3>
-        ) : null}
+        {title ? <h3 class="glow-text">{title}</h3> : null}
         <p
           class="tutorial-overlay__text"
-          dangerouslySetInnerHTML={{ __html: step.text }}
+          data-testid="tutorial-text"
+          dangerouslySetInnerHTML={{ __html: text }}
         />
         <div class="game__actions">
           {step.action === "next" ||
@@ -109,7 +113,7 @@ export function TutorialUI({ session }: Props) {
                 }
               }}
             >
-              {step.action === "finish" ? "Abschließen" : "Weiter"}
+              {step.action === "finish" ? t("common.finish") : t("common.next")}
             </button>
           ) : null}
           <button
@@ -120,7 +124,7 @@ export function TutorialUI({ session }: Props) {
               session.tutorial.skip();
             }}
           >
-            Überspringen
+            {t("tutorial.skip")}
           </button>
         </div>
       </div>
