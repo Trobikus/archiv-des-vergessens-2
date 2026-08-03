@@ -2,7 +2,8 @@ import type { MapRegion } from "./types";
 
 /**
  * Selectable hubs on the wasteland map (`scene-karte.png`).
- * Coordinates are percent of the 1536×1024 art (hotspot centers).
+ * Coordinates are percent of the 1536×1024 art (hotspot centers),
+ * aligned to the painted location markers on that art.
  */
 export const MAP_REGIONS = [
   {
@@ -13,8 +14,8 @@ export const MAP_REGIONS = [
       "Ein knisterndes Lagerfeuer in der Asche. Sammler und Flüchtlinge tauschen hier Mneme-Scherben und Warnungen.",
     blurbEn:
       "A crackling fire in the ash. Gatherers and refugees trade Mneme shards and warnings here.",
-    xPct: 36,
-    yPct: 57,
+    xPct: 35,
+    yPct: 27,
   },
   {
     id: "schrein",
@@ -24,8 +25,8 @@ export const MAP_REGIONS = [
       "Ein verwitterter Tempel, in dem selbst die Lethe einen Moment innehält. Die Glyphen flüstern von vergessenen Eiden.",
     blurbEn:
       "A weathered temple where even the Lethe pauses. The glyphs whisper of forgotten oaths.",
-    xPct: 44,
-    yPct: 40,
+    xPct: 67,
+    yPct: 30,
   },
   {
     id: "bruchland",
@@ -35,8 +36,8 @@ export const MAP_REGIONS = [
       "Zersplitterte Klippen aus einer untergegangenen Epoche. Hier bricht die Erde unter dem Gewicht verlorener Königreiche.",
     blurbEn:
       "Shattered cliffs from a fallen epoch. Here the earth breaks under the weight of lost kingdoms.",
-    xPct: 61,
-    yPct: 36,
+    xPct: 31,
+    yPct: 60,
   },
   {
     id: "gewoelbe",
@@ -47,7 +48,7 @@ export const MAP_REGIONS = [
     blurbEn:
       "A ruinous portal at the heart of the waste. Beyond it lie seals and memories that still hold reality together.",
     xPct: 51,
-    yPct: 52,
+    yPct: 46,
   },
   {
     id: "nebelhort",
@@ -56,7 +57,7 @@ export const MAP_REGIONS = [
     blurbDe: "Der Nebel gibt diesen Ort noch nicht preis.",
     blurbEn: "The mist has not yet revealed this place.",
     xPct: 68,
-    yPct: 60,
+    yPct: 70,
     locked: true,
   },
 ] as const satisfies readonly MapRegion[];
