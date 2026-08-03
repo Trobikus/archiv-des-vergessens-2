@@ -78,24 +78,24 @@ export const TUTORIAL_GUIDES = {
         action: "click_target",
       },
       {
-        text: "Klicke mehrmals auf <b>Mneme-Partikel extrahieren</b>, bis du mindestens 50 Partikel hast.",
+        text: "Klicke mehrmals auf <b>Sammeln</b>, bis du mindestens 50 Partikel hast.",
         text_en:
-          "Click <b>Extract Mneme particles</b> until you have at least 50 particles.",
+          "Click <b>Gather</b> until you have at least 50 particles.",
         target: "#manual-gather-btn",
         action: "wait_event",
       },
       {
-        text: "Verbessere nun deine <b>Klick-Stärke</b> (Kosten: 50 Partikel).",
-        text_en: "Now upgrade your <b>click power</b> (cost: 50 particles).",
+        text: "Verbessere nun deine <b>Klickkraft</b> (Kosten: 50 Partikel).",
+        text_en: "Now upgrade your <b>Click Power</b> (cost: 50 particles).",
         target: "#upgrade-click-btn",
         action: "click_target",
       },
       {
         title: "Der erste Schritt",
         title_en: "The First Step",
-        text: "Gut. Extrahieren und Verbessern sind der Kern des Archivs. Als Nächstes: öffne <b>Story</b> und starte den ersten Boss.",
+        text: "Gut. Sammeln und Verbessern sind der Kern des Archivs. Als Nächstes: öffne die <b>Chronik</b> und starte den ersten Boss.",
         text_en:
-          "Good. Extracting and upgrading are the core of the Archive. Next: open <b>Story</b> and start the first boss.",
+          "Good. Gathering and upgrading are the core of the Archive. Next: open the <b>Chronicle</b> and start the first boss.",
         target: null,
         action: "finish",
       },
@@ -107,16 +107,16 @@ export const TUTORIAL_GUIDES = {
       {
         title: "Der erste Sieg",
         title_en: "The First Victory",
-        text: "Du hast den ersten Wächter der Vergessenheit bezwungen. Zeit, Held und Story-Kämpfe bewusst zu nutzen.",
+        text: "Du hast den ersten Wächter der Vergessenheit bezwungen. Zeit, Held und Chronik-Kämpfe bewusst zu nutzen.",
         text_en:
-          "You defeated the first guardian of forgetting. Time to use hero and Story fights with intent.",
+          "You defeated the first guardian of forgetting. Time to use hero and Chronicle fights with intent.",
         target: null,
         action: "next",
       },
       {
-        text: "Öffne <b>Mein Held</b> — hier verteilst du Attribute und rüstest Beute.",
+        text: "Öffne <b>Held</b> — hier verteilst du Attribute und rüstest Beute.",
         text_en:
-          "Open <b>My Hero</b> — spend attributes and equip loot here.",
+          "Open <b>Hero</b> — spend attributes and equip loot here.",
         target: "#hub-hero",
         action: "click_target",
       },
@@ -129,9 +129,9 @@ export const TUTORIAL_GUIDES = {
         dialogPosition: "bottom_center",
       },
       {
-        text: "Unter <b>Story</b> wartest du auf den nächsten Boss. Kämpfe freischalten Kapitel — einer nach dem anderen.",
+        text: "Unter <b>Chronik</b> wartest du auf den nächsten Boss. Kämpfe freischalten Kapitel — einer nach dem anderen.",
         text_en:
-          "Under <b>Story</b> you face the next boss. Fights unlock chapters — one after another.",
+          "Under <b>Chronicle</b> you face the next boss. Fights unlock chapters — one after another.",
         target: "#hub-story",
         action: "click_target",
       },
@@ -165,7 +165,7 @@ export const TUTORIAL_GUIDES = {
         action: "click_target",
       },
       {
-        text: "Wechsle zu <b>Crafting</b> — dort liegen die freigeschalteten Meisterrezepte.",
+        text: "Wechsle zu <b>Handwerk</b> — dort liegen die freigeschalteten Meisterrezepte.",
         text_en:
           "Switch to <b>Crafting</b> — unlocked master recipes wait there.",
         target: '[data-testid="tab-crafting"]',

@@ -4,8 +4,8 @@ import type { DailyQuestDefinition, MainQuestDefinition } from "./types";
 export const MAIN_QUESTS_DATA = [
   {
     id: "q1",
-    text: "Klicke auf \"Extrahieren\" bis du 50 Partikel hast",
-    text_en: "Click \"Extract\" until you have 50 particles",
+    text: "Klicke auf \"Sammeln\" bis du 50 Partikel hast",
+    text_en: "Click \"Gather\" until you have 50 particles",
     target: 50,
     rewardText: "15 Partikel",
     rewardText_en: "15 Particles",
@@ -37,8 +37,8 @@ export const MAIN_QUESTS_DATA = [
   },
   {
     id: "q4",
-    text: "Besiege den ersten Boss (Story & Bosse)",
-    text_en: "Defeat the first Boss (Story & Bosses)",
+    text: "Besiege den ersten Boss (Chronik)",
+    text_en: "Defeat the first Boss (Chronicle)",
     target: 1,
     rewardText: "50 Partikel & 1 Artefakt",
     rewardText_en: "50 Particles & 1 Artifact",
@@ -49,8 +49,8 @@ export const MAIN_QUESTS_DATA = [
   },
   {
     id: "q5",
-    text: "Rüste einen Gegenstand aus (Mein Held)",
-    text_en: "Equip an item (My Hero)",
+    text: "Rüste einen Gegenstand aus (Held)",
+    text_en: "Equip an item (Hero)",
     target: 1,
     rewardText: "30 Partikel",
     rewardText_en: "30 Particles",
@@ -60,8 +60,8 @@ export const MAIN_QUESTS_DATA = [
   },
   {
     id: "q6",
-    text: "Verbessere deine Klick-Stärke (Hauptbildschirm)",
-    text_en: "Upgrade your click power (Main Screen)",
+    text: "Verbessere deine Klickkraft (Archiv)",
+    text_en: "Upgrade your Click Power (Archive)",
     target: 1,
     rewardText: "30 Partikel",
     rewardText_en: "30 Particles",
@@ -71,8 +71,8 @@ export const MAIN_QUESTS_DATA = [
   },
   {
     id: "q7",
-    text: "Schmiede dein erstes Artefakt (Artefakt-Schmiede)",
-    text_en: "Forge your first artifact (Artifact Forge)",
+    text: "Schmiede dein erstes Artefakt (Werkstatt → Schmiede)",
+    text_en: "Forge your first artifact (Workshop → Forge)",
     target: 1,
     rewardText: "10 Erinnerungsstaub",
     rewardText_en: "10 Memory Dust",
@@ -527,8 +527,8 @@ export const MAIN_QUESTS_DATA = [
 export const DAILY_QUESTS_DATA = [
   {
     id: "daily_1",
-    text: "Extrahiere 50x manuell",
-    text_en: "Extract manually 50x",
+    text: "Sammle 50x manuell",
+    text_en: "Gather manually 50x",
     target: 50,
     key: "gatherClicks",
     rewardText: "100 Partikel",
