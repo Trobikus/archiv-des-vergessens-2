@@ -72,7 +72,9 @@ export function OptionsView({
             <span class="option-label text-muted">
               {user !== null && !user.isGuest
                 ? `${t("auth.loggedInAs")}: ${user.username}`
-                : t("auth.login")}
+                : user?.isGuest === true
+                  ? t("auth.playAsGuest")
+                  : t("auth.login")}
             </span>
             <button
               type="button"
@@ -86,24 +88,28 @@ export function OptionsView({
             </button>
           </div>
 
-          <h3 class="options-header">{t("options.cloudSync")}</h3>
-          <div class="option-row flex-between">
-            <span class="option-label text-muted">
-              {session.cloud.status() === "pending"
-                ? t("auth.cloudPending")
-                : t("auth.cloudSynced")}
-            </span>
-            <button
-              type="button"
-              class="glass-btn btn-small"
-              data-testid="opt-cloud-sync"
-              onClick={() => {
-                void session.cloud.push(session.store.getState());
-              }}
-            >
-              {t("options.syncNow")}
-            </button>
-          </div>
+          {user !== null && !user.isGuest ? (
+            <>
+              <h3 class="options-header">{t("options.cloudSync")}</h3>
+              <div class="option-row flex-between">
+                <span class="option-label text-muted">
+                  {session.cloud.status() === "pending"
+                    ? t("auth.cloudPending")
+                    : t("auth.cloudSynced")}
+                </span>
+                <button
+                  type="button"
+                  class="glass-btn btn-small"
+                  data-testid="opt-cloud-sync"
+                  onClick={() => {
+                    void session.cloud.push(session.store.getState());
+                  }}
+                >
+                  {t("options.syncNow")}
+                </button>
+              </div>
+            </>
+          ) : null}
 
           <h3 class="options-header">{t("options.audio")}</h3>
           <div class="option-row flex-between">

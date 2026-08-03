@@ -247,8 +247,10 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
     if (!authState.ready) {
       return;
     }
-    // Account required — anything beyond login needs a registered session.
-    if (!session.auth.isRegistered() && screen !== "login") {
+    const canPlay =
+      session.auth.isRegistered() || authState.user?.isGuest === true;
+    // Account or offline guest — anything beyond login needs a playable identity.
+    if (!canPlay && screen !== "login") {
       navigateTo("login", { instant: true });
     }
   }, [
@@ -306,12 +308,18 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
             navigateTo("options");
           }}
           onContinue={() => {
-            if (!session.auth.isRegistered()) {
+            const canPlay =
+              session.auth.isRegistered() ||
+              session.auth.store.getState().user?.isGuest === true;
+            if (!canPlay) {
               return;
             }
             navigateTo(
               returnScreen === "options" ? "options" : "characterSelect",
             );
+          }}
+          onIdentityChanged={() => {
+            void session.reloadActiveSave();
           }}
         />
       );
@@ -403,6 +411,7 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
                 setPauseOpen(false);
                 void session.saveNow().then(() => {
                   session.auth.logout();
+                  void session.reloadActiveSave();
                   setReturnScreen("characterSelect");
                   setLoginFormKey((key) => key + 1);
                   navigateTo("login");

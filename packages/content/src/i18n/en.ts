@@ -184,6 +184,8 @@ export const EN = {
     'auth.offline': 'Offline',
     'auth.cloudSynced': 'Cloud synced',
     'auth.cloudPending': 'Cloud pending',
+    'auth.playAsGuest': 'Play as Guest',
+    'auth.guestPlayHint': 'Local save only (manual). No cloud sync, chat, friends, or guild.',
 
     // ===== UI & ACTION KEYS =====
     'ui.bulk_salvage': 'Bulk Salvage',

@@ -94,7 +94,7 @@ import {
   createMemorySaveStorage,
   type SaveStorage,
 } from "./save-storage";
-import { createSaveStore, type SaveStore } from "./save-store";
+import { createSaveStore, DEFAULT_SAVE_KEY, guestSaveKey, type SaveStore } from "./save-store";
 import {
   createStoryBranchService,
   type StoryBranchService,
@@ -145,6 +145,8 @@ export type GameSession = {
   readonly cloud: CloudSyncService;
   boot(onProgress?: BootProgressListener): Promise<OfflineReport | null>;
   saveNow(): Promise<boolean>;
+  /** Load the IndexedDB slot for the current auth identity (guest vs registered). */
+  reloadActiveSave(): Promise<boolean>;
   resetProgress(): Promise<void>;
   /** Phase 9: map a v1 JSON save into the current slot and persist. */
   importV1Progress(
@@ -275,12 +277,20 @@ export function createGameSession(
     }));
   };
 
+  const resolveSaveKey = (): string => {
+    const user = auth.store.getState().user;
+    if (user?.isGuest === true) {
+      return guestSaveKey(auth.guestId());
+    }
+    return DEFAULT_SAVE_KEY;
+  };
+
   const saveNow = async (): Promise<boolean> => {
     if (destroyed) {
       return false;
     }
     const stamp = nowFn();
-    const result = await saves.save(store.getState(), undefined, stamp);
+    const result = await saves.save(store.getState(), resolveSaveKey(), stamp);
     if (!result.ok) {
       log.warn(`autosave failed: ${result.error}`);
       return false;
@@ -290,6 +300,37 @@ export function createGameSession(
       meta: { ...prev.meta, lastActiveAt: stamp, lastSavedAt: stamp },
     }));
     void cloud.push(store.getState(), stamp);
+    return true;
+  };
+
+  const reloadActiveSave = async (): Promise<boolean> => {
+    if (destroyed) {
+      return false;
+    }
+    const key = resolveSaveKey();
+    const loaded = await saves.load(key);
+    if (!loaded.ok) {
+      log.warn(`reloadActiveSave failed: ${loaded.error}`);
+      return false;
+    }
+    if (loaded.value) {
+      store.replace(loaded.value);
+    } else {
+      const locale = store.getState().settings.locale;
+      const next = createInitialGameState(nowFn());
+      store.replace({
+        ...next,
+        settings: { ...next.settings, locale },
+        meta: { ...next.meta, bootstrapped: true },
+      });
+    }
+    if (auth.isRegistered()) {
+      const merged = await cloud.pullAndMerge(store.getState());
+      if (merged.ok) {
+        store.replace(merged.value);
+      }
+      await cloud.flushPending();
+    }
     return true;
   };
 
@@ -356,7 +397,7 @@ export function createGameSession(
       }
 
       await step("save");
-      const loaded = await saves.load();
+      const loaded = await saves.load(resolveSaveKey());
       if (!loaded.ok) {
         log.warn(`load failed, starting fresh: ${loaded.error}`);
       } else if (loaded.value) {
@@ -381,15 +422,13 @@ export function createGameSession(
       talents.syncPointsFromHeroLevel();
       leaderboard.markSessionStart();
       leaderboard.syncFromState();
-      if (ws.status() === "open") {
-        if (auth.isRegistered()) {
-          leaderboard.submit();
-          friends.sync();
-          guild.sync();
-          const guildId = store.getState().guild.guild?.id;
-          if (typeof guildId === "string") {
-            chat.getHistory(guildId);
-          }
+      if (ws.status() === "open" && auth.isRegistered()) {
+        leaderboard.submit();
+        friends.sync();
+        guild.sync();
+        const guildId = store.getState().guild.guild?.id;
+        if (typeof guildId === "string") {
+          chat.getHistory(guildId);
         }
         chat.getHistory();
       }
@@ -439,7 +478,11 @@ export function createGameSession(
 
       const settingsAutosave = store.getState().settings.autosaveMs;
       const autosaveMs = options.autosaveMs ?? settingsAutosave;
+      // Guests: no interval autosave — only manual / quit / create persist.
       autosaveTimer = setInterval(() => {
+        if (!auth.isRegistered()) {
+          return;
+        }
         void saveNow();
       }, autosaveMs);
 
@@ -457,6 +500,8 @@ export function createGameSession(
     },
 
     saveNow,
+
+    reloadActiveSave,
 
     async resetProgress() {
       const locale = store.getState().settings.locale;

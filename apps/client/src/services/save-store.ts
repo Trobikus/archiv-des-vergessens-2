@@ -15,6 +15,12 @@ import type { SaveStorage } from "./save-storage";
 
 export const DEFAULT_SAVE_KEY = "slot_local_1";
 
+/** IndexedDB key for offline guest progress (never shares `slot_local_1`). */
+export function guestSaveKey(guestId: string): string {
+  const safe = guestId.replace(/[^a-zA-Z0-9_]/g, "_").slice(0, 64);
+  return `slot_guest_${safe.length > 0 ? safe : "unknown"}`;
+}
+
 export type SaveStore = {
   load(key?: string): Promise<Result<GameState | null>>;
   save(state: GameState, key?: string, now?: number): Promise<Result<void>>;

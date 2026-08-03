@@ -13,6 +13,8 @@ type Props = {
   readonly onContinue: () => void;
   readonly onQuit?: () => void;
   readonly onOptions?: () => void;
+  /** Fired after login/register/guest identity changes so the session can swap save slots. */
+  readonly onIdentityChanged?: () => void;
 };
 
 type Tab = "login" | "register";
@@ -220,6 +222,7 @@ export function LoginView({
   onContinue,
   onQuit,
   onOptions,
+  onIdentityChanged,
 }: Props) {
   const authState = useStore(auth.store);
   const [tab, setTab] = useState<Tab>("login");
@@ -265,7 +268,25 @@ export function LoginView({
       : null;
   const offlineText =
     serverOffline && !isLoggedIn ? t("auth.serverOffline") : null;
-  const errorText = localError ?? authErrorText ?? offlineText;
+  const errorText = localError ?? authErrorText;
+
+  const playAsGuest = (): void => {
+    setLocalError(null);
+    setBusy(true);
+    void auth
+      .playAsGuest()
+      .then((ok) => {
+        if (!ok) {
+          setLocalError(t("auth.error.server_error"));
+          return;
+        }
+        onIdentityChanged?.();
+        onContinue();
+      })
+      .finally(() => {
+        setBusy(false);
+      });
+  };
 
   useEffect(() => {
     setSuccessMessage(null);
@@ -334,6 +355,7 @@ export function LoginView({
         });
         if (ok) {
           setSuccessMessage(t("auth.success.login"));
+          onIdentityChanged?.();
         }
       } else {
         ok = await auth.register({
@@ -344,6 +366,7 @@ export function LoginView({
         });
         if (ok) {
           setSuccessMessage(t("auth.success.registered"));
+          onIdentityChanged?.();
         }
       }
     } finally {
@@ -471,6 +494,7 @@ export function LoginView({
                 disabled={enteringRealm}
                 onClick={() => {
                   auth.logout();
+                  onIdentityChanged?.();
                   setSuccessMessage(null);
                   setEnteringRealm(false);
                 }}
@@ -601,6 +625,25 @@ export function LoginView({
                       : t("auth.login")}
                 </button>
               </form>
+
+              {offlineText !== null ? (
+                <p class="text-muted" data-testid="auth-offline-hint">
+                  {offlineText}
+                </p>
+              ) : null}
+
+              <button
+                type="button"
+                class="glass-btn w-100 login-screen__cta"
+                data-testid="auth-play-guest"
+                disabled={busy}
+                onClick={playAsGuest}
+              >
+                {t("auth.playAsGuest")}
+              </button>
+              <p class="text-muted" data-testid="auth-guest-hint">
+                {t("auth.guestPlayHint")}
+              </p>
             </>
           )}
         </div>

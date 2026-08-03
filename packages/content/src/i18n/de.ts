@@ -184,6 +184,8 @@ export const DE = {
     'auth.offline': 'Offline',
     'auth.cloudSynced': 'Cloud synchron',
     'auth.cloudPending': 'Cloud ausstehend',
+    'auth.playAsGuest': 'Als Gast spielen',
+    'auth.guestPlayHint': 'Lokal speichern (manuell). Kein Cloud-Sync, kein Chat/Freunde/Gilde.',
 
     // ===== UI & ACTION KEYS =====
     'ui.bulk_salvage': 'Massen-Verwertung',
