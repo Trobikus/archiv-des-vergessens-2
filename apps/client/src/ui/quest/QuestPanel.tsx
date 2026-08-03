@@ -33,11 +33,15 @@ export function QuestPanel({ session }: Props) {
               session.quests.claimReward();
             }}
           >
-            {complete ? "Claim reward" : "In progress"}
+            {complete
+              ? session.i18n.translate("quests.claimReward")
+              : session.i18n.translate("quests.inProgress")}
           </button>
         </article>
       ) : (
-        <p class="game__meta">All main quests completed.</p>
+        <p class="game__meta">
+          {session.i18n.translate("quests.allMainDone")}
+        </p>
       )}
 
       <h3 class="panel__sub">{session.i18n.translate("hub.daily")}</h3>
@@ -59,7 +63,9 @@ export function QuestPanel({ session }: Props) {
                 session.quests.claimDailyReward(daily.id);
               }}
             >
-              {daily.isClaimed ? "Claimed" : "Claim"}
+              {daily.isClaimed
+                ? session.i18n.translate("achievements.claimed")
+                : session.i18n.translate("common.claim")}
             </button>
           </li>
         ))}

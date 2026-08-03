@@ -33,7 +33,9 @@ export function StoryBranchPanel({ session }: Props) {
       </p>
       <p class="phase6-panel__text">{node.text}</p>
       {node.isEnding ? (
-        <p class="game__meta">Ende erreicht: {node.title}</p>
+        <p class="game__meta">
+          {t("story.endingReached").replace("{title}", node.title)}
+        </p>
       ) : (
         <div class="game__actions">
           {options.map((option) => (
@@ -53,8 +55,11 @@ export function StoryBranchPanel({ session }: Props) {
             <p class="game__meta">
               {node.bossRequired !== undefined &&
               state.hero.prestige.bossProgress < node.bossRequired
-                ? `Benötigt Boss-Fortschritt ${String(node.bossRequired)}`
-                : "Keine Optionen verfügbar."}
+                ? t("story.bossRequired").replace(
+                    "{boss}",
+                    String(node.bossRequired),
+                  )
+                : t("story.noOptions")}
             </p>
           ) : null}
         </div>
@@ -68,7 +73,7 @@ export function StoryBranchPanel({ session }: Props) {
             session.storyBranch.resetStory();
           }}
         >
-          Chronik zurücksetzen
+          {t("story.resetBranch")}
         </button>
       </div>
     </section>

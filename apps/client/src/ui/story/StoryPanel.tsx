@@ -30,12 +30,13 @@ export function StoryPanel({ session }: Props) {
     current !== null && bosses.some((boss) => boss.id === current.id);
   const canStartFight =
     current !== null && currentInView && !state.story.battleInProgress;
+  const t = session.i18n.translate.bind(session.i18n);
 
   if (showIntro && !state.story.storyFightsIntroSeen) {
     return (
       <StoryFightsIntro
         locale={state.settings.locale}
-        skipLabel={session.i18n.translate("story.fightsIntro.skip")}
+        skipLabel={t("story.fightsIntro.skip")}
         onDone={() => {
           session.story.markIntroSeen();
           setShowIntro(false);
@@ -51,21 +52,24 @@ export function StoryPanel({ session }: Props) {
 
   return (
     <section class="panel" data-testid="story-panel">
-      <h2 class="game__heading">{session.i18n.translate("hub.story")}</h2>
+      <h2 class="game__heading">{t("hub.story")}</h2>
       <p class="game__meta">
-        Kapitel {String(chapter)} · Fortschritt{" "}
-        {String(state.hero.prestige.bossProgress)}/100
+        {t("story.chapterProgress")
+          .replace("{chapter}", String(chapter))
+          .replace("{progress}", String(state.hero.prestige.bossProgress))}
       </p>
       {current !== null ? (
         <p class="game__meta" data-testid="next-boss">
-          Nächster Kampf: #{String(current.id)} {current.name}
+          {t("story.nextFight")
+            .replace("{id}", String(current.id))
+            .replace("{name}", current.name)}
           {!currentInView
-            ? ` (Kapitel ${String(current.chapter)})`
+            ? ` ${t("story.inChapter").replace("{chapter}", String(current.chapter))}`
             : ""}
         </p>
       ) : (
         <p class="game__meta" data-testid="next-boss">
-          Alle Bosse besiegt.
+          {t("story.allBossesDefeated")}
         </p>
       )}
       <div class="game__actions">
@@ -100,7 +104,7 @@ export function StoryPanel({ session }: Props) {
               session.story.selectChapter(current.chapter);
             }}
           >
-            Zum Kampf
+            {t("story.goToFight")}
           </button>
         ) : null}
         <button
@@ -110,16 +114,19 @@ export function StoryPanel({ session }: Props) {
           disabled={!canStartFight}
           title={
             current === null
-              ? "Keine weiteren Bosse"
+              ? t("story.noMoreBosses")
               : !currentInView
-                ? `Nächster Boss ist in Kapitel ${String(current.chapter)}`
+                ? t("story.nextBossChapter").replace(
+                    "{chapter}",
+                    String(current.chapter),
+                  )
                 : undefined
           }
           onClick={() => {
             session.story.startBossFight();
           }}
         >
-          Kampf starten
+          {t("story.startFight")}
         </button>
         {state.story.battleInProgress ? (
           <button
@@ -130,7 +137,7 @@ export function StoryPanel({ session }: Props) {
               session.story.fleeBattle();
             }}
           >
-            Fliehen
+            {t("story.flee")}
           </button>
         ) : null}
       </div>
@@ -160,10 +167,12 @@ export function StoryPanel({ session }: Props) {
             }
           />
           <p class="game__meta">
-            Held {String(battle.heroHp)}/{String(battle.heroMaxHp)} ·{" "}
-            {battle.boss.name} {String(battle.bossHp)}/
+            {t("story.heroHp")
+              .replace("{hp}", String(battle.heroHp))
+              .replace("{max}", String(battle.heroMaxHp))}{" "}
+            · {battle.boss.name} {String(battle.bossHp)}/
             {String(battle.bossMaxHp)}
-            {battle.activeEffects.isEnraged ? " · WUT" : ""}
+            {battle.activeEffects.isEnraged ? t("story.enraged") : ""}
           </p>
           <div class="hp">
             <div
@@ -186,7 +195,7 @@ export function StoryPanel({ session }: Props) {
               <Tip
                 key={spell.id}
                 title={spell.name}
-                text={session.i18n.translate(SPELL_TIP_KEY[spell.id])}
+                text={t(SPELL_TIP_KEY[spell.id])}
               >
                 <button
                   type="button"

@@ -645,15 +645,27 @@ export function GameView({ session }: Props) {
         (offline.clanRelicsGained ?? 0) > 0) ? (
         <section class="game__offline" aria-live="polite">
           <p>
-            Offline {formatDuration(offline.clampedSeconds * 1000)}
+            {t("archiv.offlinePrefix").replace(
+              "{duration}",
+              formatDuration(offline.clampedSeconds * 1000),
+            )}
             {offline.mnemeGained > 0
-              ? ` · +${formatAmount(offline.mnemeGained)} Mneme-Fragmente`
+              ? t("archiv.offlineMneme").replace(
+                  "{amount}",
+                  formatAmount(offline.mnemeGained),
+                )
               : ""}
             {(offline.clanParticlesGained ?? 0) > 0
-              ? ` · +${formatAmount(offline.clanParticlesGained ?? 0)} Clan-Partikel`
+              ? t("archiv.offlineClanParticles").replace(
+                  "{amount}",
+                  formatAmount(offline.clanParticlesGained ?? 0),
+                )
               : ""}
             {(offline.clanRelicsGained ?? 0) > 0
-              ? ` · +${formatAmount(offline.clanRelicsGained ?? 0)} Clan-Relikte`
+              ? t("archiv.offlineClanRelics").replace(
+                  "{amount}",
+                  formatAmount(offline.clanRelicsGained ?? 0),
+                )
               : ""}
           </p>
           <button
@@ -751,14 +763,14 @@ export function GameView({ session }: Props) {
 
         {category === "archiv" ? (
           <div class="game__archiv" key="stage-archiv" data-testid="archiv-layout">
-            <aside class="game__rail game__rail--left" aria-label="GedankenArchiv">
+            <aside class="game__rail game__rail--left" aria-label={t("archiv.title")}>
               <section class="game__focus-panel shell-frame">
                 <span class="shell-frame__corners" aria-hidden="true" />
                 <h2 class="game__focus-panel__title shell-heading">
-                  GedankenArchiv
+                  {t("archiv.title")}
                 </h2>
                 <p class="game__focus-panel__flavor">
-                  Alpha — Mneme sammelt sich, sobald das Archiv steht.
+                  {t("archiv.flavor")}
                 </p>
                 <div
                   class="tip tip--below game__stat-tip"
@@ -819,13 +831,19 @@ export function GameView({ session }: Props) {
                     title={
                       canBuyArchiv
                         ? undefined
-                        : `Benötigt ${formatAmount(archivCost)} Partikel`
+                        : t("archiv.needsParticles").replace(
+                            "{amount}",
+                            formatAmount(archivCost),
+                          )
                     }
                     onClick={() => {
                       session.idle.buyLevel(1);
                     }}
                   >
-                    Ausbauen ({formatAmount(archivCost)})
+                    {t("archiv.upgrade").replace(
+                      "{amount}",
+                      formatAmount(archivCost),
+                    )}
                   </button>
                   <button
                     type="button"
@@ -835,7 +853,7 @@ export function GameView({ session }: Props) {
                       session.gather.gather();
                     }}
                   >
-                    Sammeln
+                    {t("archiv.gather")}
                   </button>
                 </div>
               </section>
@@ -888,7 +906,7 @@ export function GameView({ session }: Props) {
 
             <div class="game__archiv-center" aria-hidden="true" />
 
-            <aside class="game__rail game__rail--right" aria-label="Status">
+            <aside class="game__rail game__rail--right" aria-label={t("archiv.statusAria")}>
               <section class="game__rail-panel shell-frame">
                 <span class="shell-frame__corners" aria-hidden="true" />
 
@@ -907,10 +925,16 @@ export function GameView({ session }: Props) {
                     {t("archiv.clickPowerTip")}
                   </TipBubble>
                   <p class="game__status-card__value">
-                    Stufe {String(state.gather.clickPowerLevel)}
+                    {t("archiv.levelValue").replace(
+                      "{level}",
+                      String(state.gather.clickPowerLevel),
+                    )}
                   </p>
                   <p class="game__meta">
-                    +{formatAmount(clickGain)} / Klick
+                    {t("archiv.perClick").replace(
+                      "{amount}",
+                      formatAmount(clickGain),
+                    )}
                   </p>
                   <div
                     class="shell-progress-rail"
@@ -932,36 +956,48 @@ export function GameView({ session }: Props) {
                       title={
                         canUpgradeGather
                           ? undefined
-                          : `Benötigt ${formatAmount(clickUpgradeCost)} Partikel`
+                          : t("archiv.needsParticles").replace(
+                              "{amount}",
+                              formatAmount(clickUpgradeCost),
+                            )
                       }
                       onClick={() => {
                         session.gather.upgradeClickPower();
                       }}
                     >
-                      Upgrade ({formatAmount(clickUpgradeCost)})
+                      {t("archiv.upgradeClick").replace(
+                        "{amount}",
+                        formatAmount(clickUpgradeCost),
+                      )}
                     </button>
                   </div>
                 </div>
 
                 <div class="game__rail-section">
                   <h3 class="game__status-card__title shell-heading">
-                    Idle-Status
+                    {t("archiv.idleStatus")}
                   </h3>
                   <p class="game__meta">
                     {state.idleGenerators.gedankenArchiv.level === 0
-                      ? "Wartet auf ersten Ausbau"
-                      : `Läuft · ${formatAmount(yieldPerSec)} Mneme / s`}
+                      ? t("archiv.idleWaiting")
+                      : t("archiv.idleRunning").replace(
+                          "{amount}",
+                          formatAmount(yieldPerSec),
+                        )}
                   </p>
                 </div>
 
                 <div class="game__rail-section">
                   <h3 class="game__status-card__title shell-heading">
-                    Save-Status
+                    {t("archiv.saveStatus")}
                   </h3>
                   <p class="game__save" data-testid="save-status">
                     {state.meta.lastSavedAt === null
-                      ? "Noch nicht gespeichert"
-                      : `Gespeichert ${new Date(state.meta.lastSavedAt).toLocaleTimeString()}`}
+                      ? t("archiv.saveNever")
+                      : t("archiv.saveAt").replace(
+                          "{time}",
+                          new Date(state.meta.lastSavedAt).toLocaleTimeString(),
+                        )}
                   </p>
                   <div class="game__actions">
                     <button

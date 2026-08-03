@@ -45,16 +45,19 @@ export function ClanPanel({ session }: Props) {
 
   return (
     <section class="hub-panel" data-testid="clan-panel">
-      <h2 class="game__heading">{session.i18n.translate("hub.clan")}</h2>
+      <h2 class="game__heading">{t("hub.clan")}</h2>
       <p class="game__meta">
-        Particles: {formatAmount(state.resources.particles)} · Mitglieder:{" "}
-        {String(members.length)}
+        {t("clan.summary")
+          .replace("{particlesLabel}", t("resource.particles"))
+          .replace("{particles}", formatAmount(state.resources.particles))
+          .replace("{membersLabel}", t("clan.members"))
+          .replace("{count}", String(members.length))}
       </p>
 
-      <h3 class="panel__sub">Mitglieder</h3>
+      <h3 class="panel__sub">{t("clan.members")}</h3>
       <ul class="hub-list">
         {members.length === 0 ? (
-          <li class="game__meta">Noch keine Mitglieder.</li>
+          <li class="game__meta">{t("clan.empty")}</li>
         ) : (
           members.map((member) => {
             const onExp =
@@ -78,9 +81,12 @@ export function ClanPanel({ session }: Props) {
                   >
                     {t(ROLE_LABEL_KEY[member.role])}
                   </Tip>
-                  {" · Lv "}
-                  {String(member.level)} · {String(Math.floor(member.progress))}
-                  %{onExp ? " · Expedition" : ""}
+                  {t("clan.levelShort").replace(
+                    "{level}",
+                    String(member.level),
+                  )}{" "}
+                  · {String(Math.floor(member.progress))}%
+                  {onExp ? t("clan.onExpedition") : ""}
                 </p>
                 <button
                   type="button"
@@ -94,7 +100,7 @@ export function ClanPanel({ session }: Props) {
                     }
                   }}
                 >
-                  Entlassen
+                  {t("clan.dismiss")}
                 </button>
               </li>
             );
@@ -106,7 +112,11 @@ export function ClanPanel({ session }: Props) {
         <article class="hub-card" data-testid="clan-expedition">
           <p class="hub-card__title">{selected.name}</p>
           <p class="game__meta">
-            {t(ROLE_LABEL_KEY[selected.role])} · Stufe {String(selected.level)}
+            {t(ROLE_LABEL_KEY[selected.role])} ·{" "}
+            {t("archiv.levelValue").replace(
+              "{level}",
+              String(selected.level),
+            )}
           </p>
           <button
             type="button"
@@ -117,20 +127,25 @@ export function ClanPanel({ session }: Props) {
               session.clan.startExpedition(selected.id, 20);
             }}
           >
-            Expedition starten (20s)
+            {t("clan.startExpedition").replace("{seconds}", "20")}
           </button>
         </article>
       ) : null}
 
       <div id="clan-recruit-panel" data-testid="clan-recruit-panel">
-        <h3 class="panel__sub">Neue Mitglieder anwerben</h3>
+        <h3 class="panel__sub">{t("clan.recruitTitle")}</h3>
         <ul class="hub-list">
           {RECRUIT_ROLES.map((role) => {
             const cost = session.clan.getRecruitCost(role);
             return (
               <li key={role} class="hub-card hub-card--compact tip tip--below">
                 <p class="hub-card__title">{t(ROLE_LABEL_KEY[role])}</p>
-                <p class="game__meta">{formatAmount(cost)} Partikel</p>
+                <p class="game__meta">
+                  {t("clan.costParticles").replace(
+                    "{amount}",
+                    formatAmount(cost),
+                  )}
+                </p>
                 <TipBubble title={t(ROLE_LABEL_KEY[role])}>
                   {t(ROLE_TIP_KEY[role])}
                 </TipBubble>
@@ -143,7 +158,7 @@ export function ClanPanel({ session }: Props) {
                     session.clan.recruitMember(role);
                   }}
                 >
-                  Rekrutieren
+                  {t("clan.recruit")}
                 </button>
               </li>
             );
@@ -151,10 +166,13 @@ export function ClanPanel({ session }: Props) {
         </ul>
       </div>
 
-      <h3 class="panel__sub">Clan-Raid</h3>
+      <h3 class="panel__sub">{t("clan.raidTitle")}</h3>
       {raid.active ? (
         <p class="game__meta">
-          Raid aktiv · {String(raid.durationSeconds)}s verbleibend
+          {t("clan.raidActive").replace(
+            "{seconds}",
+            String(raid.durationSeconds),
+          )}
           {raid.durationSeconds === 0 ? (
             <>
               {" "}
@@ -166,7 +184,7 @@ export function ClanPanel({ session }: Props) {
                   session.clan.claimRaidReward();
                 }}
               >
-                Beute abholen
+                {t("clan.claimRaid")}
               </button>
             </>
           ) : null}
@@ -186,7 +204,7 @@ export function ClanPanel({ session }: Props) {
               session.clan.startClanRaid(idle);
             }}
           >
-            Raid starten (bis 5 Idle)
+            {t("clan.startRaid")}
           </button>
         </Tip>
       )}
