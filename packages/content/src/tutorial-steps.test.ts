@@ -41,4 +41,15 @@ describe("tutorial guides", () => {
       }
     }
   });
+
+  it("archiv points at Chronik before the first fight finish step", () => {
+    const steps = TUTORIAL_GUIDES.archiv.steps;
+    const chronik = steps.find(
+      (step) =>
+        step.action === "click_target" && step.target === "#hub-story",
+    );
+    expect(chronik).toBeDefined();
+    expect(steps.at(-1)?.action).toBe("finish");
+    expect(steps.at(-1)?.text_en.toLowerCase()).toContain("start fight");
+  });
 });

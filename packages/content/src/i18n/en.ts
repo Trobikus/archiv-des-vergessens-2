@@ -334,6 +334,7 @@ export const EN = {
     'story.nextBossChapter': 'Next boss is in chapter {chapter}',
     'story.startFight': 'Start fight',
     'story.flee': 'Flee',
+    'story.combatAutoHint': 'Attacks run automatically. Spells are optional — use them when you need them.',
     'story.heroHp': 'Hero {hp}/{max}',
     'story.enraged': ' · ENRAGED',
     'story.endingReached': 'Ending reached: {title}',

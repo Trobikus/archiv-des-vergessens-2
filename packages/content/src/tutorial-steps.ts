@@ -93,9 +93,18 @@ export const TUTORIAL_GUIDES = {
       {
         title: "Der erste Schritt",
         title_en: "The First Step",
-        text: "Gut. Sammeln und Verbessern sind der Kern des Archivs. Als Nächstes: öffne die <b>Chronik</b> und starte den ersten Boss.",
+        text: "Gut. Sammeln und Verbessern sind der Kern des Archivs. Öffne jetzt die <b>Chronik</b>.",
         text_en:
-          "Good. Gathering and upgrading are the core of the Archive. Next: open the <b>Chronicle</b> and start the first boss.",
+          "Good. Gathering and upgrading are the core of the Archive. Now open the <b>Chronicle</b>.",
+        target: "#hub-story",
+        action: "click_target",
+      },
+      {
+        title: "Der erste Kampf",
+        title_en: "The First Fight",
+        text: "Nach der Intro: <b>Kampf starten</b>. Angriffe laufen von allein — nutze Zauber, wenn du sie brauchst.",
+        text_en:
+          "After the intro: <b>Start fight</b>. Attacks run on their own — use spells when you need them.",
         target: null,
         action: "finish",
       },

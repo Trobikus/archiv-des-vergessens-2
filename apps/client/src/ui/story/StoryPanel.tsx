@@ -142,7 +142,9 @@ export function StoryPanel({ session }: Props) {
         ) : null}
       </div>
 
-      <DialogPanel session={session} />
+      {state.hero.prestige.bossProgress >= 1 ? (
+        <DialogPanel session={session} />
+      ) : null}
 
       <ul class="panel__list" data-testid="boss-list">
         {bosses.map((boss) => {
@@ -160,6 +162,11 @@ export function StoryPanel({ session }: Props) {
 
       {battle !== null ? (
         <div class="battle" data-testid="battle-hud">
+          {state.hero.prestige.bossProgress === 0 ? (
+            <p class="game__meta" data-testid="combat-auto-hint">
+              {t("story.combatAutoHint")}
+            </p>
+          ) : null}
           <FloatingDamageOverlay
             texts={battle.floatingTexts}
             disabled={
@@ -221,7 +228,9 @@ export function StoryPanel({ session }: Props) {
           </ul>
         </div>
       ) : null}
-      <StoryBranchPanel session={session} />
+      {state.hero.prestige.bossProgress >= 1 ? (
+        <StoryBranchPanel session={session} />
+      ) : null}
     </section>
   );
 }

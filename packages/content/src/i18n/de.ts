@@ -334,6 +334,7 @@ export const DE = {
     'story.nextBossChapter': 'Nächster Boss ist in Kapitel {chapter}',
     'story.startFight': 'Kampf starten',
     'story.flee': 'Fliehen',
+    'story.combatAutoHint': 'Angriffe laufen automatisch. Zauber sind optional — nutze sie bei Bedarf.',
     'story.heroHp': 'Held {hp}/{max}',
     'story.enraged': ' · WUT',
     'story.endingReached': 'Ende erreicht: {title}',
