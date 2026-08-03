@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import type { TutorialStep } from "./types";
 import {
   TUTORIAL_GUIDE_IDS,
   TUTORIAL_GUIDES,
@@ -28,11 +29,12 @@ describe("tutorial guides", () => {
 
   it("provides DE and EN copy on every step", () => {
     for (const id of TUTORIAL_GUIDE_IDS) {
-      for (const step of TUTORIAL_GUIDES[id].steps) {
+      for (const raw of TUTORIAL_GUIDES[id].steps) {
+        const step: TutorialStep = raw;
         expect(step.text.length).toBeGreaterThan(0);
         expect(step.text_en.length).toBeGreaterThan(0);
         expect(step.text_en).not.toBe(step.text);
-        if ("title" in step && step.title !== undefined) {
+        if (step.title !== undefined) {
           expect(step.title_en?.length).toBeGreaterThan(0);
           expect(step.title_en).not.toBe(step.title);
         }

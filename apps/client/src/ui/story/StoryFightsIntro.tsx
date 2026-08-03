@@ -39,14 +39,13 @@ export function StoryFightsIntro({ locale, skipLabel, onDone }: Props) {
   }
 
   const lines = locale === "en" ? frame.linesEn : frame.linesDe;
-  const title = lines[0] ?? skipLabel;
 
   return (
     <section
       class="intro"
       role="dialog"
       aria-modal="true"
-      aria-label={title}
+      aria-label={lines[0]}
       data-testid="story-intro"
     >
       <div class="intro__veil" aria-hidden="true" />
