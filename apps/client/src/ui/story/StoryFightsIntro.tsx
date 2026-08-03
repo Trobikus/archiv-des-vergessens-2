@@ -4,7 +4,9 @@ import {
   type Locale,
 } from "@adv/content";
 import { createPortal } from "preact/compat";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
+
+import { startIntroParticles } from "../intro/intro-particles";
 
 type Props = {
   readonly locale: Locale;
@@ -24,9 +26,18 @@ function pcFrameHost(): HTMLElement | null {
   return document.querySelector('[data-testid="pc-frame"]');
 }
 
+function prefersReducedMotion(): boolean {
+  if (typeof window === "undefined" || !window.matchMedia) {
+    return false;
+  }
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 /** Fullscreen cinematic overlay shown once on first Story → Fights open. */
 export function StoryFightsIntro({ locale, skipLabel, onDone }: Props) {
   const [index, setIndex] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const frame = STORY_FIGHTS_INTRO_FRAMES[index];
 
   useEffect(() => {
@@ -48,6 +59,14 @@ export function StoryFightsIntro({ locale, skipLabel, onDone }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- stable intro progression
   }, [frame, index]);
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas === null || prefersReducedMotion()) {
+      return undefined;
+    }
+    return startIntroParticles(canvas, sectionRef.current);
+  }, []);
+
   if (!frame) {
     return null;
   }
@@ -57,6 +76,7 @@ export function StoryFightsIntro({ locale, skipLabel, onDone }: Props) {
 
   const overlay = (
     <section
+      ref={sectionRef}
       class="intro"
       role="dialog"
       aria-modal="true"
@@ -73,6 +93,15 @@ export function StoryFightsIntro({ locale, skipLabel, onDone }: Props) {
         aria-hidden="true"
       />
       <div class="intro__veil" aria-hidden="true" />
+      <div class="intro__fog intro__fog--1" aria-hidden="true" />
+      <div class="intro__fog intro__fog--2" aria-hidden="true" />
+      <div class="intro__fog intro__fog--3" aria-hidden="true" />
+      <canvas
+        ref={canvasRef}
+        class="intro__particles"
+        aria-hidden="true"
+        data-testid="story-intro-particles"
+      />
       <div class="intro__copy" key={`copy-${frame.id}`}>
         {lines.map((line) => (
           <p key={line} class="intro__line">
