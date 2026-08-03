@@ -1,6 +1,6 @@
 {
   "name": "@adv/launcher",
-  "version": "0.3.0-alpha",
+  "version": "0.3.5-alpha",
   "private": true,
   "description": "Portable Siegel-Portal launcher for Archiv des Vergessens",
   "scripts": {

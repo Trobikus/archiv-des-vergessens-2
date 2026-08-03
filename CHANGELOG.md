@@ -5,6 +5,22 @@ All notable changes to Archiv des Vergessens v2 are documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 project follows [Semantic Versioning](https://semver.org/).
 
+## [0.3.5-alpha] — 2026-08-03
+
+### Added
+
+- Interactive wasteland map with glowing region select
+- Cinematic story/dialog overlays (boss-gated dialog + fullscreen StoryFights intro)
+- Offline guest play with a separate local save slot
+- Onboarding tutorials gated by story milestones, with bilingual steps and live locale switch
+- Explanatory hover tooltips across the Hub
+
+### Fixed
+
+- Opening tutorial alignment with Q1 / first-enter auto-start
+- Hub tooltip clipping, locale titles, and remaining TipBubble EN strings
+- Lint cleanups in intro and tutorial tests
+
 ## [0.3.0-alpha] — 2026-08-02
 
 ### Added
