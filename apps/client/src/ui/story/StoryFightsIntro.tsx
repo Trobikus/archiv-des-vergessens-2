@@ -3,6 +3,7 @@ import {
   STORY_FIGHTS_INTRO_FRAMES,
   type Locale,
 } from "@adv/content";
+import { createPortal } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
 
 type Props = {
@@ -14,6 +15,13 @@ type Props = {
 function frameArtUrl(src: string): string {
   const path = src.replace(/^\//, "");
   return `${import.meta.env.BASE_URL}${path}`;
+}
+
+function pcFrameHost(): HTMLElement | null {
+  if (typeof document === "undefined") {
+    return null;
+  }
+  return document.querySelector('[data-testid="pc-frame"]');
 }
 
 /** Fullscreen cinematic overlay shown once on first Story → Fights open. */
@@ -47,7 +55,7 @@ export function StoryFightsIntro({ locale, skipLabel, onDone }: Props) {
   const lines = locale === "en" ? frame.linesEn : frame.linesDe;
   const artUrl = frameArtUrl(frame.src);
 
-  return (
+  const overlay = (
     <section
       class="intro"
       role="dialog"
@@ -82,4 +90,9 @@ export function StoryFightsIntro({ locale, skipLabel, onDone }: Props) {
       </button>
     </section>
   );
+
+  // Portal onto the 1920×1080 pc-frame so stage overflow cannot clip the
+  // cinematic (matches studio #intro-container covering the full game surface).
+  const host = pcFrameHost();
+  return host ? createPortal(overlay, host) : overlay;
 }

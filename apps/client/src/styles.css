@@ -1129,11 +1129,11 @@
   box-shadow: 0 0 14px rgba(197, 160, 89, 0.3), inset 0 0 8px rgba(0, 0, 0, 0.5);
 }
 
-/* ---- Story fights intro (fullscreen cinematic overlay) ---- */
+/* ---- Story fights intro (fullscreen cinematic overlay on pc-frame) ---- */
 .intro {
-  position: fixed;
+  position: absolute;
   inset: 0;
-  z-index: 190;
+  z-index: 1000;
   display: grid;
   place-content: center;
   gap: 1.25rem;
