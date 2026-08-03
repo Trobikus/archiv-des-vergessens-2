@@ -100,7 +100,7 @@ export function createQuestService(
 
     switch (questId) {
       case "q1":
-        return res.particles >= 10n;
+        return res.particles >= 50n;
       case "q2":
         return false;
       case "q3":

@@ -82,7 +82,7 @@ export const TUTORIAL_GUIDES = {
       },
       {
         title: "Der erste Schritt",
-        text: "Gut. Extrahieren und Verbessern sind der Kern des Archivs. Weitere Lehren folgen, wenn die Geschichte sie freigibt.",
+        text: "Gut. Extrahieren und Verbessern sind der Kern des Archivs. Als Nächstes: öffne <b>Story</b> und starte den ersten Boss.",
         target: null,
         action: "finish",
       },

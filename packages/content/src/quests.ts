@@ -4,9 +4,9 @@ import type { DailyQuestDefinition, MainQuestDefinition } from "./types";
 export const MAIN_QUESTS_DATA = [
   {
     id: "q1",
-    text: "Klicke auf \"Extrahieren\" bis du 10 Partikel hast",
-    text_en: "Click \"Extract\" until you have 10 particles",
-    target: 10,
+    text: "Klicke auf \"Extrahieren\" bis du 50 Partikel hast",
+    text_en: "Click \"Extract\" until you have 50 particles",
+    target: 50,
     rewardText: "15 Partikel",
     rewardText_en: "15 Particles",
     reward: {

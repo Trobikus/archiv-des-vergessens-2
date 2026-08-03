@@ -29,7 +29,7 @@ describe("phase 6 waves A+B+C", () => {
     await session.boot();
 
     expect(session.quests.getCurrentQuest()?.id).toBe("q1");
-    session.resources.addParticles(10);
+    session.resources.addParticles(50);
     session.quests.checkCurrentQuest();
     expect(session.quests.isCurrentQuestComplete()).toBe(true);
 

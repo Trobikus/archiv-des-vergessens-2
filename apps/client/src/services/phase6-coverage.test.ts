@@ -217,6 +217,39 @@ describe("phase 6 service coverage smoke tests", () => {
     expect(session.tutorial.getCurrentStep()?.title).toBe("Das Erwachen");
   });
 
+  it("tutorial maybeAutoStart starts archiv on first enter after createHero", async () => {
+    const session = bootSession();
+    await session.boot();
+    expect(session.hero.createHero({ name: "First", classId: "archive_keeper" })).toBe(
+      true,
+    );
+    expect(session.store.getState().tutorial.activeGuide).toBeNull();
+
+    session.tutorial.maybeAutoStart();
+
+    expect(session.tutorial.getActiveGuideId()).toBe("archiv");
+    expect(session.tutorial.isActive()).toBe(true);
+    expect(session.tutorial.getCurrentStep()?.title).toBe("Das Erwachen");
+  });
+
+  it("tutorial maybeAutoStart recovers after createHero mid-guide", async () => {
+    const session = bootSession();
+    await session.boot();
+    session.hero.createHero({ name: "Old", classId: "light_warrior" });
+    session.tutorial.startGuide("archiv");
+    expect(session.tutorial.isActive()).toBe(true);
+
+    expect(session.hero.createHero({ name: "New", classId: "archmage" })).toBe(
+      true,
+    );
+    expect(session.store.getState().tutorial.activeGuide).toBeNull();
+
+    session.tutorial.maybeAutoStart();
+
+    expect(session.tutorial.getActiveGuideId()).toBe("archiv");
+    expect(session.tutorial.isActive()).toBe(true);
+  });
+
   it("starts combat_hero then workshop after first boss defeat", async () => {
     const session = bootSession();
     await session.boot();

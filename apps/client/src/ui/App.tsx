@@ -118,7 +118,6 @@ function ConfirmModal({
 }
 
 function SessionRoot({ session }: { readonly session: GameSession }) {
-  const state = useStore(session.store);
   const authState = useStore(session.auth.store);
   const [screen, setScreen] = useState<Screen>("login");
   const [returnScreen, setReturnScreen] = useState<Screen>("characterSelect");
@@ -356,10 +355,11 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
             />
           }
           onPlay={() => {
-            if (!state.hero.created) {
+            const live = session.store.getState();
+            if (!live.hero.created) {
               return;
             }
-            if (!state.tutorial.finished) {
+            if (!live.tutorial.finished) {
               session.tutorial.maybeAutoStart();
             }
             navigateTo("game");

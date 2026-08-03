@@ -260,6 +260,13 @@ export function createTutorialService(
       if (tutorial.finished) {
         return;
       }
+      // createHero / resetProgress rewrite save tutorial without clearing
+      // in-memory guide state — drop stale activity before first_enter.
+      if (!tutorial.activeGuide && active) {
+        clearHooks();
+        active = false;
+        currentIndex = -1;
+      }
       if (tutorial.activeGuide && isGuideId(tutorial.activeGuide)) {
         const index = Math.max(0, tutorial.step);
         if (!active || currentIndex !== index) {
@@ -277,8 +284,13 @@ export function createTutorialService(
 
     evaluateMilestones() {
       const state = store.getState();
-      if (state.tutorial.finished || active || state.tutorial.activeGuide) {
+      if (state.tutorial.finished || state.tutorial.activeGuide) {
         return;
+      }
+      if (active) {
+        clearHooks();
+        active = false;
+        currentIndex = -1;
       }
       for (const milestone of TUTORIAL_MILESTONES) {
         if (isCompleted(milestone.guideId)) {
