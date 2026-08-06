@@ -12,6 +12,7 @@ Do not say "done" until every box is honest.
 ## Checklist
 
 - [ ] Diff matches the asked scope only (no drive-by files)
+- [ ] Content Police: no DENY-surface growth (social/clan/workshop/collection meta) unless explicit human override
 - [ ] No edits under high-risk paths unless the user named that area
 - [ ] No balancing / golden snapshot edits to silence failures
 - [ ] No invented APIs / second persistence / zod / React/htm

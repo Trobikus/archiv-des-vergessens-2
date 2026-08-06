@@ -45,7 +45,9 @@ Cursor shortcuts:
 | `.cursor/skills/pre-done-gate/SKILL.md` | Before claiming done / commit / push |
 
 Shared domain skills (`.agents/skills/` — Cursor + Antigravity):  
-`safe-change`, `ui-hub`, `i18n-content`, `client-feature`, `protocol-ws`, `save-envelope`, `server-module`, `sim-balancing`, `gate-verify`, `alpha-bugfix`.
+`safe-change`, `content-police`, `ui-hub`, `i18n-content`, `client-feature`, `protocol-ws`, `save-envelope`, `server-module`, `sim-balancing`, `gate-verify`, `alpha-bugfix`.
+
+**Content Police:** before feature/content/hub expansion, load `.agents/skills/content-police/SKILL.md`. Non-core systems (live social, clan depth, workshop/collection meta) stay blocked until the Idle → Held/Kampf → Story-Mission → Save loop is solid — unless the human overrides explicitly.
 
 ## High-risk paths (do not touch without explicit ask)
 
