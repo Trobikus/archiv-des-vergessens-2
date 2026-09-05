@@ -22,7 +22,7 @@ Cursor also loads skills from this folder. Cursor-specific rules/hooks/skills li
 | `content-police` | Feature/content/hub scope — Genre-Kern only until Idle→Held→Story→Save is solid |
 | `alpha-bugfix` | Player-facing bugs |
 | `client-feature` / `ui-hub` | Client services & hub UI |
-| `protocol-ws` / `server-module` / `save-envelope` | Wire contract & server |
+| `save-envelope` | Save-Envelope & Payload-Validierung |
 | `sim-balancing` | CONFIG/math (Freigabe!) |
 | `i18n-content` | DE/EN + content data |
 | `gate-verify` | CI / pre-release |

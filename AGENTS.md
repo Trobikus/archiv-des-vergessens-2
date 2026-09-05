@@ -4,6 +4,8 @@ Portable agent contract for **Cursor**, **Antigravity**, and any other coding ag
 
 You are in **SAFE MODE** near official test alpha (`0.3.0-alpha`). Be strict. Prefer stopping over inventing scope.
 
+**Golden goal:** the studio-site game page (grimoire-interactive.de/games/archiv-des-vergessens) defines the product vision — Incremental RPG · Singleplayer · 2D · Offline Progression. The game is fully offline; live/multiplayer systems are removed (see `docs/adr/0003-serverless-singleplayer.md`). Do not reinvent them.
+
 ## Where the full playbooks live
 
 | Tool | Canonical set |
@@ -28,7 +30,7 @@ Do not invent a third rule system. Extend the matching folder for the tool you a
 - `.cursor/rules/package-boundaries.mdc`
 - `.cursor/rules/main-only.mdc`
 - `.cursor/rules/studio-logo.mdc`
-- Glob rules: `client-preact`, `protocol-server`, `sim-balancing`, `i18n-content`, `site-studio`
+- Glob rules: `client-preact`, `sim-balancing`, `i18n-content`, `site-studio`
 
 **Antigravity** (auto-loaded from `.agents/rules/`):
 
@@ -41,23 +43,22 @@ Cursor shortcuts:
 | Skill | When |
 |---|---|
 | `.cursor/skills/safe-ui-patch/SKILL.md` | Tooltips, copy, CSS, locale strings |
-| `.cursor/skills/hard-stop-architecture/SKILL.md` | Protocol, saves, auth, WS, sim, migrations, cross-package refactors |
+| `.cursor/skills/hard-stop-architecture/SKILL.md` | Protocol, saves, sim, migrations, cross-package refactors |
 | `.cursor/skills/pre-done-gate/SKILL.md` | Before claiming done / commit / push |
 
 Shared domain skills (`.agents/skills/` — Cursor + Antigravity):  
-`safe-change`, `content-police`, `ui-hub`, `i18n-content`, `client-feature`, `protocol-ws`, `save-envelope`, `server-module`, `sim-balancing`, `gate-verify`, `alpha-bugfix`.
+`safe-change`, `content-police`, `ui-hub`, `i18n-content`, `client-feature`, `save-envelope`, `sim-balancing`, `gate-verify`, `alpha-bugfix`.
 
-**Content Police:** before feature/content/hub expansion, load `.agents/skills/content-police/SKILL.md`. Non-core systems (live social, clan depth, workshop/collection meta) stay blocked until the Idle → Held/Kampf → Story-Mission → Save loop is solid — unless the human overrides explicitly.
+**Content Police:** before feature/content/hub expansion, load `.agents/skills/content-police/SKILL.md`. Non-core systems (clan depth, workshop/collection meta) stay blocked until the Idle → Held/Kampf → Story-Mission → Save loop is solid — unless the human overrides explicitly.
 
 ## High-risk paths (do not touch without explicit ask)
 
 - `packages/sim/**` and `balancing.golden.json` (never edit golden to silence gates)
 - `packages/protocol/**`
-- `apps/server/**`
 - Save / codec / migration paths and `tools/migrate-*`
-- Core client session/save wiring (`game-session`, `game-state`, save/cloud/auth services)
+- Core client session/save wiring (`game-session`, `game-state`, save services)
 - Tauri Rust beyond shell (`quit_app`, window, lockdown)
-- Auth parameters / `schemaVersion` without a migration task
+- `schemaVersion` without a migration task
 
 ## Quality gates
 
@@ -65,7 +66,7 @@ Shared domain skills (`.agents/skills/` — Cursor + Antigravity):
 |---|---|
 | Tiny UI/copy | `npm run gate:lite` (balancing + i18n + typecheck) |
 | Anything else / unsure | full `npm run gate` |
-| Architecture / sim / server / saves | full `npm run gate` — no exceptions |
+| Architecture / sim / saves | full `npm run gate` — no exceptions |
 
 Also: `npm run lint`, tests inside `gate`, Playwright/clippy when available.
 
@@ -73,10 +74,9 @@ Also: `npm run lint`, tests inside `gate`, Playwright/clippy when available.
 
 - TypeScript strict, Preact client, npm workspaces
 - Package leaves: protocol/core/sim/content do not import other `@adv/*`
-- Server may import **only** `@adv/core` + `@adv/protocol`
 - `@adv/protocol` mini-validators — **no zod**
-- One persistence strategy: client IndexedDB/offline queue; server SQLite = account authority; **no** Tauri rusqlite game DB
-- Clan = client-local; Friends/Guild/Chat/Leaderboard = live WS
+- One persistence strategy: client IndexedDB saves, fully offline; **no** Tauri rusqlite game DB
+- **No game server, no accounts, no cloud sync, no live social** (removed — ADR 0003); Clan = client-local NPC gameplay
 - Balancing numbers stay v1-identical (golden snapshot)
 - Studio logos: `site/assets/studio-mark.png` / `site/assets/studio-icon.png` only
 

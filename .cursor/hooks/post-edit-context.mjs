@@ -35,12 +35,12 @@ if (/packages\/sim|balancing\.golden\.json/.test(filePath)) {
 }
 if (/packages\/protocol|save|migrate|codec/i.test(filePath)) {
   hints.push(
-    "PROTOCOL/SAVE: hand-rolled validators only (no zod). schemaVersion bumps need migrate.ts. Use save-envelope / protocol-ws.",
+    "PROTOCOL/SAVE: hand-rolled validators only (no zod). schemaVersion bumps need migrate.ts. Use save-envelope.",
   );
 }
-if (/apps\/server|pbkdf|password/i.test(filePath)) {
+if (/pbkdf|password/i.test(filePath)) {
   hints.push(
-    "SERVER/AUTH: PBKDF2 frozen (100_000/64/sha512). Server imports core+protocol only. Clan is not a server module.",
+    "AUTH: PBKDF2 frozen (100_000/64/sha512). Live services are removed — client is offline only.",
   );
 }
 if (/src-tauri/.test(filePath)) {

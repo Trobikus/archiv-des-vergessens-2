@@ -22,6 +22,5 @@ description: Git main-only policy, quality gate, version lockstep, release cauti
 
 - Prefer bugfixes and small, testable increments over large features
 - Do not bump `schemaVersion`, change PBKDF2 params, or alter live WSS defaults casually
-- PBKDF2 frozen: 100_000 iterations, keylen 64, sha512 (`apps/server/src/db/schema.ts`)
-- Live server: `wss://archiv.grimoire-interactive.de`
+- No live server: the game is fully offline (ADR 0003) — no `wss://` endpoints
 - Do not expose cheat/debug APIs in release client paths

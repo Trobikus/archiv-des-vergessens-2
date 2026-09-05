@@ -7,7 +7,6 @@ description: >-
 paths:
   - "packages/sim/**"
   - "packages/protocol/**"
-  - "apps/server/**"
   - "apps/client/src/services/**"
   - "apps/client/src/state/**"
   - "apps/**/src-tauri/**"
@@ -33,15 +32,14 @@ Instead:
 - Changing `schemaVersion`, PBKDF2 params, or save codec without an explicit migration task
 - Adding zod (protocol uses mini-validators)
 - Putting game persistence into Tauri/Rust
-- Server importing `@adv/sim` / `@adv/content`
-- Server-side Clan simulation; fake offline chat/friends/guild
+- Re-inventing live services (chat/friends/guild/leaderboard/auth/cloud) — the game is offline-only (ADR 0003)
 - "Temporary" duplication of authority (client inventing server truth)
 - Creating side branches to "isolate" the work (main-only)
 
 ## If explicitly cleared to implement
 
 1. Re-read `docs/adr/0001-stack.md`, `docs/adr/0002-persistence.md`, and the relevant section of `docs/REWRITE_PLAN.md`.
-2. Load matching `.agents/skills/` playbook (`protocol-ws`, `save-envelope`, `server-module`, `sim-balancing`, `safe-change`).
+2. Load matching `.agents/skills/` playbook (`save-envelope`, `sim-balancing`, `safe-change`).
 3. Keep package boundaries intact; imitate neighboring handlers/validators/services.
 4. Add/adjust tests next to the change.
 5. Run **full** `npm run gate` — no lite gate for this class of work.

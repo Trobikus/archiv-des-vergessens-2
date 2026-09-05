@@ -6,16 +6,12 @@ import { nextGedankenArchivCost } from "../services/idle-service";
 import type { GameSession } from "../services/game-session";
 import { AchievementPanel } from "./achievement/AchievementPanel";
 import { ChallengePanel } from "./challenge/ChallengePanel";
-import { ChatPanel } from "./chat/ChatPanel";
 import { ClanPanel } from "./clan/ClanPanel";
 import { CombatAnalyticsPanel } from "./combat/CombatAnalyticsPanel";
 import { CodexPanel } from "./codex/CodexPanel";
 import { CraftingPanel } from "./crafting/CraftingPanel";
 import { ForgePanel } from "./forge/ForgePanel";
-import { FriendsPanel } from "./friends/FriendsPanel";
-import { GuildPanel } from "./guild/GuildPanel";
 import { HeroPanel, type HeroSubTab } from "./hero/HeroPanel";
-import { LeaderboardPanel } from "./leaderboard/LeaderboardPanel";
 import { LibraryPanel } from "./library/LibraryPanel";
 import { MapPanel } from "./map/MapPanel";
 import { QuestPanel } from "./quest/QuestPanel";
@@ -148,7 +144,6 @@ type StoryNavId = "fights" | "challenges" | "analytics";
 type MissionsNavId = "map" | "quests" | "achievements";
 type WorkshopNavId = "forge" | "crafting" | "library";
 type CollectionNavId = "relicHunt" | "codex";
-type SocialNavId = "chat" | "friends" | "guild" | "clan" | "leaderboard";
 
 type CategoryDef = {
   readonly id: CategoryId;
@@ -163,7 +158,7 @@ const CATEGORIES: readonly CategoryDef[] = [
   { id: "missions", labelKey: "hub.missions", testId: "tab-missions" },
   { id: "workshop", labelKey: "hub.workshop", testId: "tab-workshop" },
   { id: "collection", labelKey: "hub.collection", testId: "tab-collection" },
-  { id: "social", labelKey: "hub.guild", testId: "tab-social" },
+  { id: "social", labelKey: "hub.clan", testId: "tab-social" },
 ];
 
 /**
@@ -194,9 +189,7 @@ function sceneBackgroundUrl(sceneId: SceneId): string {
 
 export function GameView({ session }: Props) {
   const state = useStore(session.store);
-  const authState = useStore(session.auth.store);
   const t = session.i18n.translate.bind(session.i18n);
-  const isGuest = authState.user?.isGuest === true;
 
   const [category, setCategory] = useState<CategoryId>("archiv");
   const [heroNav, setHeroNav] = useState<HeroNavId>("stats");
@@ -205,9 +198,6 @@ export function GameView({ session }: Props) {
   const [workshopNav, setWorkshopNav] = useState<WorkshopNavId>("forge");
   const [collectionNav, setCollectionNav] =
     useState<CollectionNavId>("relicHunt");
-  const [socialNav, setSocialNav] = useState<SocialNavId>(
-    isGuest ? "clan" : "chat",
-  );
   const mnemeStatTipId = useId();
   const idleLevelTipId = useId();
   const yieldTipId = useId();
@@ -310,23 +300,9 @@ export function GameView({ session }: Props) {
     };
   }, [category, session.gather, session.story]);
 
-  useEffect(() => {
-    if (isGuest && socialNav !== "clan") {
-      setSocialNav("clan");
-    }
-  }, [isGuest, socialNav]);
-
-  const socialTabs = (
-    isGuest
-      ? ([["clan", "hub.clan", "tab-clan"]] as const)
-      : ([
-          ["chat", "hub.chat", "tab-chat"],
-          ["friends", "hub.friends", "tab-friends"],
-          ["guild", "hub.guild", "tab-guild"],
-          ["clan", "hub.clan", "tab-clan"],
-          ["leaderboard", "hub.leaderboard", "tab-leaderboard"],
-        ] as const)
-  );
+  const socialTabs = [
+    ["clan", "hub.clan", "tab-clan"],
+  ] as const;
 
   return (
     <main
@@ -619,19 +595,14 @@ export function GameView({ session }: Props) {
       ) : null}
 
       {category === "social" ? (
-        <nav class="game__subtabs" aria-label={t("hub.guild")}>
+        <nav class="game__subtabs" aria-label={t("hub.clan")}>
           {socialTabs.map(([id, key, testId]) => (
             <button
               key={id}
               type="button"
-              class={
-                socialNav === id ? "game__subtab is-active" : "game__subtab"
-              }
+              class="game__subtab is-active"
               data-testid={testId}
-              aria-current={socialNav === id ? "page" : undefined}
-              onClick={() => {
-                setSocialNav(id);
-              }}
+              aria-current="page"
             >
               {t(key)}
             </button>
@@ -741,22 +712,8 @@ export function GameView({ session }: Props) {
               <CodexPanel session={session} />
             ) : null}
 
-            {category === "social" && socialNav === "chat" && !isGuest ? (
-              <ChatPanel session={session} />
-            ) : null}
-            {category === "social" && socialNav === "friends" && !isGuest ? (
-              <FriendsPanel session={session} />
-            ) : null}
-            {category === "social" && socialNav === "guild" && !isGuest ? (
-              <GuildPanel session={session} />
-            ) : null}
-            {category === "social" && socialNav === "clan" ? (
+            {category === "social" ? (
               <ClanPanel session={session} />
-            ) : null}
-            {category === "social" &&
-            socialNav === "leaderboard" &&
-            !isGuest ? (
-              <LeaderboardPanel session={session} />
             ) : null}
           </div>
         ) : null}

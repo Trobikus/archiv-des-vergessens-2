@@ -9,7 +9,7 @@ type Props = {
   readonly session: GameSession;
   readonly accountSlot?: ComponentChildren;
   readonly onPlay: () => void;
-  readonly onBack: () => void;
+  readonly onBack?: () => void;
   readonly onOptions: () => void;
   readonly onQuit: () => void;
   readonly onDelete: () => void;
@@ -93,7 +93,7 @@ export function CharacterSelectView({
           setError(null);
           return;
         }
-        onBack();
+        onBack?.();
         return;
       }
       if (event.key !== "Enter") {
@@ -363,14 +363,16 @@ export function CharacterSelectView({
       </div>
 
       <footer class="char-select__dock">
-        <button
-          type="button"
-          class="glass-btn char-select__back"
-          data-testid="char-back"
-          onClick={onBack}
-        >
-          « {t("common.back")}
-        </button>
+        {onBack !== undefined ? (
+          <button
+            type="button"
+            class="glass-btn char-select__back"
+            data-testid="char-back"
+            onClick={onBack}
+          >
+            « {t("common.back")}
+          </button>
+        ) : null}
 
         <div class="char-select__enter">
           {selectedName !== null ? (

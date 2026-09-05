@@ -1,11 +1,10 @@
 ---
 name: save-envelope
-description: Safely changes save envelope, Phase2 payload fields, migrations, IndexedDB, or cloud sync. Use for save format, autosave, offline queue, cloud load/save, or v1 import issues.
+description: Safely changes save envelope, Phase2 payload fields, migrations, IndexedDB, or v1 import. Use for save format, autosave, offline progress, or v1 import issues.
 paths:
   - "packages/protocol/**"
   - "apps/client/src/services/**"
   - "apps/client/src/state/**"
-  - "apps/server/src/modules/save/**"
   - "docs/save-format.md"
 ---
 
@@ -19,8 +18,7 @@ paths:
 - `packages/protocol/src/save-payload.ts`
 - `packages/protocol/src/migrate.ts`
 - `packages/protocol/src/envelope.ts`
-- Client: `save-store.ts`, `save-storage.ts`, `cloud-sync-service.ts`, `state/game-state.ts`
-- Server: `apps/server/src/modules/save/handlers.ts`
+- Client: `save-store.ts`, `save-storage.ts`, `state/game-state.ts`
 
 ## Invariants
 

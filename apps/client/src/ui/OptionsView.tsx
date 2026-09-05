@@ -7,7 +7,6 @@ import { useStore } from "./useStore";
 type Props = {
   readonly session: GameSession;
   readonly onBack: () => void;
-  readonly onOpenAccount: () => void;
   readonly onHardReset: () => void;
   readonly onConfirmImport: (
     messageKey: "options.importV1Confirm",
@@ -18,15 +17,12 @@ type Props = {
 export function OptionsView({
   session,
   onBack,
-  onOpenAccount,
   onHardReset,
   onConfirmImport,
 }: Props) {
   const state = useStore(session.store);
-  const authState = useStore(session.auth.store);
   const locale = state.settings.locale;
   const t = session.i18n.translate.bind(session.i18n);
-  const user = authState.user;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importMessage, setImportMessage] = useState<string | null>(null);
 
@@ -66,52 +62,6 @@ export function OptionsView({
               <option value="en">{t("options.lang_en")}</option>
             </select>
           </div>
-
-          <h3 class="options-header">{t("auth.title")}</h3>
-          <div class="option-row flex-between">
-            <span class="option-label text-muted">
-              {user !== null && !user.isGuest
-                ? `${t("auth.loggedInAs")}: ${user.username}`
-                : user?.isGuest === true
-                  ? `${t("auth.guestBadge")}: ${user.username}`
-                  : t("auth.login")}
-            </span>
-            <button
-              type="button"
-              class="glass-btn btn-small"
-              data-testid="opt-account"
-              onClick={onOpenAccount}
-            >
-              {user !== null && !user.isGuest
-                ? t("auth.accountDetails")
-                : user?.isGuest === true
-                  ? t("auth.claimAccount")
-                  : t("auth.login")}
-            </button>
-          </div>
-
-          {user !== null && !user.isGuest ? (
-            <>
-              <h3 class="options-header">{t("options.cloudSync")}</h3>
-              <div class="option-row flex-between">
-                <span class="option-label text-muted">
-                  {session.cloud.status() === "pending"
-                    ? t("auth.cloudPending")
-                    : t("auth.cloudSynced")}
-                </span>
-                <button
-                  type="button"
-                  class="glass-btn btn-small"
-                  data-testid="opt-cloud-sync"
-                  onClick={() => {
-                    void session.cloud.push(session.store.getState());
-                  }}
-                >
-                  {t("options.syncNow")}
-                </button>
-              </div>
-            </>
-          ) : null}
 
           <h3 class="options-header">{t("options.audio")}</h3>
           <div class="option-row flex-between">

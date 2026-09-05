@@ -1,8 +1,6 @@
 import type { EventBus, Store } from "@adv/core";
 
 import type { GameState, InventoryItem } from "../state/game-state";
-import type { AuthService } from "./auth-service";
-
 type VaultResourceKey = "particles" | "relics" | "artifacts" | "memoryDust";
 
 export type AccountVaultService = {
@@ -25,16 +23,7 @@ function sanitizeAmount(amount: number): number {
 export function createAccountVaultService(
   store: Store<GameState>,
   eventBus: EventBus,
-  auth?: AuthService,
 ): AccountVaultService {
-  const isGuestBlocked = (): boolean => {
-    if (!auth) {
-      return false;
-    }
-    const user = auth.store.getState().user;
-    return user?.isGuest === true;
-  };
-
   const publishUpdate = (type: string): void => {
     eventBus.publish("vault:updated", {
       type,
@@ -44,9 +33,6 @@ export function createAccountVaultService(
 
   return {
     depositResource(type, amount) {
-      if (isGuestBlocked()) {
-        return false;
-      }
       const safe = sanitizeAmount(amount);
       if (safe <= 0) {
         return false;
@@ -72,9 +58,6 @@ export function createAccountVaultService(
     },
 
     withdrawResource(type, amount) {
-      if (isGuestBlocked()) {
-        return false;
-      }
       const safe = sanitizeAmount(amount);
       if (safe <= 0) {
         return false;
@@ -100,9 +83,6 @@ export function createAccountVaultService(
     },
 
     depositItem(itemId) {
-      if (isGuestBlocked()) {
-        return false;
-      }
       const hero = store.getState().hero;
       const item = hero.inventory.equipment.find((entry) => entry.id === itemId);
       if (!item) {
@@ -128,9 +108,6 @@ export function createAccountVaultService(
     },
 
     withdrawItem(index) {
-      if (isGuestBlocked()) {
-        return false;
-      }
       const items = store.getState().accountVault.items;
       if (index < 0 || index >= items.length) {
         return false;

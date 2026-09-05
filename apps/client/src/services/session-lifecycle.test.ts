@@ -3,7 +3,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createGameSession } from "./game-session";
 import { createMemorySaveStorage } from "./save-storage";
 import { DEFAULT_SAVE_KEY, guestSaveKey } from "./save-store";
-import { createWsClient } from "./ws-client";
 
 describe("session lifecycle / leak safety", () => {
   it("destroy stops autosave and rejects further saves", async () => {
@@ -12,7 +11,6 @@ describe("session lifecycle / leak safety", () => {
       useIndexedDb: false,
       now: () => 1_000_000,
       autosaveMs: 60_000,
-      connectNetwork: false,
     });
 
     await session.boot();
@@ -28,7 +26,7 @@ describe("session lifecycle / leak safety", () => {
   });
 });
 
-describe("offline guest local saves", () => {
+describe("local offline saves", () => {
   const sessions: Array<ReturnType<typeof createGameSession>> = [];
 
   afterEach(() => {
@@ -38,59 +36,42 @@ describe("offline guest local saves", () => {
     sessions.length = 0;
   });
 
-  function offlineGuestSession(storage = createMemorySaveStorage()) {
-    function FailingSocket(): never {
-      throw new Error("offline");
-    }
-    Object.assign(FailingSocket, { OPEN: 1 });
-    const ws = createWsClient({
-      url: "ws://127.0.0.1:1",
-      WebSocketImpl: FailingSocket as unknown as typeof WebSocket,
-    });
+  function localSession(storage = createMemorySaveStorage()) {
     const session = createGameSession({
       storage,
       useIndexedDb: false,
       now: () => 2_000_000,
       autosaveMs: 20,
-      connectNetwork: true,
-      ws,
     });
     sessions.push(session);
     return { session, storage };
   }
 
-  it("guestSaveKey stays off the registered slot", () => {
+  it("guestSaveKey stays off the default slot", () => {
     expect(guestSaveKey("guest_abc_1")).toBe("slot_guest_guest_abc_1");
     expect(guestSaveKey("guest_abc_1")).not.toBe(DEFAULT_SAVE_KEY);
   });
 
-  it("persists guest progress under slot_guest_* only", async () => {
-    const { session, storage } = offlineGuestSession();
+  it("persists progress under slot_guest_* only", async () => {
+    const { session, storage } = localSession();
     await session.boot();
-    expect(session.auth.store.getState().user?.isGuest).toBe(true);
 
     session.resources.addParticles(42);
     expect(await session.saveNow()).toBe(true);
 
-    const key = guestSaveKey(session.auth.guestId());
+    const key = guestSaveKey("local");
     expect(await storage.get(key)).toBeTruthy();
     expect(await storage.get(DEFAULT_SAVE_KEY)).toBeNull();
   });
 
-  it("finalizeGuestConversion refuses while still a guest", async () => {
-    const { session } = offlineGuestSession();
-    await session.boot();
-    expect(await session.finalizeGuestConversion()).toBe(false);
-  });
-
-  it("does not interval-autosave while guest", async () => {
-    const { session, storage } = offlineGuestSession();
+  it("interval-autosaves to the local slot", async () => {
+    const { session, storage } = localSession();
     await session.boot();
     session.resources.addParticles(7);
     await new Promise((resolve) => {
       setTimeout(resolve, 60);
     });
-    expect(await storage.get(guestSaveKey(session.auth.guestId()))).toBeNull();
+    expect(await storage.get(guestSaveKey("local"))).toBeTruthy();
     expect(await storage.get(DEFAULT_SAVE_KEY)).toBeNull();
   });
 });

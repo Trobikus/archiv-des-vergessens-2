@@ -16,6 +16,7 @@ export const EN = {
     'pause.title': 'Game Menu',
     'pause.resume': 'Return to Game',
     'pause.logOut': 'Log Out',
+    'pause.characterSelect': 'Character Select',
     'pause.exitGame': 'Exit Game',
     'pause.escHint': 'Back',
 

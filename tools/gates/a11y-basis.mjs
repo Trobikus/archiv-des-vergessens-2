@@ -9,13 +9,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 const checks = [
   {
-    file: "apps/client/src/ui/auth/LoginView.tsx",
-    patterns: [
-      /role="main"/,
-      /aria-label="Login-Portal"/,
-      /role="alert"/,
-      /data-testid="login-view"/,
-    ],
+    file: "apps/client/src/ui/CharacterSelectView.tsx",
+    patterns: [/role="main"/, /aria-label=\{t\("charSelect.title"\)\}/, /data-testid="character-select"/],
   },
   {
     file: "apps/client/src/ui/IntroView.tsx",

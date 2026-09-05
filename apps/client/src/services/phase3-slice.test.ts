@@ -18,7 +18,6 @@ describe("phase-3 content combat story slice", () => {
       storage: createMemorySaveStorage(),
       useIndexedDb: false,
       autosaveMs: 60_000,
-      connectNetwork: false,
     });
     sessions.push(session);
     return session;
@@ -151,7 +150,6 @@ describe("phase-3 content combat story slice", () => {
       storage: createMemorySaveStorage(),
       useIndexedDb: false,
       autosaveMs: 60_000,
-      connectNetwork: false,
     });
     sessions.push(defeatSession);
     await defeatSession.boot();
@@ -203,7 +201,6 @@ describe("phase-3 content combat story slice", () => {
       storage,
       useIndexedDb: false,
       autosaveMs: 60_000,
-      connectNetwork: false,
     });
     sessions.push(first);
     await first.boot();
@@ -219,7 +216,6 @@ describe("phase-3 content combat story slice", () => {
       storage,
       useIndexedDb: false,
       autosaveMs: 60_000,
-      connectNetwork: false,
     });
     sessions.push(second);
     await second.boot();

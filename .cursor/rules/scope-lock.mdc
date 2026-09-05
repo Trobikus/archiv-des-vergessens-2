@@ -25,8 +25,7 @@ You are in **safe mode** near official test alpha (`0.3.0-alpha`). Prefer doing 
 - `packages/sim/src/snapshots/balancing.golden.json` — **never** edit only to silence a failing gate
 - `packages/protocol/**`
 - Save / codec / migration paths (`**/save*`, `**/migrate*`, `**/codec*`, `tools/migrate-*`)
-- `apps/server/**` (auth, WS, SQLite, cloud envelope)
-- Core client session/save wiring (`game-session.ts`, `game-state.ts`, save/cloud/auth services)
+- Core client session/save wiring (`game-session.ts`, `game-state.ts`, save services)
 - Tauri Rust beyond shell (`quit_app`, window, lockdown) — no game loop, no rusqlite for saves
 - Auth parameters (PBKDF2, schemaVersion) — require an explicit migration task
 
@@ -35,7 +34,7 @@ If you must touch a high-risk path to finish a low-risk task: **stop**, explain 
 ## Social ownership (easy mistake)
 
 - Clan (NPC) = client-local save slice only
-- Friends / Guild / Chat / Leaderboard = live WS + server — no fake offline success
+- Chat / Friends / Guild / Leaderboard are removed (server-less singleplayer) — do not reinvent them
 
 ## Done means
 

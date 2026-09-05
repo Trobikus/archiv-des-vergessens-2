@@ -20,7 +20,6 @@ import {
 } from "@adv/protocol";
 import { CONFIG } from "@adv/sim";
 
-import { getAppVersion } from "../app-version";
 import {
   createInitialGameState,
   gameStateFromPayload,
@@ -35,7 +34,6 @@ import {
   createAchievementService,
   type AchievementService,
 } from "./achievement-service";
-import { createAuthService, type AuthService } from "./auth-service";
 import {
   createBootProgressReporter,
   type BootProgressListener,
@@ -44,12 +42,7 @@ import {
   createChallengeService,
   type ChallengeService,
 } from "./challenge-service";
-import { createChatService, type ChatService } from "./chat-service";
 import { createClanService, type ClanService } from "./clan-service";
-import {
-  createCloudSyncService,
-  type CloudSyncService,
-} from "./cloud-sync-service";
 import {
   createCodexService,
   type CodexService,
@@ -68,16 +61,10 @@ import {
 } from "./daily-reward-service";
 import { createDialogService, type DialogService } from "./dialog-service";
 import { createForgeService, type ForgeService } from "./forge-service";
-import { createFriendService, type FriendService } from "./friend-service";
 import { createGatherService, type GatherService } from "./gather-service";
-import { createGuildService, type GuildService } from "./guild-service";
 import { createHeroService, type HeroService } from "./hero-service";
 import { createIdleService, type IdleService } from "./idle-service";
 import { createI18nService, type I18nService } from "./i18n-service";
-import {
-  createLeaderboardService,
-  type LeaderboardService,
-} from "./leaderboard-service";
 import { createLibraryService, type LibraryService } from "./library-service";
 import {
   createOfflineProgressService,
@@ -94,7 +81,7 @@ import {
   createMemorySaveStorage,
   type SaveStorage,
 } from "./save-storage";
-import { createSaveStore, DEFAULT_SAVE_KEY, guestSaveKey, type SaveStore } from "./save-store";
+import { createSaveStore, guestSaveKey, type SaveStore } from "./save-store";
 import {
   createStoryBranchService,
   type StoryBranchService,
@@ -105,9 +92,28 @@ import {
   createTutorialService,
   type TutorialService,
 } from "./tutorial-service";
-import { createWsClient, type WsClient } from "./ws-client";
 
 const log = createLogger("game-session");
+
+/** Local guest identity — kept from the former account system so existing
+ * save slots under this id keep loading. */
+const GUEST_KEY = "adv2_guest_id";
+
+function localGuestId(): string {
+  if (typeof localStorage === "undefined") {
+    return "local";
+  }
+  const existing = localStorage.getItem(GUEST_KEY);
+  if (existing !== null && existing.length > 0) {
+    return existing;
+  }
+  const created =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `guest_${Math.random().toString(36).slice(2)}`;
+  localStorage.setItem(GUEST_KEY, created);
+  return created;
+}
 
 export type GameSession = {
   readonly store: Store<GameState>;
@@ -133,25 +139,13 @@ export type GameSession = {
   readonly library: LibraryService;
   readonly talents: TalentService;
   readonly challenges: ChallengeService;
-  readonly chat: ChatService;
-  readonly friends: FriendService;
-  readonly guild: GuildService;
   readonly clan: ClanService;
-  readonly leaderboard: LeaderboardService;
   readonly i18n: I18nService;
   readonly saves: SaveStore;
-  readonly ws: WsClient;
-  readonly auth: AuthService;
-  readonly cloud: CloudSyncService;
   boot(onProgress?: BootProgressListener): Promise<OfflineReport | null>;
   saveNow(): Promise<boolean>;
-  /** Load the IndexedDB slot for the current auth identity (guest vs registered). */
+  /** Load the IndexedDB slot for the local player identity. */
   reloadActiveSave(): Promise<boolean>;
-  /**
-   * After auth.convertGuest succeeds: write in-memory progress into the
-   * registered local slot and push cloud so guest progress is not orphaned.
-   */
-  finalizeGuestConversion(): Promise<boolean>;
   resetProgress(): Promise<void>;
   /** Phase 9: map a v1 JSON save into the current slot and persist. */
   importV1Progress(
@@ -168,8 +162,6 @@ export type GameSessionOptions = {
   readonly now?: () => number;
   readonly autosaveMs?: number;
   readonly useIndexedDb?: boolean;
-  readonly ws?: WsClient;
-  readonly connectNetwork?: boolean;
 };
 
 function defaultStorage(useIndexedDb: boolean): SaveStorage {
@@ -238,25 +230,11 @@ export function createGameSession(
   const dialog = createDialogService(eventBus);
   const codex = createCodexService(store, eventBus);
   const relicHunt = createRelicHuntService(store, eventBus, resources, hero);
-  const ws = options.ws ?? createWsClient();
-  const auth = createAuthService({ ws });
-  const accountVault = createAccountVaultService(store, eventBus, auth);
+  const accountVault = createAccountVaultService(store, eventBus);
   const tutorial = createTutorialService(store, eventBus);
-  const friends = createFriendService(store, eventBus, { ws, auth });
-  const guild = createGuildService(store, eventBus, { ws, auth });
   const clan = createClanService(store, eventBus, resources, library);
-  const chat = createChatService(store, eventBus, ws);
-  const leaderboard = createLeaderboardService(store, eventBus, ws, auth, {
-    now: nowFn,
-  });
   const i18n = createI18nService(store);
   const saves = createSaveStore(storage);
-  const cloud = createCloudSyncService({
-    ws,
-    auth,
-    storage,
-    appVersion: getAppVersion(),
-  });
 
   let ticker: Ticker | null = null;
   let frameBudget: FrameBudgetMonitor | null = null;
@@ -283,11 +261,7 @@ export function createGameSession(
   };
 
   const resolveSaveKey = (): string => {
-    const user = auth.store.getState().user;
-    if (user?.isGuest === true) {
-      return guestSaveKey(auth.guestId());
-    }
-    return DEFAULT_SAVE_KEY;
+    return guestSaveKey(localGuestId());
   };
 
   const saveNow = async (): Promise<boolean> => {
@@ -304,7 +278,6 @@ export function createGameSession(
       ...prev,
       meta: { ...prev.meta, lastActiveAt: stamp, lastSavedAt: stamp },
     }));
-    void cloud.push(store.getState(), stamp);
     return true;
   };
 
@@ -328,13 +301,6 @@ export function createGameSession(
         settings: { ...next.settings, locale },
         meta: { ...next.meta, bootstrapped: true },
       });
-    }
-    if (auth.isRegistered()) {
-      const merged = await cloud.pullAndMerge(store.getState());
-      if (merged.ok) {
-        store.replace(merged.value);
-      }
-      await cloud.flushPending();
     }
     return true;
   };
@@ -363,16 +329,9 @@ export function createGameSession(
     library,
     talents,
     challenges,
-    chat,
-    friends,
-    guild,
     clan,
-    leaderboard,
     i18n,
     saves,
-    ws,
-    auth,
-    cloud,
 
     async boot(onProgress) {
       const progress = createBootProgressReporter(onProgress);
@@ -392,30 +351,12 @@ export function createGameSession(
         }
       }
 
-      if (options.connectNetwork !== false) {
-        await step("network");
-        await step("auth");
-        await auth.boot();
-      } else {
-        await step("network");
-        await step("auth");
-      }
-
       await step("save");
       const loaded = await saves.load(resolveSaveKey());
       if (!loaded.ok) {
         log.warn(`load failed, starting fresh: ${loaded.error}`);
       } else if (loaded.value) {
         store.replace(loaded.value);
-      }
-
-      await step("cloud");
-      if (auth.isRegistered()) {
-        const merged = await cloud.pullAndMerge(store.getState());
-        if (merged.ok) {
-          store.replace(merged.value);
-        }
-        await cloud.flushPending();
       }
 
       await step("offline");
@@ -425,18 +366,6 @@ export function createGameSession(
       quests.checkDailyReset();
       achievements.checkProgress();
       talents.syncPointsFromHeroLevel();
-      leaderboard.markSessionStart();
-      leaderboard.syncFromState();
-      if (ws.status() === "open" && auth.isRegistered()) {
-        leaderboard.submit();
-        friends.sync();
-        guild.sync();
-        const guildId = store.getState().guild.guild?.id;
-        if (typeof guildId === "string") {
-          chat.getHistory(guildId);
-        }
-        chat.getHistory();
-      }
 
       frameBudget = createFrameBudgetMonitor({
         onDegrade: () => {
@@ -483,11 +412,7 @@ export function createGameSession(
 
       const settingsAutosave = store.getState().settings.autosaveMs;
       const autosaveMs = options.autosaveMs ?? settingsAutosave;
-      // Guests: no interval autosave — only manual / quit / create persist.
       autosaveTimer = setInterval(() => {
-        if (!auth.isRegistered()) {
-          return;
-        }
         void saveNow();
       }, autosaveMs);
 
@@ -507,18 +432,6 @@ export function createGameSession(
     saveNow,
 
     reloadActiveSave,
-
-    async finalizeGuestConversion() {
-      if (destroyed || !auth.isRegistered()) {
-        return false;
-      }
-      const saved = await saveNow();
-      if (!saved) {
-        return false;
-      }
-      await cloud.push(store.getState());
-      return true;
-    },
 
     async resetProgress() {
       const locale = store.getState().settings.locale;
@@ -551,9 +464,6 @@ export function createGameSession(
       const saved = await saveNow();
       if (!saved) {
         return err("failed to persist imported save");
-      }
-      if (auth.isRegistered()) {
-        await cloud.push(store.getState());
       }
       return ok(undefined);
     },
@@ -602,15 +512,8 @@ export function createGameSession(
       dialog.destroy();
       accountVault.destroy();
       combatAnalytics.destroy();
-      chat.destroy();
-      friends.destroy();
-      guild.destroy();
       clan.destroy();
-      leaderboard.destroy();
       eventBus.destroy();
-      cloud.destroy();
-      auth.destroy();
-      ws.close();
       store.destroy();
     },
   };

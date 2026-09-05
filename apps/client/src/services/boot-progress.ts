@@ -20,24 +20,9 @@ const BOOT_STEPS = [
     labelEn: "Loading typefaces…",
   },
   {
-    id: "network",
-    labelDe: "Verbinde mit dem Archiv-Netz…",
-    labelEn: "Connecting to the archive network…",
-  },
-  {
-    id: "auth",
-    labelDe: "Prüfe Hüter-Session…",
-    labelEn: "Verifying keeper session…",
-  },
-  {
     id: "save",
     labelDe: "Lade lokalen Spielstand…",
     labelEn: "Loading local save…",
-  },
-  {
-    id: "cloud",
-    labelDe: "Synchronisiere Cloud-Chronik…",
-    labelEn: "Syncing cloud chronicle…",
   },
   {
     id: "offline",

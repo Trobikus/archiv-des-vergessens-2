@@ -131,7 +131,6 @@ describe("phase-2 vertical slice", () => {
       now: () => now,
       autosaveMs: 60_000,
       useIndexedDb: false,
-      connectNetwork: false,
     });
     sessions.push(first);
 
@@ -148,7 +147,6 @@ describe("phase-2 vertical slice", () => {
       now: () => now,
       autosaveMs: 60_000,
       useIndexedDb: false,
-      connectNetwork: false,
     });
     sessions.push(second);
 
@@ -184,7 +182,6 @@ describe("phase-2 vertical slice", () => {
         now: () => now,
         autosaveMs: 60_000,
         useIndexedDb: false,
-        connectNetwork: false,
       });
       sessions.push(session);
       await session.boot();

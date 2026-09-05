@@ -116,7 +116,7 @@ Never redirect into a new system.
 | `hard-stop-architecture` | Architecture risk remains a hard stop |
 | `sim-balancing` | Numbers still need Freigabe; Police does not unlock balancing whim |
 | `ui-hub` / `client-feature` | Allowed only inside ALLOW surfaces |
-| `protocol-ws` / `server-module` | Social protocol growth = DENY unless CORE-FIX-ONLY / explicit override |
+| `save-envelope` | Save-format growth for removed live systems = DENY unless explicit override |
 | `i18n-content` | New keys only for ALLOW work; no locale packs for DENY expansion |
 
 ## Done means (Police lens)

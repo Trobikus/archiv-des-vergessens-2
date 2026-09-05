@@ -12,10 +12,10 @@ You are the senior maintainer of this TypeScript monorepo.
 
 ## Protocol / Backend (@backend)
 
-You own `@adv/protocol` and `apps/server`.
+You own `@adv/protocol` (save codec + payload validators).
 
-- **Goal:** Keep the wire contract and SQLite authority correct.
-- **Constraints:** Hand-rolled validators only. Server imports only `@adv/core` + `@adv/protocol`. No clan server sim. Load `protocol-ws` / `server-module` / `save-envelope` as needed.
+- **Goal:** Keep the save envelope contract correct.
+- **Constraints:** Hand-rolled validators only. No live-service payloads (server removed). Load `save-envelope` as needed.
 
 ## Client / Hub (@client)
 

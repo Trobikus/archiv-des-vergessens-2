@@ -13,18 +13,15 @@ describe("boot progress reporter", () => {
 
     reporter.report("core");
     reporter.report("fonts");
-    reporter.report("network");
-    reporter.report("auth");
     reporter.report("save");
-    reporter.report("cloud");
     reporter.report("offline");
     reporter.report("systems");
     reporter.report("ready");
 
-    expect(updates).toEqual([11, 22, 33, 44, 56, 67, 78, 89, 100]);
+    expect(updates).toEqual([17, 33, 50, 67, 83, 100]);
     expect(labels[0]).toContain("Archiv-Kern");
     expect(labels.at(-1)).toBe("Das Archiv ist bereit.");
-    expect(reporter.total).toBe(9);
+    expect(reporter.total).toBe(6);
   });
 
   it("ignores unknown steps safely", () => {

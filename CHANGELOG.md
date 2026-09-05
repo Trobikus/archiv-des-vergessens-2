@@ -5,6 +5,25 @@ All notable changes to Archiv des Vergessens v2 are documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- **Server-less singleplayer pivot ([ADR 0003](docs/adr/0003-serverless-singleplayer.md)):** the public game server is gone; the game is now fully offline — one hero, no accounts, no cloud sync
+- Client boots straight into local play (intro → character select); autosave applies to every player
+- Hub section „Social“ is now the local **Clan** (NPC idle/raid/expedition)
+
+### Removed
+
+- `apps/server` (auth, cloud-save, chat, friends, guild, leaderboard) and its deploy configs
+- Client WS/auth/cloud/social services and UI (login screen, account badge, live panels)
+- Auth/cloud/WS payload modules from `@adv/protocol` (save envelope untouched)
+- `tools/migrate-v1-users` and v1 account-migration docs
+
+### Fixed
+
+- Existing local saves keep loading unchanged (save envelope / `schemaVersion` untouched; guest slot key preserved)
+
 ## [0.3.5-alpha] — 2026-08-03
 
 ### Added

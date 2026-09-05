@@ -19,7 +19,6 @@ describe("phase 6 service coverage smoke tests", () => {
       storage: createMemorySaveStorage(),
       useIndexedDb: false,
       autosaveMs: 60_000,
-      connectNetwork: false,
     });
     sessions.push(session);
     return session;

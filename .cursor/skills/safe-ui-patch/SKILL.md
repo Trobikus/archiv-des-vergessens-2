@@ -3,7 +3,7 @@ name: safe-ui-patch
 description: >-
   Strict workflow for small Hub/UI patches (tooltips, copy, CSS, locale
   strings). Use when the task is localized UI/copy/CSS and must not touch
-  sim, protocol, server, or saves.
+  sim, protocol, or saves.
 paths:
   - "apps/client/**"
   - "packages/content/src/i18n/**"
@@ -22,7 +22,7 @@ Use only for **localized** UI/copy/CSS work. If the task smells like architectur
 
 ## Forbidden during this skill
 
-- `packages/sim/**`, `packages/protocol/**`, `apps/server/**`
+- `packages/sim/**`, `packages/protocol/**`
 - Save/codec/migration paths / `game-session` / `game-state` rewires
 - Balancing numbers, golden snapshots
 - Broad Hub restyles, new design tokens, card/hero redesigns unless explicitly requested
@@ -45,5 +45,5 @@ Use only for **localized** UI/copy/CSS work. If the task smells like architectur
 
 ## Abort conditions
 
-- Need protocol/sim/server change to finish → stop, report blocker.
+- Need protocol/sim change to finish → stop, report blocker.
 - Gate failure you "fix" by editing golden/snapshot → **forbidden**. Fix the real cause or stop.

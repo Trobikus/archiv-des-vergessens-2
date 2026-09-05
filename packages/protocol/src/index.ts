@@ -1,42 +1,4 @@
-export {
-  AUTH_ERROR_CODES,
-  authErrorKey,
-  isAuthErrorCode,
-  normalizeAuthErrorCode,
-  type AuthErrorCode,
-} from "./auth-errors";
-export {
-  validateAuthConvertGuestPayload,
-  validateAuthConvertGuestSuccessPayload,
-  validateAuthErrorPayload,
-  validateAuthLoginPayload,
-  validateAuthRegisterPayload,
-  validateAuthSessionSuccessPayload,
-  validateAuthVerifyTokenPayload,
-  validateGuestAuthPayload,
-  type AuthConvertGuestPayload,
-  type AuthConvertGuestSuccessPayload,
-  type AuthErrorPayload,
-  type AuthLoginPayload,
-  type AuthRegisterPayload,
-  type AuthSessionSuccessPayload,
-  type AuthUser,
-  type AuthVerifyTokenPayload,
-  type GuestAuthPayload,
-} from "./auth-payloads";
-export {
-  MAX_CLOUD_SAVE_BYTES,
-  validateCloudErrorPayload,
-  validateCloudLoadSuccessPayload,
-  validateCloudSavePayload,
-  validateCloudSaveSuccessPayload,
-  type CloudErrorPayload,
-  type CloudLoadSuccessPayload,
-  type CloudSavePayload,
-  type CloudSaveSuccessPayload,
-} from "./cloud-payloads";
 export { createSaveEnvelope } from "./envelope";
-export { WS_EVENTS, type WsEvent } from "./events";
 export {
   migrateSaveEnvelope,
   SAVE_MIGRATIONS,
@@ -159,4 +121,3 @@ export {
   type V1ImportOptions,
   type V1ImportUnwrap,
 } from "./v1-import";
-export { validateWsMessage, type WsMessage } from "./ws-message";

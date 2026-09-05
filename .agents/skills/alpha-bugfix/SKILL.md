@@ -15,8 +15,8 @@ Fix the defect with minimal blast radius. Do not “clean up” surrounding syst
 2. Classify surface:
    - **UI/Hub** → `apps/client/src/ui/**`, styles
    - **Game logic** → `apps/client/src/services/**`, `@adv/sim`
-   - **Save/sync** → `@adv/protocol` save types + client save/cloud services + server save module
-   - **Auth/social** → protocol payloads + server modules + client auth/friend/guild/chat services
+   - **Save** → `@adv/protocol` save types + client save services
+   - **Social (local NPC clan)** → client `clan-service` + `ClanPanel`
    - **Desktop/Launcher** → Tauri shell only; never move game logic into Rust
 3. Find the **smallest** owning function/component. Prefer fixing there.
 

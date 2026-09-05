@@ -18,7 +18,6 @@ describe("phase 6 waves A+B+C", () => {
       storage: createMemorySaveStorage(),
       useIndexedDb: false,
       autosaveMs: 60_000,
-      connectNetwork: false,
     });
     sessions.push(session);
     return session;

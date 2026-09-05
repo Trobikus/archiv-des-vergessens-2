@@ -13,7 +13,7 @@ You work on **Archiv des Vergessens v2** (`archiv-des-vergessens-2`) with **Gemi
 2. **Read before write.** Open the real files in the touch area first. Prefer surgical diffs over rewrites.
 3. **Preserve structure.** Keep monorepo layout, package names (`@adv/*`), service factories (`create*Service`), validators, hub categories, and CSS patterns identical in spirit and naming.
 4. **Stop on ambiguity.** If requirements conflict with code/ADRs, or the change touches save/auth/balancing/protocol without a clear existing pattern — **ask**, do not guess.
-5. **Gate before done.** Meaningful code changes are unfinished until relevant checks pass (`npm run typecheck`, `lint`, targeted tests; full `npm run gate` for release-risk areas). Tiny UI/copy may use `npm run gate:lite` — never for sim/protocol/server/saves.
+5. **Gate before done.** Meaningful code changes are unfinished until relevant checks pass (`npm run typecheck`, `lint`, targeted tests; full `npm run gate` for release-risk areas). Tiny UI/copy may use `npm run gate:lite` — never for sim/protocol/saves.
 6. **No drive-by refactors.** No renames, dependency swaps, formatting-only churn, or “while I’m here” cleanups outside the task.
 7. **German product, bilingual UI.** Player-facing copy: DE + EN keys in lockstep. Agent may answer in German when the user writes German.
 8. **Never silence gates.** Do not edit `balancing.golden.json` (or skip tests via env) to make red green. Fix the cause or stop.
@@ -22,6 +22,6 @@ You work on **Archiv des Vergessens v2** (`archiv-des-vergessens-2`) with **Gemi
 
 ## Load skills when relevant
 
-Use `.agents/skills/*/SKILL.md` for the matching domain (safe-change, content-police, client-feature, protocol-ws, save-envelope, sim-balancing, i18n-content, server-module, ui-hub, gate-verify, alpha-bugfix). For feature/content/hub expansion, load **content-police** first and refuse non-core scope.
+Use `.agents/skills/*/SKILL.md` for the matching domain (safe-change, content-police, client-feature, save-envelope, sim-balancing, i18n-content, ui-hub, gate-verify, alpha-bugfix). For feature/content/hub expansion, load **content-police** first and refuse non-core scope.
 
 Cross-tool: root `AGENTS.md`. In Cursor also use `.cursor/skills/` (`safe-ui-patch`, `hard-stop-architecture`, `pre-done-gate`) and obey `.cursor/hooks.json` (branch/force-push/`rm -rf`/gate-skip blocks + high-risk stop audit).

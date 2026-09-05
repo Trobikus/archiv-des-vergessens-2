@@ -3,8 +3,6 @@ import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 import type { BootProgress } from "../services/boot-progress";
 import { initDesktopShell } from "../services/desktop-shell";
 import { createGameSession, type GameSession } from "../services/game-session";
-import { AccountBadge } from "./auth/AccountBadge";
-import { LoginView } from "./auth/LoginView";
 import { CharacterSelectView } from "./CharacterSelectView";
 import { GameView } from "./GameView";
 import { IntroView } from "./IntroView";
@@ -17,9 +15,8 @@ import {
   type TransitionPhase,
 } from "./ScreenTransition";
 import { TutorialUI } from "./tutorial/TutorialUI";
-import { useStore } from "./useStore";
 
-type Screen = "login" | "options" | "characterSelect" | "game";
+type Screen = "options" | "characterSelect" | "game";
 
 const TRANSITION_COVER_MS = 720;
 const TRANSITION_REVEAL_MS = 780;
@@ -32,7 +29,7 @@ type ConfirmState = {
 
 const INITIAL_BOOT_PROGRESS: BootProgress = {
   step: 0,
-  total: 9,
+  total: 6,
   pct: 0,
   labelDe: "Initialisiere Archiv-Kern…",
   labelEn: "Initializing archive core…",
@@ -118,12 +115,10 @@ function ConfirmModal({
 }
 
 function SessionRoot({ session }: { readonly session: GameSession }) {
-  const authState = useStore(session.auth.store);
-  const [screen, setScreen] = useState<Screen>("login");
+  const [screen, setScreen] = useState<Screen>("characterSelect");
   const [returnScreen, setReturnScreen] = useState<Screen>("characterSelect");
   const [confirm, setConfirm] = useState<ConfirmState>(null);
   const [pauseOpen, setPauseOpen] = useState(false);
-  const [loginFormKey, setLoginFormKey] = useState(0);
   const [transitionPhase, setTransitionPhase] =
     useState<TransitionPhase>("idle");
   const [transitionLabel, setTransitionLabel] = useState("");
@@ -244,25 +239,6 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
   }, [askConfirm, session]);
 
   useEffect(() => {
-    if (!authState.ready) {
-      return;
-    }
-    const canPlay =
-      session.auth.isRegistered() || authState.user?.isGuest === true;
-    // Account or offline guest — anything beyond login needs a playable identity.
-    if (!canPlay && screen !== "login") {
-      navigateTo("login", { instant: true });
-    }
-  }, [
-    authState.ready,
-    authState.token,
-    authState.user,
-    navigateTo,
-    screen,
-    session.auth,
-  ]);
-
-  useEffect(() => {
     if (screen !== "game") {
       setPauseOpen(false);
     }
@@ -289,54 +265,14 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
     };
   }, [confirm, navigateTo, returnScreen, screen]);
 
-  if (!authState.ready) {
-    return <BootShell message="Verbinde…" />;
-  }
-
   let body;
   switch (screen) {
-    case "login":
-      body = (
-        <LoginView
-          key={loginFormKey}
-          auth={session.auth}
-          i18n={session.i18n}
-          ws={session.ws}
-          onQuit={handleQuit}
-          onOptions={() => {
-            setReturnScreen("login");
-            navigateTo("options");
-          }}
-          onContinue={() => {
-            const canPlay =
-              session.auth.isRegistered() ||
-              session.auth.store.getState().user?.isGuest === true;
-            if (!canPlay) {
-              return;
-            }
-            navigateTo(
-              returnScreen === "options" ? "options" : "characterSelect",
-            );
-          }}
-          onIdentityChanged={() => {
-            void session.reloadActiveSave();
-          }}
-          onGuestConverted={async () => {
-            await session.finalizeGuestConversion();
-          }}
-        />
-      );
-      break;
     case "options":
       body = (
         <OptionsView
           session={session}
           onBack={() => {
             navigateTo(returnScreen);
-          }}
-          onOpenAccount={() => {
-            setReturnScreen("options");
-            navigateTo("login");
           }}
           onHardReset={() => {
             askConfirm("menu.resetConfirm", () => {
@@ -357,19 +293,6 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
       body = (
         <CharacterSelectView
           session={session}
-          accountSlot={
-            <AccountBadge
-              auth={session.auth}
-              i18n={session.i18n}
-              ws={session.ws}
-              cloud={session.cloud}
-              onClaimAccount={() => {
-                setReturnScreen("characterSelect");
-                setLoginFormKey((key) => key + 1);
-                navigateTo("login");
-              }}
-            />
-          }
           onPlay={() => {
             const live = session.store.getState();
             if (!live.hero.created) {
@@ -379,10 +302,6 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
               session.tutorial.maybeAutoStart();
             }
             navigateTo("game");
-          }}
-          onBack={() => {
-            setReturnScreen("characterSelect");
-            navigateTo("login");
           }}
           onOptions={() => {
             setReturnScreen("characterSelect");
@@ -406,7 +325,7 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
             <PauseMenu
               title={t("pause.title")}
               optionsLabel={t("menu.options")}
-              logOutLabel={t("pause.logOut")}
+              logOutLabel={t("pause.characterSelect")}
               exitLabel={t("pause.exitGame")}
               resumeLabel={t("pause.resume")}
               escHintLabel={t("pause.resume")}
@@ -418,11 +337,8 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
               onLogOut={() => {
                 setPauseOpen(false);
                 void session.saveNow().then(() => {
-                  session.auth.logout();
-                  void session.reloadActiveSave();
                   setReturnScreen("characterSelect");
-                  setLoginFormKey((key) => key + 1);
-                  navigateTo("login");
+                  navigateTo("characterSelect");
                 });
               }}
               onExit={handleQuit}

@@ -28,7 +28,6 @@ export default defineConfig({
         "packages/content/src/**/*.ts",
         "apps/client/src/services/**/*.ts",
         "apps/client/src/state/**/*.ts",
-        "apps/server/src/**/*.ts",
       ],
       exclude: ["**/*.test.ts", "**/index.ts"],
       thresholds: {
@@ -63,12 +62,6 @@ export default defineConfig({
           statements: 60,
         },
         "apps/client/src/state/**": {
-          lines: 60,
-          functions: 60,
-          branches: 60,
-          statements: 60,
-        },
-        "apps/server/src/**": {
           lines: 60,
           functions: 60,
           branches: 60,

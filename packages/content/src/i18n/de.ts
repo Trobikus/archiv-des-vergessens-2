@@ -16,6 +16,7 @@ export const DE = {
     'pause.title': 'Spielmenü',
     'pause.resume': 'Zum Spiel zurück',
     'pause.logOut': 'Ausloggen',
+    'pause.characterSelect': 'Zur Charakterauswahl',
     'pause.exitGame': 'Spiel beenden',
     'pause.escHint': 'Zurück',
 
