@@ -13,9 +13,9 @@ Keeping dead live-service code would contradict that positioning and every futur
 ## Decision
 
 - The game is **singleplayer, fully offline**. There is no game server, no accounts, no cloud sync.
-- Removed: `apps/server`, the client WS/auth/cloud/social services (`ws-client`, `auth-service`, `cloud-sync-service`, `chat-service`, `friend-service`, `guild-service`, `leaderboard-service`), the live-social UI (chat / friends / guild / leaderboard panels, login screen, account badge), `tools/migrate-v1-users`, `deploy/` proxy configs, and the auth/cloud/WS payload modules in `@adv/protocol`.
+- Removed: `apps/server`, the client WS/auth/cloud/social services (`ws-client`, `auth-service`, `cloud-sync-service`, `chat-service`, `friend-service`, `guild-service`, `leaderboard-service`), the live-social UI (chat / friends / guild / leaderboard panels, login screen, account badge), `tools/migrate-v1-users`, `deploy/` proxy configs, the auth/cloud/WS payload modules in `@adv/protocol`, and — in a follow-up with no players to migrate — the entire v1 save-import path (`importV1Save`, `tools/migrate-v1-saves`, Options import UI, `docs/cutover-v1.md`).
 - The client boots straight into local play (intro → character select). Every player is a local identity; autosave applies to all players.
-- **Kept:** the local NPC clan (Idle / Raid / Expedition) as the only social system; the save envelope + `schemaVersion` contract unchanged (existing saves keep loading — including their dormant `friends`/`leaderboard` slices with default values); `importV1Save`; the launcher/desktop shells and release pipeline.
+- **Kept:** the local NPC clan (Idle / Raid / Expedition) as the only social system; the save envelope + `schemaVersion` contract unchanged (existing saves keep loading — including their dormant `friends`/`leaderboard` slices with default values); the launcher/desktop shells and release pipeline.
 - The studio website description is the **golden goal** for future development.
 
 ## Consequences

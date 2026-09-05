@@ -55,7 +55,7 @@ Shared domain skills (`.agents/skills/` — Cursor + Antigravity):
 
 - `packages/sim/**` and `balancing.golden.json` (never edit golden to silence gates)
 - `packages/protocol/**`
-- Save / codec / migration paths and `tools/migrate-*`
+- Save / codec paths
 - Core client session/save wiring (`game-session`, `game-state`, save services)
 - Tauri Rust beyond shell (`quit_app`, window, lockdown)
 - `schemaVersion` without a migration task

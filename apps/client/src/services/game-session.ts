@@ -4,25 +4,16 @@ import {
   createLogger,
   createStore,
   createTicker,
-  err,
-  ok,
   type EventBus,
   type FrameBudgetMonitor,
-  type Result,
   type Store,
   type Ticker,
   type TickPayload,
 } from "@adv/core";
-import {
-  importV1Save,
-  validatePhase2SavePayload,
-  type V1ImportOptions,
-} from "@adv/protocol";
 import { CONFIG } from "@adv/sim";
 
 import {
   createInitialGameState,
-  gameStateFromPayload,
   type GameState,
   type OfflineReport,
 } from "../state/game-state";
@@ -127,11 +118,6 @@ export type GameSession = {
   /** Load the IndexedDB slot for the local player identity. */
   reloadActiveSave(): Promise<boolean>;
   resetProgress(): Promise<void>;
-  /** Phase 9: map a v1 JSON save into the current slot and persist. */
-  importV1Progress(
-    raw: unknown,
-    options?: V1ImportOptions,
-  ): Promise<Result<void>>;
   quitGame(): Promise<void>;
   dismissOfflineReport(): void;
   destroy(): void;
@@ -421,31 +407,6 @@ export function createGameSession(
         settings: { ...next.settings, locale },
       });
       await saveNow();
-    },
-
-    async importV1Progress(raw, options) {
-      const imported = importV1Save(raw, options);
-      if (!imported.ok) {
-        return err(imported.error);
-      }
-      const payload = validatePhase2SavePayload(imported.value.payload);
-      if (!payload.ok) {
-        return err(payload.error);
-      }
-      const next = gameStateFromPayload(payload.value);
-      store.replace({
-        ...next,
-        meta: {
-          ...next.meta,
-          bootstrapped: true,
-          lastActiveAt: nowFn(),
-        },
-      });
-      const saved = await saveNow();
-      if (!saved) {
-        return err("failed to persist imported save");
-      }
-      return ok(undefined);
     },
 
     async quitGame() {

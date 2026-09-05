@@ -57,11 +57,3 @@ export {
   type TalentsSave,
   type TutorialSave,
 } from "./save-payload";
-export {
-  importV1Save,
-  importV1SaveJson,
-  mapV1StateToPayload,
-  unwrapV1Save,
-  type V1ImportOptions,
-  type V1ImportUnwrap,
-} from "./v1-import";

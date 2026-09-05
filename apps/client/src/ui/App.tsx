@@ -219,8 +219,7 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
         | "menu.quitConfirm"
         | "menu.newGameConfirm"
         | "menu.resetConfirm"
-        | "charSelect.deleteConfirm"
-        | "options.importV1Confirm",
+        | "charSelect.deleteConfirm",
       onConfirm: () => void,
     ) => {
       setConfirm({
@@ -282,9 +281,6 @@ function SessionRoot({ session }: { readonly session: GameSession }) {
                 );
               });
             });
-          }}
-          onConfirmImport={(messageKey, run) => {
-            askConfirm(messageKey, run);
           }}
         />
       );

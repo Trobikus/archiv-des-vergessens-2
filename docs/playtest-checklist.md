@@ -45,7 +45,6 @@ DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei gr�nem `npm
 - [x] convertGuest ? registrierter Account; lokaler Fortschritt bleibt, dann Cloud-Push
 - [x] Cloud save/load (Save-Envelope); neueres `savedAt` gewinnt
 - [x] Superseded Token kann nicht cloud-speichern
-- [x] User-Migration Dry-Run Tool (`tools/migrate-v1-users/`)
 - [x] Phase-4-Tests + `npm run gate` gr�n
 - [ ] Tag `v2-phase4` nach Merge
 - [ ] Manueller Playtest (Guest/Register/Cloud �ber zwei Sessions)
@@ -92,11 +91,3 @@ DoD-Nachweis pro Phase (manuell + automatisiert). Abhaken erst bei gr�nem `npm
 - [x] `npm run gate` Schritte `a11y-basis` / `perf-budgets`
 - [ ] Manueller Playtest: lange Session ohne Leak; Update-Check in Desktop
 - [ ] Tag `v2-phase8` / Release-Tag `v2.0.0` nach Freigabe
-
-## Phase 9 ? v1-Save-Importer
-
-- [x] `importV1Save` mappt IDB-/Cloud-/Inner-State ? validiertes v2-Envelope
-- [x] Options-UI Datei-Import + Confirm
-- [x] CLI `tools/migrate-v1-saves` dry-run/`--apply`
-- [ ] Manueller Playtest: echten v1-Export importieren und Hub/Kampf pr�fen
-- [ ] Tag `v2-phase9` nach Freigabe

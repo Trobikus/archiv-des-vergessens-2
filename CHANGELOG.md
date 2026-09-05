@@ -22,6 +22,7 @@ project follows [Semantic Versioning](https://semver.org/).
 
 - Save payload: dead live-social slices (`friends`, `leaderboard`) and chat/guild runtime state removed; save slot simplified to the single local `slot_local_1`
 - 55 obsolete i18n keys (auth/social/cloud) removed from DE + EN
+- **v1 save import removed entirely** (`importV1Save`, CLI `tools/migrate-v1-saves`, Options-UI-Import, `docs/cutover-v1.md`) — es gibt keine v1-Spielstände, die übernommen werden müssen
 
 ## [0.3.5-alpha] — 2026-08-03
 

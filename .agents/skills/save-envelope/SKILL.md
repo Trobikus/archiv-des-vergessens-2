@@ -1,6 +1,6 @@
 ---
 name: save-envelope
-description: Safely changes save envelope, Phase2 payload fields, migrations, IndexedDB, or v1 import. Use for save format, autosave, offline progress, or v1 import issues.
+description: Safely changes save envelope, Phase2 payload fields, migrations, or IndexedDB. Use for save format, autosave, or offline progress issues.
 paths:
   - "packages/protocol/**"
   - "apps/client/src/services/**"
@@ -24,10 +24,10 @@ paths:
 
 - `SAVE_SCHEMA_VERSION = 1` until an explicit migration step is added
 - Envelope shape: `{ schemaVersion, savedAt, payload }`
-- Cloud size cap: `MAX_CLOUD_SAVE_BYTES` (240 KiB)
-- Conflict rule: newer `savedAt` wins (existing behavior)
+- Single local save slot (`slot_local_1`) — no cloud, no accounts (ADR 0003)
 - Chat/battle ephemeral — not in envelope
 - Desktop must **not** grow a parallel save DB
+- No v1 import path — v1 saves are irrelevant (no players predate the pivot)
 
 ## Adding a payload field
 
@@ -36,11 +36,6 @@ paths:
 3. Keep defaults safe for older local envelopes (validator/default path)
 4. If the change is breaking → bump schemaVersion **and** append `SAVE_MIGRATIONS` step (never bump alone)
 5. Add/adjust tests in protocol + client save tests
-
-## v1 import
-
-- Use existing `importV1Save` / `tools/migrate-v1-saves` paths
-- Do not silently treat v1 JSON as v2 envelope
 
 ## Verify
 

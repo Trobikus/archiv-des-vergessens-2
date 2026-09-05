@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (Phase 0)
+Accepted (Phase 0). Amended 2026-09-05: cloud authority and the Phase-9 v1 import path were removed — the game is fully offline, see ADR 0003.
 
 ## Context
 

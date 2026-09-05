@@ -99,7 +99,7 @@ Details: [`docs/REWRITE_PLAN.md`](docs/REWRITE_PLAN.md) · [`docs/adr/`](docs/ad
 | Launcher | `@adv/launcher` | Siegel-Portal, portable ZIP, Ed25519-Verify |
 | Simulation | `@adv/sim` | Balancing, Combat- / Idle-Mathe |
 | Kernel | `@adv/core` | Store, Events, Ticker, DI, Pools |
-| Protokoll | `@adv/protocol` | Save-Envelope, Validierung, v1-Import |
+| Protokoll | `@adv/protocol` | Save-Envelope, Validierung |
 | Content | `@adv/content` | i18n (DE/EN), Spieldaten |
 | Gates | `@adv/gates` | CI- / DoD-Gate |
 | E2E | `@adv/e2e` | Playwright-Smoke |
@@ -122,7 +122,6 @@ archiv-des-vergessens-2/
 │  ├─ e2e/               Playwright-Smoke
 │  ├─ content/           Content-Import-Hilfen
 │  ├─ site-assets/       Studio-Site Asset-/Seiten-Pipeline
-│  ├─ migrate-v1-saves/  Spielstand-Migration v1 → v2
 │  └─ sign_release.mjs   Ed25519-Signatur portable ZIP
 ├─ site/                 Studio-Website (Workers static assets)
 ├─ functions/            www → apex 301 (compiled into site Worker)
@@ -192,7 +191,6 @@ npm run clippy:launcher # Rust-Lint Launcher
 | `npm run clippy:launcher` | Launcher Rust-Lint |
 | `npm run typecheck` | Projektweite TypeScript-Build-Graph |
 | `npm run lint` | ESLint, max-warnings = 0 |
-| `npm run migrate:v1-saves` | CLI: v1-JSON → v2-Envelope |
 
 `npm install` setzt per `prepare` den Git-Hook-Pfad auf `.githooks` (Release-Tags erzwingen lokal `npm run gate`).
 
@@ -211,12 +209,11 @@ npm run clippy:launcher # Rust-Lint Launcher
 | **6** Feature-Parität A–F | ✅ | Hub, Quests, Forge, Talente, Story, Tutorial |
 | **7** Social / Live | ➡️ entfernt | NPC-Clan blieb — läuft lokal |
 | **8** Release-Meilenstein | ✅ | Perf, a11y, Patch Notes, Cutover-Docs |
-| **9** v1-Save-Importer | ✅ | `importV1Save`, Options-UI, CLI `migrate-v1-saves` |
 
 **Produktstatus:** frühe Alpha (`0.3.5-alpha`) — Playtest, Feinschliff, Inhalte.  
 **Nächste Richtung:** die Systeme der Studio-Site (siehe Golden Goal oben) konsequent ausbauen.
 
-Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-checklist.md) · [a11y](docs/a11y-checklist.md) · [Cutover](docs/cutover-v1.md)
+Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-checklist.md) · [a11y](docs/a11y-checklist.md)
 
 ---
 
@@ -237,8 +234,8 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 | **Release-Status** | Workflow veröffentlicht Releases **sofort** (`draft: false`) — der Launcher braucht `/releases/latest` |
 | **Repo** | Muss **öffentlich** sein (Launcher ruft Releases ohne Token ab) |
 
-> **Cutover-Hinweis:** Accounts/Cloud aus v1 und aus der v2-Alpha sind **entfallen** — v2 läuft rein lokal.  
-> Spieler wechseln über den **v2-Launcher**. Lokale v1-Spielstände: v1-Importer (unten).  
+> **Cutover-Hinweis:** Accounts/Cloud aus v1 und aus der v2-Alpha sind **entfallen** — v2 läuft rein lokal, v1-Spielstände werden nicht übernommen (es gibt keine Spieler vor dem Pivot).  
+> Spieler wechseln über den **v2-Launcher**.  
 > v2 ist vollständig von v1 isoliert (AppData, Binary-Namen, Tauri-IDs).
 
 ---
@@ -255,52 +252,6 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 
 ---
 
-## v1-Spielstände in v2 weiternutzen
-
-v2 speichert in einem anderen Format (`SaveEnvelope`, `schemaVersion: 1`). Fortschritt aus v1 wird **nicht** still im Hintergrund übernommen — du importierst einen JSON-Dump einmalig.
-
-### Was übernommen wird
-
-Held, Ressourcen, Idle/Gather, Quests, Achievements, Crafting, Bibliothek, Talente, Challenges, Codex/Lore, Story-Branches, Reliktjagd, Clan, Tutorial/Settings, optional Tresor.
-
-### Was entfällt
-
-- Freunde, Bestenliste, Chat (Multiplayer — in v2 entfernt)
-- Laufender Kampfzustand (`story.battleState`)
-
-### Weg A — Im Spiel (empfohlen)
-
-1. **v1-Save als JSON sichern** (einmal in v1 bzw. aus dem Browser/Desktop-WebView):
-   - **IndexedDB:** DevTools → Application → IndexedDB → `ArchivDB` → Store `saves` → Eintrag des Slots (z. B. `slot_u…_1` oder `slot_guest_1`) als JSON exportieren/kopieren.  
-     Akzeptiert wird das volle Envelope (`{ key, timestamp, state, … }`) oder nur `state`.
-   - Optional Tresor: separater IDB-Key `vault_u…` / `account_vault` als `vaultData` / eigene Datei.
-2. **v2 starten**, **Einstellungen / Options** öffnen.
-3. **„v1-Spielstand importieren“** → JSON-Datei wählen → Bestätigen.  
-   Der aktuelle v2-Slot wird ersetzt und lokal gespeichert.
-
-### Weg B — CLI (Bulk)
-
-```bash
-# Dry-run: validieren + Kurzinfo
-npm run migrate:v1-saves -- --source path/to/v1-save.json --out path/to/v2-envelope.json
-
-# Schreiben
-npm run migrate:v1-saves -- --source path/to/v1-save.json --out path/to/v2-envelope.json --apply
-
-# Mit separatem Tresor
-npm run migrate:v1-saves -- \
-  --source path/to/v1-save.json \
-  --vault path/to/vault.json \
-  --out path/to/v2-envelope.json \
-  --apply
-```
-
-Akzeptierte Quellformen: innerer State, IDB-Envelope, Bundle mit `vaultData`.  
-Details: [`tools/migrate-v1-saves/`](tools/migrate-v1-saves/) · Format: [`docs/save-format.md`](docs/save-format.md) · API: `importV1Save` in `@adv/protocol`.
-
-Cutover-Runbook: [`docs/cutover-v1.md`](docs/cutover-v1.md)
-
----
 
 ## Dokumentation
 
@@ -309,8 +260,6 @@ Cutover-Runbook: [`docs/cutover-v1.md`](docs/cutover-v1.md)
 | [`docs/REWRITE_PLAN.md`](docs/REWRITE_PLAN.md) | Gesamtplan, Phasen, Architektur |
 | [`CHANGELOG.md`](CHANGELOG.md) | Keep a Changelog |
 | [`docs/save-format.md`](docs/save-format.md) | Save-Envelope + v1-Import |
-| [`docs/cutover-v1.md`](docs/cutover-v1.md) | v1 → v2 Produktions-Cutover |
-| [`tools/migrate-v1-saves/`](tools/migrate-v1-saves/) | CLI v1-JSON → v2-Envelope |
 | [`docs/parity-checklist.md`](docs/parity-checklist.md) | Feature-Parität zu v1 |
 | [`docs/playtest-checklist.md`](docs/playtest-checklist.md) | Manueller Playtest |
 | [`docs/a11y-checklist.md`](docs/a11y-checklist.md) | Accessibility-Basis |
