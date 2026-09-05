@@ -30,11 +30,11 @@ Do not invent a third rule system. Extend the matching folder for the tool you a
 - `.cursor/rules/package-boundaries.mdc`
 - `.cursor/rules/main-only.mdc`
 - `.cursor/rules/studio-logo.mdc`
-- Glob rules: `client-preact`, `sim-balancing`, `i18n-content`, `site-studio`
+- Glob rules: `client-preact`, `sim-balancing`, `i18n-content`
 
 **Antigravity** (auto-loaded from `.agents/rules/`):
 
-- `00-alpha-safety.md` … `04-studio-logo.md`
+- `00-alpha-safety.md` … `03-git-release.md`
 
 ## Skills (use deliberately)
 
@@ -78,7 +78,6 @@ Also: `npm run lint`, tests inside `gate`, Playwright/clippy when available.
 - One persistence strategy: client IndexedDB saves, fully offline; **no** Tauri rusqlite game DB
 - **No game server, no accounts, no cloud sync, no live social** (removed — ADR 0003); Clan = client-local NPC gameplay
 - Balancing numbers stay v1-identical (golden snapshot)
-- Studio logos: `site/assets/studio-mark.png` / `site/assets/studio-icon.png` only
 
 ## Hooks (Cursor)
 

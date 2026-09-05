@@ -9,6 +9,7 @@ project follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **Studio-Website aus dem Repo entfernt** — sie hat inzwischen ein eigenes Repository (`site/`, `functions/`, `workers/contact/`, `wrangler.jsonc`, `tools/site-assets`, Wrangler-Dependency und die `*:site`-Scripts sind gone)
 - **Server-less singleplayer pivot ([ADR 0003](docs/adr/0003-serverless-singleplayer.md)):** the public game server is gone; the game is now fully offline — one hero, no accounts, no cloud sync
 - Client boots straight into local play (intro → character select); autosave applies to every player
 - Hub section „Social“ is now the local **Clan** (NPC idle/raid/expedition)

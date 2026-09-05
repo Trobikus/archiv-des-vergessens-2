@@ -7,7 +7,6 @@ description: >-
 paths:
   - "apps/client/**"
   - "packages/content/src/i18n/**"
-  - "site/**"
 ---
 
 # Skill: safe-ui-patch (STRICT)
@@ -18,7 +17,6 @@ Use only for **localized** UI/copy/CSS work. If the task smells like architectur
 
 - Component/text/CSS in `apps/client/**`
 - Locale keys in `@adv/content` i18n (DE **and** EN together)
-- Site markup/CSS under `site/**` when the task is studio-site UI (respect studio-logo rule)
 
 ## Forbidden during this skill
 

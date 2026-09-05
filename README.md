@@ -139,15 +139,9 @@ archiv-des-vergessens-2/
 │  ├─ gates/             CI- / DoD-Gate (`npm run gate`)
 │  ├─ e2e/               Playwright-Smoke
 │  ├─ content/           Content-Import-Hilfen
-│  ├─ site-assets/       Studio-Site Asset-/Seiten-Pipeline
 │  └─ sign_release.mjs   Ed25519-Signatur portable ZIP
-├─ site/                 Studio-Website (Workers static assets)
-├─ functions/            www → apex 301 (compiled into site Worker)
-├─ workers/
-│  └─ contact/           Kontaktformular → kontakt@grimoire-interactive.de
 ├─ design/               Design-Referenzen / Hub-Mocks / Szenen
 ├─ docs/                 Plan, ADRs, Legal, Checklisten
-├─ wrangler.jsonc        Workers + assets → ./site
 ├─ CHANGELOG.md
 └─ README.md
 ```
@@ -210,8 +204,6 @@ npm run clippy:launcher # Rust-Lint Launcher
 | `npm run clippy:launcher` | Launcher Rust-Lint |
 | `npm run typecheck` | Projektweiter TypeScript-Build-Graph |
 | `npm run lint` | ESLint, max-warnings = 0 |
-| `npm run build:site` | Site-Worker für die Studio-Website bauen |
-| `npm run dev:site` / `deploy:site` | Studio-Website lokal / zu Cloudflare Workers deployen |
 
 `npm install` setzt per `prepare` den Git-Hook-Pfad auf `.githooks` (Pre-Commit verbietet zod-/htm-/React-Imports und Non-`main`-Commits; Pre-Push läuft Gates; Release-Tags erzwingen lokal `npm run gate`).
 
@@ -260,17 +252,6 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 
 ---
 
-## Studio-Website & Kontakt
-
-| Thema | Detail |
-|---|---|
-| **Site** | [`site/`](site/) — static HTML, Deploy per Cloudflare Workers (`npm run deploy:site`) |
-| **Domain** | [https://grimoire-interactive.de/](https://grimoire-interactive.de/) |
-| **www → apex** | [`functions/_middleware.js`](functions/_middleware.js) — 301-Redirect (compiled via `build:site`) |
-| **Kontakt-API** | [`workers/contact/`](workers/contact/) → `kontakt@grimoire-interactive.de` |
-| **Rechtliches (Docs)** | `grimoire.interactive@gmail.com` |
-
----
 
 ## Dokumentation
 
@@ -285,7 +266,6 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 | [`docs/adr/`](docs/adr/) | Architecture Decision Records |
 | [`apps/desktop/README.md`](apps/desktop/README.md) | Desktop-Shell & Lockdown |
 | [`apps/launcher/README.md`](apps/launcher/README.md) | Siegel-Portal |
-| [`site/README.md`](site/README.md) | Studio-Website Deploy |
 
 ---
 

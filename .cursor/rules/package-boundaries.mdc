@@ -28,8 +28,5 @@ Violating boundaries is a defect, not a style issue.
 - TypeScript strict: no `any`, respect `noUncheckedIndexedAccess`.
 - UI: Preact TSX only — **htm removed**, not React.
 
-## UI / studio
-
-- Studio brand marks: `site/assets/studio-mark.png` / `site/assets/studio-icon.png` only — never revive the old triangle SVG sigil.
 - Game art (`archiv-cover.png`, `keyart.png`, `hero.png`) stays for game/atmosphere contexts only.
 - Preserve existing Hub chrome patterns; do not invent a new visual system mid-task.

@@ -24,10 +24,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "gate": "node tools/gates/gate.mjs",
-    "gate:lite": "node tools/gates/agent-lite.mjs",
-    "build:site": "wrangler pages functions build --outdir=./dist/site-worker/",
-    "dev:site": "npm run build:site && wrangler dev",
-    "deploy:site": "npm run build:site && wrangler deploy"
+    "gate:lite": "node tools/gates/agent-lite.mjs"
   },
   "engines": {
     "node": ">=22"
@@ -44,13 +41,11 @@
     "globals": "^16.3.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.0",
-    "vitest": "^3.2.4",
-    "wrangler": "^4.118.0"
+    "vitest": "^3.2.4"
   },
   "allowScripts": {
     "esbuild@0.28.1": true,
     "unrs-resolver@1.12.2": true,
-    "better-sqlite3@11.10.0": true,
-    "workerd@1.20260730.1": true
+    "better-sqlite3@11.10.0": true
   }
 }

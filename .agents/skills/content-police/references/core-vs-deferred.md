@@ -45,5 +45,5 @@ Bugfix only (crash / data loss / security). No new depth:
 
 ## Explicit non-goals for Alpha marketing
 
-Do not describe DENY systems as Alpha pillars in README, site, or patch notes.  
+Do not describe DENY systems as Alpha pillars in README or patch notes.  
 Core pitch: **Atmosphäre · Idle-Fortschritt · Held/Kampf · kurze Story · Save**.
