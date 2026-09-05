@@ -7,15 +7,17 @@
 ### *Der Mneme-Bund* — Incremental RPG · Singleplayer · 2D · Offline Progression
 
 > Atmosphäre. Fortschritt. Archiv.  
-> Ein Incremental-RPG darüber, was die Welt vergisst — und was sie bewusst vergisst.  
+> Ein Incremental-RPG darüber, was die Welt vergisst — und was sie bewusst zu vergessen wählt.  
 > **Frühe Alpha** — Systeme ändern sich, Inhalte fehlen, Fehler sind normal.
 
 | | |
 |---|---|
 | **Studio** | [Grimoire Interactive](https://grimoire-interactive.de/) |
-| **Version** | `0.3.5-alpha` · [![release](https://img.shields.io/github/v/release/Trobikus/archiv-des-vergessens-2?include_prereleases&sort=semver&label=release)](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest) [![tag](https://img.shields.io/github/v/tag/Trobikus/archiv-des-vergessens-2?sort=semver&label=tag)](https://github.com/Trobikus/archiv-des-vergessens-2/tags) |
+| **Version** | `0.3.5-alpha` · [![release](https://img.shields.io/github/v/release/Trobikus/archiv-des-vergessens-2?include_prereleases&sort=semver&label=release)](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest) [![tag](https://img.shields.io/github/v/tag/Trobikus/archiv-des-vergessens-2?sort=semver&label=tag)](https://github.com/Trobikus/archiv-des-vergessens-2/tags) [![ci](https://img.shields.io/github/actions/workflow/status/Trobikus/archiv-des-vergessens-2/ci.yml?label=ci)](https://github.com/Trobikus/archiv-des-vergessens-2/actions/workflows/ci.yml) |
 | **Stack** | TypeScript strict · Preact · Vite 7 · Tauri 2 |
 | **Modus** | **Singleplayer, komplett offline** — kein Server, keine Accounts, kein Cloud-Sync |
+| **Sprachen** | Deutsch · English (im Spiel umschaltbar) |
+| **Plattform** | Web-Browser · native Windows-Desktop-App |
 | **Spieler-Download** | [`ArchivDesVergessens2-Launcher.exe`](https://github.com/Trobikus/archiv-des-vergessens-2/releases/latest/download/ArchivDesVergessens2-Launcher.exe) (Windows, portabel) |
 | **Repo** | [Trobikus/archiv-des-vergessens-2](https://github.com/Trobikus/archiv-des-vergessens-2) |
 
@@ -26,9 +28,9 @@ Studio-Site (Golden Goal) → [grimoire-interactive.de/games/archiv-des-vergesse
 
 ## Das Spiel
 
-**Archiv des Vergessens** ist ein RPG-firstes Incremental Game. Im Zentrum steht **ein Held: kein Team, keine Party** — nur du, deine Entscheidungen und eine Welt, die sich merkt, was andere vergessen.
+**Archiv des Vergessens** ist ein RPG-firstes Incremental Game. Im Zentrum steht **ein Held: kein Team, keine Party** — nur du, deine Entscheidungen und eine Welt, die sich merkt, was andere vergessen. Wähle eine von vier Klassen — **Krieger des Lichts**, **Erzmagier**, **Schattenläufer** oder **Hüter des Archivs** — und bahne deinen Weg durch eine zerbrochene Welt.
 
-Der Kampf läuft **automatisiert und deterministisch**: keine Reaktionsketten, kein Würfelglück — du entscheidest **vor** dem Kampf über Ausrüstung, Skills und deinen Weg durch eine zerbrochene Welt. Während du weg bist, läuft die Welt mit **Offline-Progression** weiter. Jedes System — Crafting, Skills, Weltentwicklung — greift ineinander, statt Stunden zu polstern.
+Der Kampf läuft **automatisiert und deterministisch**: keine Reaktionsketten, kein Würfelglück — du entscheidest **vor** dem Kampf über Ausrüstung, Skills und deinen Pfad. Während du weg bist, läuft die Welt mit **Offline-Progression** weiter. Jedes System — Crafting, Skills, Weltentwicklung — greift ineinander, statt Stunden zu polstern.
 
 Entscheidungen formen die Welt: Story-Verzweigungen mit Flag-Bedingungen, Affinitäten (Aethel/Lethe) und echten Konsequenzen — nicht nur Statistik.
 
@@ -40,18 +42,34 @@ Die v2-Codebasis ist ein **kompletter Neuaufbau** mit striktem TypeScript und kl
 
 Der Client organisiert den Hub in sieben Bereichen: **Archiv** · **Held** · **Story** · **Missionen** · **Werkstatt** · **Sammlung** · **Clan**.
 
-| Säule | Inhalte |
+| Bereich | Inhalte |
 |---|---|
-| **Idle & Fortschritt** | Klick / Tick, Gather-Upgrades, Offline-Produktion, Autosave (lokal, IndexedDB) |
-| **Kampf & Held** | Deterministische Combat-Sim, Floating Damage, Hero-Stats, Equip, Skilltree, Analytics |
-| **Missionen & Craft** | Quests, Achievements, Daily, Schmiede, Crafting, Bibliothek |
-| **Wissen & Macht** | Talente (Hover-Tooltips), Challenges, Codex, Reliktjagd, Tresor |
-| **Story** | Story-Kämpfe, Branches, Dialoge, Intro / Tutorial |
+| **Archiv** | Klick / Tick, Gedankenarchiv-Upgrades, Gather-Upgrades, Ressourcen-Übersicht |
+| **Held** | Stats, Inventar, Ausrüstung, Skilltree, Lager (Tresor) |
+| **Story** | Story-Kämpfe, Challenges, Combat-Analytics |
+| **Missionen** | Kapitel-Karte, Quests, Daily, Achievements |
+| **Werkstatt** | Schmiede, Crafting, Bibliothek |
+| **Sammlung** | Reliktjagd, Codex |
 | **Clan** | NPC-Clan (Idle / Raid / Expedition) — läuft komplett lokal im Client |
-| **Hub-UI** | Cinematic Chrome (Top-Bar, Rails, Footer) pixel-matched zu Design-Mocks; erklärende Hover-Tooltips |
-| **Desktop** | Tauri-2-Shell, Siegel-Portal-Launcher, signierte portable ZIP, Chrome-Lockdown, v2-isoliertes AppData |
+
+Quer dazu: Offline-Produktion, Autosave, Floating Damage, erklärende Hover-Tooltips und cinematic Hub-Chrome (Top-Bar, Rails, Footer) pixel-matched zu Design-Mocks. Sprachumschaltung DE/EN live in den Optionen.
 
 Multiplayer-Systeme (Chat, Freunde, Gilde, Bestenliste, Accounts, Cloud-Sync) wurden nach dem Rewrite-Meilenstein **entfernt** — das Spiel ist rein offline ([ADR 0003](docs/adr/0003-serverless-singleplayer.md)).
+
+### Steuerung
+
+| Taste | Aktion |
+|---|---|
+| **R** | Sammeln (Gather) |
+| **F** | Zum Archiv-Bereich springen |
+| **Q** / **E** | Vorheriger / nächster Hub-Bereich |
+| **ESC** | Pause-Menü bzw. Optionen schließen |
+
+### Offline & Speichern
+
+- **Autosave** im einstellbaren Intervall (5 s – 60 s) in IndexedDB — komplett lokal, ein Slot, keine Konten.
+- **Offline-Progression:** Beim Start wird die vergangene Zeit angerechnet — Mneme, Clan-Partikel und Clan-Relikt-Fortschritt laufen weiter.
+- Desktop (Tauri) speichert im selben v2-isolierten AppData-Profil; Updates liefert der Launcher.
 
 ---
 
@@ -97,10 +115,10 @@ Details: [`docs/REWRITE_PLAN.md`](docs/REWRITE_PLAN.md) · [`docs/adr/`](docs/ad
 | Spiel-Client | `@adv/client` | Preact-UI, Game-Session, Save / Offline |
 | Desktop-Shell | `@adv/desktop` | Tauri 2, Quit, Lockdown |
 | Launcher | `@adv/launcher` | Siegel-Portal, portable ZIP, Ed25519-Verify |
-| Simulation | `@adv/sim` | Balancing, Combat- / Idle-Mathe |
+| Simulation | `@adv/sim` | Balancing, deterministische Combat- / Idle-Mathe |
 | Kernel | `@adv/core` | Store, Events, Ticker, DI, Pools |
-| Protokoll | `@adv/protocol` | Save-Envelope, Validierung |
-| Content | `@adv/content` | i18n (DE/EN), Spieldaten |
+| Protokoll | `@adv/protocol` | Save-Envelope, Mini-Validatoren (kein zod) |
+| Content | `@adv/content` | Spieldaten, Heldenklassen, i18n (DE/EN) |
 | Gates | `@adv/gates` | CI- / DoD-Gate |
 | E2E | `@adv/e2e` | Playwright-Smoke |
 
@@ -116,7 +134,7 @@ archiv-des-vergessens-2/
 │  ├─ core/              Runtime-Kernel
 │  ├─ sim/               Spielsimulation & Balancing
 │  ├─ protocol/          Save-Envelope & Validierung
-│  └─ content/           Texte & Content-Pipeline
+│  └─ content/           Texte, Heldenklassen & Content-Pipeline
 ├─ tools/
 │  ├─ gates/             CI- / DoD-Gate (`npm run gate`)
 │  ├─ e2e/               Playwright-Smoke
@@ -178,7 +196,8 @@ npm run clippy:launcher # Rust-Lint Launcher
 
 | Befehl | Beschreibung |
 |---|---|
-| `npm run gate` | DoD-Gate (Snapshots, i18n, Version-Parity, a11y, Perf, tsc, eslint, vitest, build, optional clippy/e2e) |
+| `npm run gate` | DoD-Gate: Balancing-Snapshot, i18n-Parität, Version-Parität, a11y-Basis, Perf-Budgets, tsc, ESLint, Vitest + Coverage, Build, optional Clippy & E2E |
+| `npm run gate:lite` | Kleiner Gate (Balancing + i18n + Typecheck) für Trivia-Änderungen |
 | `npm run dev:client` | Vite-Devserver Client |
 | `npm run tauri:dev` | Native Desktop-Session (Spiel) |
 | `npm run launcher:dev` | Siegel-Portal Dev |
@@ -189,14 +208,16 @@ npm run clippy:launcher # Rust-Lint Launcher
 | `npm run e2e` | Playwright-Smoke |
 | `npm run clippy` | Desktop Rust-Lint (`-D warnings`) |
 | `npm run clippy:launcher` | Launcher Rust-Lint |
-| `npm run typecheck` | Projektweite TypeScript-Build-Graph |
+| `npm run typecheck` | Projektweiter TypeScript-Build-Graph |
 | `npm run lint` | ESLint, max-warnings = 0 |
+| `npm run build:site` | Site-Worker für die Studio-Website bauen |
+| `npm run dev:site` / `deploy:site` | Studio-Website lokal / zu Cloudflare Workers deployen |
 
-`npm install` setzt per `prepare` den Git-Hook-Pfad auf `.githooks` (Release-Tags erzwingen lokal `npm run gate`).
+`npm install` setzt per `prepare` den Git-Hook-Pfad auf `.githooks` (Pre-Commit verbietet zod-/htm-/React-Imports und Non-`main`-Commits; Pre-Push läuft Gates; Release-Tags erzwingen lokal `npm run gate`).
 
 ---
 
-## Roadmap — Phasen 0 → 9
+## Roadmap — Rewrite-Phasen
 
 | Phase | Status | Inhalt |
 |---|---|---|
@@ -208,7 +229,7 @@ npm run clippy:launcher # Rust-Lint Launcher
 | **5** Tauri + E2E | ✅ | Desktop-Shell, Playwright |
 | **6** Feature-Parität A–F | ✅ | Hub, Quests, Forge, Talente, Story, Tutorial |
 | **7** Social / Live | ➡️ entfernt | NPC-Clan blieb — läuft lokal |
-| **8** Release-Meilenstein | ✅ | Perf, a11y, Patch Notes, Cutover-Docs |
+| **8** Release-Meilenstein | ✅ | Perf, a11y, Patch Notes, Release-Pipeline |
 
 **Produktstatus:** frühe Alpha (`0.3.5-alpha`) — Playtest, Feinschliff, Inhalte.  
 **Nächste Richtung:** die Systeme der Studio-Site (siehe Golden Goal oben) konsequent ausbauen.
@@ -234,9 +255,8 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 | **Release-Status** | Workflow veröffentlicht Releases **sofort** (`draft: false`) — der Launcher braucht `/releases/latest` |
 | **Repo** | Muss **öffentlich** sein (Launcher ruft Releases ohne Token ab) |
 
-> **Cutover-Hinweis:** Accounts/Cloud aus v1 und aus der v2-Alpha sind **entfallen** — v2 läuft rein lokal, v1-Spielstände werden nicht übernommen (es gibt keine Spieler vor dem Pivot).  
-> Spieler wechseln über den **v2-Launcher**.  
-> v2 ist vollständig von v1 isoliert (AppData, Binary-Namen, Tauri-IDs).
+> **Isolations-Hinweis:** v2 läuft rein lokal und vollständig von v1 isoliert (AppData, Binary-Namen, Tauri-IDs).  
+> Accounts, Cloud und v1-Spielstand-Übernahme sind bewusst **entfallen** — es gibt keine Spieler vor dem Pivot ([ADR 0003](docs/adr/0003-serverless-singleplayer.md)).
 
 ---
 
@@ -252,14 +272,13 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 
 ---
 
-
 ## Dokumentation
 
 | Dokument | Zweck |
 |---|---|
-| [`docs/REWRITE_PLAN.md`](docs/REWRITE_PLAN.md) | Gesamtplan, Phasen, Architektur |
+| [`docs/REWRITE_PLAN.md`](docs/REWRITE_PLAN.md) | Gesamtplan, Phasen, Architektur (historisch) |
 | [`CHANGELOG.md`](CHANGELOG.md) | Keep a Changelog |
-| [`docs/save-format.md`](docs/save-format.md) | Save-Envelope + v1-Import |
+| [`docs/save-format.md`](docs/save-format.md) | Save-Envelope & Formatvertrag |
 | [`docs/parity-checklist.md`](docs/parity-checklist.md) | Feature-Parität zu v1 |
 | [`docs/playtest-checklist.md`](docs/playtest-checklist.md) | Manueller Playtest |
 | [`docs/a11y-checklist.md`](docs/a11y-checklist.md) | Accessibility-Basis |
@@ -273,9 +292,9 @@ Checklisten: [Parity](docs/parity-checklist.md) · [Playtest](docs/playtest-chec
 ## Entwicklungshinweise
 
 1. **Gate zuerst** — jede Änderung hält `npm run gate` grün.
-2. **Save-Vertrag spiegeln** — Save-Format-Änderungen immer in `@adv/protocol` und den Docs nachziehen; `schemaVersion` nur mit diskretem Migrationsschritt.
+2. **Save-Vertrag spiegeln** — Save-Format-Änderungen immer in `@adv/protocol` und der [`docs/save-format.md`](docs/save-format.md) nachziehen; `schemaVersion` nur mit diskretem Migrationsschritt.
 3. **Offline bleibt offline** — keine Live-/Multiplayer-Systeme neu erfinden; der Server ist bewusst entfernt ([ADR 0003](docs/adr/0003-serverless-singleplayer.md)).
-4. **v1 ist Referenz** — `archiv-des-vergessens-1` ist read-only; kein aktiver Feature-Port außer dokumentierter Parität.
+4. **v1 ist Referenz** — `archiv-des-vergessens-1` ist read-only; kein aktiver Feature-Port außer dokumentierter Balancing-Parität.
 5. **Paketgrenzen respektieren** — reine Sim-/Content-Logik bleibt frei von UI und I/O.
 6. **Balancing schützen** — Zahlenänderungen brauchen grünen Golden-Snapshot.
 7. **Nur `main`** — keine Feature-Branches, außer ausdrücklich gewünscht.
