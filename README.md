@@ -265,7 +265,7 @@ Held, Ressourcen, Idle/Gather, Quests, Achievements, Crafting, Bibliothek, Talen
 
 ### Was entfällt
 
-- Chat-Verläufe und Live-Social (in v2 entfernt)
+- Freunde, Bestenliste, Chat (Multiplayer — in v2 entfernt)
 - Laufender Kampfzustand (`story.battleState`)
 
 ### Weg A — Im Spiel (empfohlen)

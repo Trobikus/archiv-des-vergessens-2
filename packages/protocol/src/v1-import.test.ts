@@ -217,6 +217,7 @@ function sampleV1State() {
     story: {
       battleState: { hp: 1 },
       currentBoss: null,
+      selectedChapter: 2,
     },
   };
 }
@@ -323,7 +324,6 @@ describe("importV1Save", () => {
       "prologue>opt_1>chapter_1",
     );
     expect(payload.value.storyBranch.endingReached).toBeNull();
-    expect(payload.value.leaderboard.fastestLevelUp).toBeNull();
     expect(payload.value.settings.locale).toBe("en");
     expect(payload.value.settings.autosaveMs).toBe(30_000);
     expect(payload.value.settings.floatingTextEnabled).toBe(false);
@@ -332,7 +332,6 @@ describe("importV1Save", () => {
     expect(payload.value.tutorial.finished).toBe(true);
     expect(payload.value.accountVault.particles).toBe("9");
     expect(payload.value.accountVault.items[0]?.name).toBe("Vault Ring");
-    expect(payload.value.friends.list[0]?.name).toBe("Eldor");
     expect(payload.value.clan.members).toHaveLength(1);
   });
 
@@ -534,7 +533,6 @@ describe("importV1Save", () => {
     expect(payload.value.hero.inventory.equipment).toHaveLength(2);
     expect(payload.value.storyBranch.endingReached).toBe("end");
     expect(payload.value.clan.members[0]?.role).toBe("collector");
-    expect(payload.value.leaderboard.fastestBossKill).toBeNull();
     expect(payload.value.settings.audioEnabled).toBe(false);
     expect(payload.value.tutorial.finished).toBe(false);
     expect(payload.value.tutorial.step).toBe(2);

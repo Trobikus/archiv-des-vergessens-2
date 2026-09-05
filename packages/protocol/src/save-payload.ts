@@ -202,51 +202,6 @@ export type ClanSave = {
   readonly raid: ClanRaidSave;
 };
 
-export type FriendEntrySave = {
-  readonly name: string;
-  readonly added: number;
-  readonly userId?: string;
-};
-
-export type FriendRequestSave = {
-  readonly from: string;
-  readonly to: string;
-  readonly timestamp: number;
-  readonly fromUserId?: string;
-  readonly toUserId?: string;
-};
-
-export type FriendsSave = {
-  readonly list: readonly FriendEntrySave[];
-  readonly pending: readonly FriendRequestSave[];
-  readonly sent: readonly FriendRequestSave[];
-};
-
-/** Personal records. `null` time fields mean unset (v1 Infinity). */
-export type LeaderboardSave = {
-  readonly highestPrestige: number;
-  readonly totalPrestiges: number;
-  readonly fastestBossKill: number | null;
-  readonly totalBossesDefeated: number;
-  readonly highestChapterReached: number;
-  readonly highestLevel: number;
-  readonly fastestLevelUp: number | null;
-  readonly highestCraftingLevel: number;
-  readonly totalMasterworksCrafted: number;
-  readonly highestItemQuality: number;
-  readonly peakParticlesPerSecond: number;
-  readonly totalParticlesCollected: number;
-  readonly peakRelicsPerSecond: number;
-  readonly totalRelicsCollected: number;
-  readonly totalExpeditions: number;
-  readonly successfulExpeditions: number;
-  readonly achievementsUnlocked: number;
-  readonly fastestPrestige: number | null;
-  readonly totalPlayTime: number;
-  readonly sessionCount: number;
-  readonly lastPlayed: number;
-};
-
 /** Phase-2+ save payload (resources / idle / gather / hero / story / settings / Phase-6–7 slices). */
 export type Phase2SavePayload = {
   readonly resources: {
@@ -282,9 +237,7 @@ export type Phase2SavePayload = {
   readonly relicHunt: RelicHuntSave;
   readonly accountVault: AccountVaultSave;
   readonly tutorial: TutorialSave;
-  readonly friends: FriendsSave;
   readonly clan: ClanSave;
-  readonly leaderboard: LeaderboardSave;
   readonly meta: {
     readonly lastActiveAt: number;
   };
@@ -619,155 +572,8 @@ export function createDefaultClanSave(): ClanSave {
   };
 }
 
-export function createDefaultFriendsSave(): FriendsSave {
-  return { list: [], pending: [], sent: [] };
-}
-
-export function createDefaultLeaderboardSave(now = Date.now()): LeaderboardSave {
-  return {
-    highestPrestige: 0,
-    totalPrestiges: 0,
-    fastestBossKill: null,
-    totalBossesDefeated: 0,
-    highestChapterReached: 0,
-    highestLevel: 1,
-    fastestLevelUp: null,
-    highestCraftingLevel: 0,
-    totalMasterworksCrafted: 0,
-    highestItemQuality: 0,
-    peakParticlesPerSecond: 0,
-    totalParticlesCollected: 0,
-    peakRelicsPerSecond: 0,
-    totalRelicsCollected: 0,
-    totalExpeditions: 0,
-    successfulExpeditions: 0,
-    achievementsUnlocked: 0,
-    fastestPrestige: null,
-    totalPlayTime: 0,
-    sessionCount: 0,
-    lastPlayed: now,
-  };
-}
-
 function isClanRole(value: unknown): value is ClanRole {
   return typeof value === "string" && (CLAN_ROLES as readonly string[]).includes(value);
-}
-
-function validateFriendEntry(
-  value: unknown,
-  path: string,
-): ValidationResult<FriendEntrySave> {
-  if (!isRecord(value)) {
-    return { ok: false, error: `${path} must be an object` };
-  }
-  if (typeof value["name"] !== "string" || value["name"].length === 0) {
-    return { ok: false, error: `${path}.name invalid` };
-  }
-  if (!isFiniteNumber(value["added"]) || value["added"] < 0) {
-    return { ok: false, error: `${path}.added invalid` };
-  }
-  const userId = value["userId"];
-  if (userId !== undefined && (typeof userId !== "string" || userId.length === 0)) {
-    return { ok: false, error: `${path}.userId invalid` };
-  }
-  return {
-    ok: true,
-    value:
-      typeof userId === "string"
-        ? { name: value["name"], added: value["added"], userId }
-        : { name: value["name"], added: value["added"] },
-  };
-}
-
-function validateFriendRequest(
-  value: unknown,
-  path: string,
-): ValidationResult<FriendRequestSave> {
-  if (!isRecord(value)) {
-    return { ok: false, error: `${path} must be an object` };
-  }
-  if (typeof value["from"] !== "string" || value["from"].length === 0) {
-    return { ok: false, error: `${path}.from invalid` };
-  }
-  if (typeof value["to"] !== "string" || value["to"].length === 0) {
-    return { ok: false, error: `${path}.to invalid` };
-  }
-  if (!isFiniteNumber(value["timestamp"]) || value["timestamp"] < 0) {
-    return { ok: false, error: `${path}.timestamp invalid` };
-  }
-  const fromUserId = value["fromUserId"];
-  const toUserId = value["toUserId"];
-  if (
-    fromUserId !== undefined &&
-    (typeof fromUserId !== "string" || fromUserId.length === 0)
-  ) {
-    return { ok: false, error: `${path}.fromUserId invalid` };
-  }
-  if (
-    toUserId !== undefined &&
-    (typeof toUserId !== "string" || toUserId.length === 0)
-  ) {
-    return { ok: false, error: `${path}.toUserId invalid` };
-  }
-  return {
-    ok: true,
-    value: {
-      from: value["from"],
-      to: value["to"],
-      timestamp: value["timestamp"],
-      ...(typeof fromUserId === "string" ? { fromUserId } : {}),
-      ...(typeof toUserId === "string" ? { toUserId } : {}),
-    },
-  };
-}
-
-function validateFriends(value: unknown): ValidationResult<FriendsSave> {
-  if (value === undefined) {
-    return { ok: true, value: createDefaultFriendsSave() };
-  }
-  if (!isRecord(value)) {
-    return { ok: false, error: "friends must be an object" };
-  }
-  if (!Array.isArray(value["list"])) {
-    return { ok: false, error: "friends.list invalid" };
-  }
-  if (!Array.isArray(value["pending"])) {
-    return { ok: false, error: "friends.pending invalid" };
-  }
-  if (!Array.isArray(value["sent"])) {
-    return { ok: false, error: "friends.sent invalid" };
-  }
-  const list: FriendEntrySave[] = [];
-  for (let i = 0; i < value["list"].length; i++) {
-    const entry = validateFriendEntry(value["list"][i], `friends.list[${String(i)}]`);
-    if (!entry.ok) {
-      return entry;
-    }
-    list.push(entry.value);
-  }
-  const pending: FriendRequestSave[] = [];
-  for (let i = 0; i < value["pending"].length; i++) {
-    const entry = validateFriendRequest(
-      value["pending"][i],
-      `friends.pending[${String(i)}]`,
-    );
-    if (!entry.ok) {
-      return entry;
-    }
-    pending.push(entry.value);
-  }
-  const sent: FriendRequestSave[] = [];
-  for (let i = 0; i < value["sent"].length; i++) {
-    const entry = validateFriendRequest(
-      value["sent"][i],
-      `friends.sent[${String(i)}]`,
-    );
-    if (!entry.ok) {
-      return entry;
-    }
-    sent.push(entry.value);
-  }
-  return { ok: true, value: { list, pending, sent } };
 }
 
 function validateClanMember(
@@ -898,101 +704,6 @@ function validateClan(value: unknown): ValidationResult<ClanSave> {
         lastRaidTime: raidRaw["lastRaidTime"],
         rewardClaimed: raidRaw["rewardClaimed"],
       },
-    },
-  };
-}
-
-function validateOptionalTime(
-  value: unknown,
-  path: string,
-): ValidationResult<number | null> {
-  if (value === null) {
-    return { ok: true, value: null };
-  }
-  if (!isFiniteNumber(value) || value < 0) {
-    return { ok: false, error: `${path} invalid` };
-  }
-  return { ok: true, value };
-}
-
-function validateLeaderboard(value: unknown): ValidationResult<LeaderboardSave> {
-  if (value === undefined) {
-    return { ok: true, value: createDefaultLeaderboardSave() };
-  }
-  if (!isRecord(value)) {
-    return { ok: false, error: "leaderboard must be an object" };
-  }
-  const fields: Array<keyof LeaderboardSave> = [
-    "highestPrestige",
-    "totalPrestiges",
-    "totalBossesDefeated",
-    "highestChapterReached",
-    "highestLevel",
-    "highestCraftingLevel",
-    "totalMasterworksCrafted",
-    "highestItemQuality",
-    "peakParticlesPerSecond",
-    "totalParticlesCollected",
-    "peakRelicsPerSecond",
-    "totalRelicsCollected",
-    "totalExpeditions",
-    "successfulExpeditions",
-    "achievementsUnlocked",
-    "totalPlayTime",
-    "sessionCount",
-    "lastPlayed",
-  ];
-  for (const key of fields) {
-    const fieldValue = value[key];
-    if (!isFiniteNumber(fieldValue) || fieldValue < 0) {
-      return { ok: false, error: `leaderboard.${key} invalid` };
-    }
-  }
-  const fastestBossKill = validateOptionalTime(
-    value["fastestBossKill"],
-    "leaderboard.fastestBossKill",
-  );
-  if (!fastestBossKill.ok) {
-    return fastestBossKill;
-  }
-  const fastestLevelUp = validateOptionalTime(
-    value["fastestLevelUp"],
-    "leaderboard.fastestLevelUp",
-  );
-  if (!fastestLevelUp.ok) {
-    return fastestLevelUp;
-  }
-  const fastestPrestige = validateOptionalTime(
-    value["fastestPrestige"],
-    "leaderboard.fastestPrestige",
-  );
-  if (!fastestPrestige.ok) {
-    return fastestPrestige;
-  }
-  return {
-    ok: true,
-    value: {
-      highestPrestige: value["highestPrestige"] as number,
-      totalPrestiges: value["totalPrestiges"] as number,
-      fastestBossKill: fastestBossKill.value,
-      totalBossesDefeated: value["totalBossesDefeated"] as number,
-      highestChapterReached: value["highestChapterReached"] as number,
-      highestLevel: value["highestLevel"] as number,
-      fastestLevelUp: fastestLevelUp.value,
-      highestCraftingLevel: value["highestCraftingLevel"] as number,
-      totalMasterworksCrafted: value["totalMasterworksCrafted"] as number,
-      highestItemQuality: value["highestItemQuality"] as number,
-      peakParticlesPerSecond: value["peakParticlesPerSecond"] as number,
-      totalParticlesCollected: value["totalParticlesCollected"] as number,
-      peakRelicsPerSecond: value["peakRelicsPerSecond"] as number,
-      totalRelicsCollected: value["totalRelicsCollected"] as number,
-      totalExpeditions: value["totalExpeditions"] as number,
-      successfulExpeditions: value["successfulExpeditions"] as number,
-      achievementsUnlocked: value["achievementsUnlocked"] as number,
-      fastestPrestige: fastestPrestige.value,
-      totalPlayTime: value["totalPlayTime"] as number,
-      sessionCount: value["sessionCount"] as number,
-      lastPlayed: value["lastPlayed"] as number,
     },
   };
 }
@@ -1872,17 +1583,9 @@ export function validatePhase2SavePayload(
   if (!tutorial.ok) {
     return tutorial;
   }
-  const friends = validateFriends(value["friends"]);
-  if (!friends.ok) {
-    return friends;
-  }
   const clan = validateClan(value["clan"]);
   if (!clan.ok) {
     return clan;
-  }
-  const leaderboard = validateLeaderboard(value["leaderboard"]);
-  if (!leaderboard.ok) {
-    return leaderboard;
   }
 
   const meta = value["meta"];
@@ -1930,9 +1633,7 @@ export function validatePhase2SavePayload(
       relicHunt: relicHunt.value,
       accountVault: accountVault.value,
       tutorial: tutorial.value,
-      friends: friends.value,
       clan: clan.value,
-      leaderboard: leaderboard.value,
       meta: {
         lastActiveAt,
       },

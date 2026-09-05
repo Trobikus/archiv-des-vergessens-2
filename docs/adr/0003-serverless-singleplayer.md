@@ -20,7 +20,6 @@ Keeping dead live-service code would contradict that positioning and every futur
 
 ## Consequences
 
-- `GameState` still serializes dormant social slices for save compatibility. A future `schemaVersion` bump may drop them — as its own migration task, never silently.
-- Some i18n keys for removed UI remain in `packages/content` (harmless dead keys, parity gate unaffected). Clean them up opportunistically.
+- The save payload carries a single local slice set — the dormant `friends`/`leaderboard` slices, chat/guild runtime state, and the guest slot indirection were removed in a follow-up cleanup (no players existed, so no migration was needed; pre-pivot payloads still load, unknown keys are ignored and dropped on the next save). `schemaVersion` stays `1`.
 - New systems must not invent live services or fake online success paths.
 - `docs/protocol.md` describes the historical WS contract and is kept for reference only.

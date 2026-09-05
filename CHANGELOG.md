@@ -20,9 +20,8 @@ project follows [Semantic Versioning](https://semver.org/).
 - Auth/cloud/WS payload modules from `@adv/protocol` (save envelope untouched)
 - `tools/migrate-v1-users` and v1 account-migration docs
 
-### Fixed
-
-- Existing local saves keep loading unchanged (save envelope / `schemaVersion` untouched; guest slot key preserved)
+- Save payload: dead live-social slices (`friends`, `leaderboard`) and chat/guild runtime state removed; save slot simplified to the single local `slot_local_1`
+- 55 obsolete i18n keys (auth/social/cloud) removed from DE + EN
 
 ## [0.3.5-alpha] — 2026-08-03
 

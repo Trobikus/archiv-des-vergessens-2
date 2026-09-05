@@ -56,7 +56,6 @@ type Phase2SavePayload = {
     activeGuide: string | null;
     completedGuides: string[];
   };
-  friends: { list: FriendEntrySave[]; pending: FriendRequestSave[]; sent: FriendRequestSave[] };
   clan: {
     members: ClanMemberSave[];
     nextId: number;
@@ -70,29 +69,6 @@ type Phase2SavePayload = {
       rewardClaimed: boolean;
     };
   };
-  leaderboard: {
-    highestPrestige: number;
-    totalPrestiges: number;
-    totalBossesDefeated: number;
-    highestChapterReached: number;
-    highestLevel: number;
-    highestCraftingLevel: number;
-    totalMasterworksCrafted: number;
-    highestItemQuality: number;
-    peakParticlesPerSecond: number;
-    peakRelicsPerSecond: number;
-    totalParticlesCollected: number;
-    totalRelicsCollected: number;
-    achievementsUnlocked: number;
-    totalExpeditions: number;
-    successfulExpeditions: number;
-    totalPlayTime: number;
-    sessionCount: number;
-    lastPlayed: number;
-    fastestBossKill: number | null;
-    fastestLevelUp: number | null;
-    fastestPrestige: number | null;
-  };
   meta: { lastActiveAt: number };
 };
 ```
@@ -101,11 +77,8 @@ type Phase2SavePayload = {
 - Migration runner: identity for `schemaVersion === 1` (`migrateSaveEnvelope`)
 - Missing optional sections on older payloads are filled with defaults during validation (`createDefault*` helpers in `@adv/protocol`)
 - Missing Phase-6 resource fields (`relics`, `totalRelics`, `artifacts`, `memoryDust`, `catalyst`) default to `"0"`
-- Missing Phase-7 slices (`friends`, `clan`, `leaderboard`) default via `createDefaultFriendsSave` / `createDefaultClanSave` / `createDefaultLeaderboardSave`
-- Chat history is ephemeral (not persisted in the envelope; global chat lives on the server)
-- Battle state is ephemeral (not persisted)
-- Cloud authority (Phase 4): registered sessions upsert the full `SaveEnvelope` JSON in SQLite `saves.saveData`
-- Offline queue: pending envelopes under `cloud_pending_<userId>` until flush
-- Conflict rule: newer `savedAt` wins when merging cloud vs local
-- Account cutover: users table may migrate via `tools/migrate-v1-users/`
-- **Phase 9 v1 save import:** `importV1Save` / `importV1SaveJson` in `@adv/protocol` maps v1 JSON (inner state, IDB envelope, or cloud `saveData`) → validated v2 `SaveEnvelope`. In-game: Options → import. CLI: `tools/migrate-v1-saves/`. Chat / battle state are dropped (ephemeral in v2).
+- Missing Phase-7 slice (`clan`) defaults via `createDefaultClanSave`
+- Live-social slices (`friends`, `leaderboard`, chat/guild runtime state) were removed with the server-less pivot ([ADR 0003](adr/0003-serverless-singleplayer.md)); pre-pivot payloads containing those fields still load — unknown keys are ignored and dropped on the next save
+- Chat history and battle state are ephemeral (not persisted)
+- Single local slot: IndexedDB (`adv2-saves` / key `slot_local_1`) — no cloud, no accounts
+- **Phase 9 v1 save import:** `importV1Save` / `importV1SaveJson` in `@adv/protocol` maps v1 JSON (inner state or IDB envelope) → validated v2 `SaveEnvelope`. In-game: Options → import. CLI: `tools/migrate-v1-saves/`. v1 friends/leaderboard/chat are dropped.

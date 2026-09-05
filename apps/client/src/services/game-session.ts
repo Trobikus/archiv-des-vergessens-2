@@ -81,7 +81,7 @@ import {
   createMemorySaveStorage,
   type SaveStorage,
 } from "./save-storage";
-import { createSaveStore, guestSaveKey, type SaveStore } from "./save-store";
+import { createSaveStore, DEFAULT_SAVE_KEY, type SaveStore } from "./save-store";
 import {
   createStoryBranchService,
   type StoryBranchService,
@@ -94,26 +94,6 @@ import {
 } from "./tutorial-service";
 
 const log = createLogger("game-session");
-
-/** Local guest identity — kept from the former account system so existing
- * save slots under this id keep loading. */
-const GUEST_KEY = "adv2_guest_id";
-
-function localGuestId(): string {
-  if (typeof localStorage === "undefined") {
-    return "local";
-  }
-  const existing = localStorage.getItem(GUEST_KEY);
-  if (existing !== null && existing.length > 0) {
-    return existing;
-  }
-  const created =
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : `guest_${Math.random().toString(36).slice(2)}`;
-  localStorage.setItem(GUEST_KEY, created);
-  return created;
-}
 
 export type GameSession = {
   readonly store: Store<GameState>;
@@ -261,7 +241,7 @@ export function createGameSession(
   };
 
   const resolveSaveKey = (): string => {
-    return guestSaveKey(localGuestId());
+    return DEFAULT_SAVE_KEY;
   };
 
   const saveNow = async (): Promise<boolean> => {

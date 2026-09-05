@@ -16,9 +16,7 @@ import {
   createDefaultClanSave,
   createDefaultCodexSave,
   createDefaultCraftingSave,
-  createDefaultFriendsSave,
   createDefaultHeroSave,
-  createDefaultLeaderboardSave,
   createDefaultLibrarySave,
   createDefaultQuestsSave,
   createDefaultRelicHuntSave,
@@ -33,11 +31,8 @@ import {
   type ClanRole,
   type ClanSave,
   type EquipmentSave,
-  type FriendEntrySave,
-  type FriendRequestSave,
   type HeroSave,
   type ItemSave,
-  type LeaderboardSave,
   type Phase2SavePayload,
   type StatBlockSave,
 } from "./save-payload";
@@ -515,92 +510,6 @@ function mapClan(value: unknown): ClanSave {
   };
 }
 
-function mapFriends(value: unknown): Phase2SavePayload["friends"] {
-  if (!isRecord(value)) {
-    return createDefaultFriendsSave();
-  }
-  const list: FriendEntrySave[] = [];
-  if (Array.isArray(value["list"])) {
-    for (const entry of value["list"]) {
-      if (!isRecord(entry) || typeof entry["name"] !== "string") {
-        continue;
-      }
-      list.push({
-        name: entry["name"],
-        added: asNonNegInt(entry["added"], 0),
-      });
-    }
-  }
-  const mapRequest = (raw: unknown): FriendRequestSave | null => {
-    if (!isRecord(raw)) {
-      return null;
-    }
-    if (typeof raw["from"] !== "string" || typeof raw["to"] !== "string") {
-      return null;
-    }
-    return {
-      from: raw["from"],
-      to: raw["to"],
-      timestamp: asNonNegInt(raw["timestamp"], 0),
-    };
-  };
-  const pending: FriendRequestSave[] = [];
-  if (Array.isArray(value["pending"])) {
-    for (const entry of value["pending"]) {
-      const mapped = mapRequest(entry);
-      if (mapped !== null) {
-        pending.push(mapped);
-      }
-    }
-  }
-  const sent: FriendRequestSave[] = [];
-  if (Array.isArray(value["sent"])) {
-    for (const entry of value["sent"]) {
-      const mapped = mapRequest(entry);
-      if (mapped !== null) {
-        sent.push(mapped);
-      }
-    }
-  }
-  return { list, pending, sent };
-}
-
-function mapLeaderboard(value: unknown, now: number): LeaderboardSave {
-  const defaults = createDefaultLeaderboardSave(now);
-  if (!isRecord(value)) {
-    return defaults;
-  }
-  return {
-    highestPrestige: asNonNegInt(value["highestPrestige"], 0),
-    totalPrestiges: asNonNegInt(value["totalPrestiges"], 0),
-    fastestBossKill: nullableTime(value["fastestBossKill"]),
-    totalBossesDefeated: asNonNegInt(value["totalBossesDefeated"], 0),
-    highestChapterReached: asNonNegInt(value["highestChapterReached"], 0),
-    highestLevel: asNonNegInt(value["highestLevel"], 1),
-    fastestLevelUp: nullableTime(value["fastestLevelUp"]),
-    highestCraftingLevel: asNonNegInt(value["highestCraftingLevel"], 1),
-    totalMasterworksCrafted: asNonNegInt(value["totalMasterworksCrafted"], 0),
-    highestItemQuality: asNonNegInt(value["highestItemQuality"], 0),
-    peakParticlesPerSecond: Math.max(
-      0,
-      asFiniteNumber(value["peakParticlesPerSecond"], 0),
-    ),
-    totalParticlesCollected: asNonNegInt(value["totalParticlesCollected"], 0),
-    peakRelicsPerSecond: Math.max(
-      0,
-      asFiniteNumber(value["peakRelicsPerSecond"], 0),
-    ),
-    totalRelicsCollected: asNonNegInt(value["totalRelicsCollected"], 0),
-    totalExpeditions: asNonNegInt(value["totalExpeditions"], 0),
-    successfulExpeditions: asNonNegInt(value["successfulExpeditions"], 0),
-    achievementsUnlocked: asNonNegInt(value["achievementsUnlocked"], 0),
-    fastestPrestige: nullableTime(value["fastestPrestige"]),
-    totalPlayTime: asNonNegInt(value["totalPlayTime"], 0),
-    sessionCount: asNonNegInt(value["sessionCount"], 0),
-    lastPlayed: asNonNegInt(value["lastPlayed"], now),
-  };
-}
-
 function mapAccountVault(value: unknown): AccountVaultSave {
   const defaults = createDefaultAccountVaultSave();
   if (!isRecord(value)) {
@@ -809,15 +718,9 @@ export function mapV1StateToPayload(
   const system = isRecord(state["system"]) ? state["system"] : null;
   const resourcesRaw = isRecord(state["resources"]) ? state["resources"] : {};
   const storyRaw = isRecord(state["story"]) ? state["story"] : {};
-  const leaderboard = mapLeaderboard(state["leaderboard"], now);
   const selectedChapter = Math.max(
     1,
-    asNonNegInt(
-      storyRaw["selectedChapter"],
-      leaderboard.highestChapterReached > 0
-        ? leaderboard.highestChapterReached
-        : 1,
-    ),
+    asNonNegInt(storyRaw["selectedChapter"], 1),
   );
 
   const craftedFromHero =
@@ -940,9 +843,7 @@ export function mapV1StateToPayload(
       activeGuide: null,
       completedGuides: [],
     },
-    friends: mapFriends(state["friends"]),
     clan: mapClan(state["clan"]),
-    leaderboard,
     meta: { lastActiveAt },
   };
 }
